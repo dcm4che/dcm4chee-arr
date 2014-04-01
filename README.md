@@ -11,14 +11,21 @@ Features
 1)Provides standard repository as defined by IHE Audit Trail
 see [ATNA](http://wiki.ihe.net/index.php?title=Audit_Trail_and_Node_Authentication)
 
-i-Audit messages following the DICOM XML schema for audit messages
+i-Audit messages following the DICOM XML schema for audit messages.
+
 ii-Provides application activity and audit record used message generation.
-iii-Uses dcm4che implementation for SYSLOG protocol
-iv-Supports audit reporting via either TLS or UDP
+
+iii-Uses dcm4che implementation for SYSLOG protocol.
+
+iv-Supports audit reporting via either TLS or UDP.
+
 2)Provides support for LDAP and Java preferences configuration
+
 3)Provides a fully configurable and customizable clean up mechanism for the audit record repository.
+
 4)provides a restful service for controlling the service as well as querying the repository.
-5)Provides a simple web interface for filtering queries
+
+5)Provides a simple web interface for filtering queries.
 
 
 Build
