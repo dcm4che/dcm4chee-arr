@@ -194,6 +194,7 @@ Not yet tested.
 3.  Import LDAP schema files for Apache DS:
 	dcm4chee-arr-cdi-conf-ldap/src/main/config/apacheds/
 	imports are to be done in this order:
+	
         1.dicom.ldif
         2.dcm4che.ldif
 		3.CleanUpExtensionSchema.ldif
@@ -404,38 +405,36 @@ Setup JBoss AS 7
 	 It is up to you to change these configurations according to your needs, if you require proper TLS authentication,
 	 then you should provide a new configuration parameter in the ldap config with the following attributes :
 	 
-	 dcmTrustStoreType, dcmTrustStoreURL, dcmTrustStorePin.
+	 dcmTrustStoreType
+	 dcmTrustStoreURL
+	 dcmTrustStorePin
 	 
 	 You will also need to change the property dcmTLSNeedClientAuth in the audit-tls sample connection configuration
 	 to true, thus allowing the ARR to load the trust store and authenticate the incoming certificates.
 	 
 	 To generate your own key and keystore use the keytool supplied with the jdk as follows:
 	 
+	 
 	 keytool.exe -genkey -alias mynewkey -keyalg RSA -validity 365  -storetype JKS --keystore myserver.store
+	 
 	 
 	 you will be prompted for everything and in the end the file myserver.store will be generated.
 	 
+	 
 	 To extract your public key from the truststore use keytool as follows:
+	 
 	 
 	 keytool -export -alias mynewkey --keystore test.store -rfc -file mypublic.cert
 	 
+	 
 	 Next step is to create a truststore and add your public certificate to it.
+	 
 	 
 	 keytool -import -alias mynewkey -file mypublic.cert --storetype JKS --keystore server.truststore
 	 
-11.	Add Jms queue to the jboss configuration eith by adding it to your configuration 
-	in the $JBOSS_HOME/standalone/configuration/dcm4chee-arr.xml as follows:
-	
-	<jms-destinations>
-	...
-	<jms-queue name="ARRIncoming">
-    <entry name="queue/ARRIncoming"/>
-    <entry name="java:jboss/exported/jms/queue/ARRIncoming"/>
-    </jms-queue>
-	...
-    </jms-destinations>
-	
-	Or via CLI as follows:
+	 
+11.	Add Jms queue to the jboss configuration via CLI as follows:
+
 	[standalone@localhost:9999 /] jms-queue add --queue-address=ARRIncoming --entries=queue/ARRIncoming
 	 
 12. Deploy DCM4CHEE ARR using JBoss AS 7 CLI, e.g.:
