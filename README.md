@@ -1,7 +1,7 @@
 dcm4chee-arr
 ============
 Sources: https://github.com/dcm4che/dcm4chee-arr
-Binaries:   
+
 Issue Tracker: http://www.dcm4che.org/jira/browse/ARR
 
 IHE ATNA-Based audit repository implementation running on JBoss 7 application server and Jboss WildFly.
@@ -9,10 +9,9 @@ IHE ATNA-Based audit repository implementation running on JBoss 7 application se
 Features
 -----
 1)Provides standard repository as defined by IHE Audit Trail
-http://wiki.ihe.net/index.php?title=Audit_Trail_and_Node_Authentication
-including:
+see [ATNA](http://wiki.ihe.net/index.php?title=Audit_Trail_and_Node_Authentication)
+
 i-Audit messages following the DICOM XML schema for audit messages
-Schema can be found here: ftp://medical.nema.org/medical/dicom/Trial_Use/sup95_fz.pdf
 ii-Provides application activity and audit record used message generation.
 iii-Uses dcm4che implementation for SYSLOG protocol
 iv-Supports audit reporting via either TLS or UDP
