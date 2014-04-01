@@ -246,6 +246,14 @@ Import sample configuration into LDAP Server
         > sed -i s/dc=example,dc=com/dc=my-domain,dc=com/ arrdevice-sample(no init).ldif
         > sed -i s/dc=example,dc=com/dc=my-domain,dc=com/ AuditLogger_with_supress_criteria.ldif
 
+Setup Java Preferences (LDAP alternative)
+----------------
+1.  Load the sample xml file dcm4chee-arr-sample.xml from dcm4chee-arr-cdi-conf-prefs/src/main/config/
+	into your system properties.
+2.	A tool for loading preferences XML is available in the dcm4che library [xml2prefs, xml2prefs.bat]
+	(http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
+		
+		
 Setup JBoss AS 7
 ----------------
 
