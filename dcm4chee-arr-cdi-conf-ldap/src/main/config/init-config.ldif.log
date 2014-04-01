@@ -1,0 +1,17 @@
+version: 1
+
+#!RESULT OK
+#!CONNECTION ldap://localhost:10389
+#!DATE 2014-03-21T23:06:11.091
+dn: cn=DICOM Configuration,dc=example,dc=com
+objectClass: dicomConfigurationRoot
+objectClass: top
+cn: DICOM Configuration
+
+#!RESULT OK
+#!CONNECTION ldap://localhost:10389
+#!DATE 2014-03-21T23:06:11.766
+dn: cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: dicomDevicesRoot
+objectClass: top
+cn: Devices

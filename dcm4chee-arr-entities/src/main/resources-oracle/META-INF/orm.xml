@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+	version="2.0">
+	<package>org.dcm4chee.arr.entities</package>
+	<entity class="ActiveParticipant">
+	<table name="active_part" />
+		<sequence-generator name="seq" sequence-name="active_part_pk_seq"
+			allocation-size="1" />
+		<attributes>
+			<id name="pk">
+				<column name="pk" />
+				<generated-value strategy="SEQUENCE" generator="seq" />
+			</id>
+		</attributes>
+	</entity>
+	
+	<entity class="AuditRecord">
+	<table name="audit_record" />
+	<sequence-generator name="seq" sequence-name="audit_record_pk_seq"
+		allocation-size="1" />
+	<attributes>
+	<id name="pk">
+	<column name="pk" />
+	<generated-value strategy="SEQUENCE" generator="seq" />
+	</id>
+	</attributes>
+	</entity>
+	
+	<entity class="org.dcm4chee.arr.entities.Code">
+	<table name="code" />
+	<sequence-generator name="seq" sequence-name="code_pk_seq"
+		allocation-size="1" />
+	<attributes>
+	<id name="pk">
+	<column name="pk" />
+	<generated-value strategy="SEQUENCE" generator="seq" />
+	</id>
+	</attributes>
+	</entity>
+
+	<entity class="ParticipantObject">
+	<table name="part_obj" />
+	<sequence-generator name="seq" sequence-name="part_obj_pk_seq"
+		allocation-size="1" />
+	<attributes>
+	<id name="pk">
+	<column name="pk" />
+	<generated-value strategy="SEQUENCE" generator="seq" />
+	</id>
+	</attributes>
+	</entity>
+
+</entity-mappings>

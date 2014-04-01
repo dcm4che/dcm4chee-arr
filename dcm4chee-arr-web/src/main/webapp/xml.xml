@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ASCII"?>
+        <AuditMessages>
+    <AuditMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="healthcare-security-audit.xsd">
+
+        <EventIdentification EventActionCode="E" EventDateTime="2014-03-05T13:35:46.881+01:00" EventOutcomeIndicator="8">
+            <EventID code="110112" displayName="Query" codeSystemName="DCM"/>
+            <EventTypeCode code="ITI-63" displayName="XCF Fetch" codeSystemName="IHE Transactions"/>
+        </EventIdentification>
+
+        <ActiveParticipant UserID="http://www.w3.org/2005/08/addressing/anonymous" AlternativeUserID="8884" UserIsRequestor="true" NetworkAccessPointID="10.242.8.71" NetworkAccessPointTypeCode="2">
+            <RoleIDCode code="110153" displayName="Source" codeSystemName="DCM"/>
+        </ActiveParticipant>
+
+        <ActiveParticipant UserID="Umesh Phirke" UserIsRequestor="true"/>
+
+        <ActiveParticipant UserID="https://moss1.ihe.net:8011/openxds/services/DocumentRegistry" UserIsRequestor="false" NetworkAccessPointID="moss1.ihe.net" NetworkAccessPointTypeCode="1">
+            <RoleIDCode code="110152" displayName="Destination" codeSystemName="DCM"/>
+        </ActiveParticipant>
+
+        <AuditSourceIdentification AuditSourceID="PatientKeeper"/>
+
+        <ParticipantObjectIdentification ParticipantObjectID="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d" ParticipantObjectTypeCode="2" ParticipantObjectTypeCodeRole="24">
+            <ParticipantObjectIDTypeCode code="ITI-63" displayName="XCF Fetch" codeSystemName="IHE Transactions"/>
+            <ParticipantObjectName>Granger^Farley</ParticipantObjectName>
+            <ParticipantObjectQuery>PHF1ZXJ5OkFkaG9jUXVlcnlSZXF1ZXN0IHhtbG5zOnF1ZXJ5PSJ1cm46b2FzaXM6bmFtZXM6dGM6ZWJ4bWwtcmVncmVwOnhzZDpxdWVyeTozLjAiIHhtbG5zOnJpbT0idXJuOm9hc2lzOm5hbWVzOnRjOmVieG1sLXJlZ3JlcDp4c2Q6cmltOjMuMCI+DQo8cXVlcnk6UmVzcG9uc2VPcHRpb24gcmV0dXJuQ29tcG9zZWRPYmplY3RzPSJ0cnVlIiByZXR1cm5UeXBlPSJPYmplY3RSZWYiLz4NCjxyaW06QWRob2NRdWVyeSBpZD0idXJuOnV1aWQ6MTRkNGRlYmYtOGY5Ny00MjUxLTlhNzQtYTkwMDE2YjBhZjBkIj4NCjxyaW06U2xvdCBuYW1lPSIkWERTRG9jdW1lbnRFbnRyeVBhdGllbnRJZCI+DQo8cmltOlZhbHVlTGlzdD4NCjxyaW06VmFsdWU+Jzg2YjU0OWRjMzAwYjQ4OF5eXiZhbXA7MS4zLjYuMS40LjEuMjEzNjcuMjAwNS4zLjcmYW1wO0lTTyc8L3JpbTpWYWx1ZT4NCjwvcmltOlZhbHVlTGlzdD4NCjwvcmltOlNsb3Q+DQo8cmltOlNsb3QgbmFtZT0iJFhEU0RvY3VtZW50RW50cnlTdGF0dXMiPg0KPHJpbTpWYWx1ZUxpc3Q+DQo8cmltOlZhbHVlPigndXJuOm9hc2lzOm5hbWVzOnRjOmVieG1sLXJlZ3JlcDpTdGF0dXNUeXBlOkFwcHJvdmVkJyk8L3JpbTpWYWx1ZT4NCjwvcmltOlZhbHVlTGlzdD4NCjwvcmltOlNsb3Q+DQo8L3JpbTpBZGhvY1F1ZXJ5Pg0KPC9xdWVyeTpBZGhvY1F1ZXJ5UmVxdWVzdD4NCg==</ParticipantObjectQuery>
+            <ParticipantObjectDetail type="QueryEncoding" value="VVRGLTg="/>
+        </ParticipantObjectIdentification>
+        <ParticipantObjectIdentification ParticipantObjectID="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d" ParticipantObjectTypeCode="2" ParticipantObjectTypeCodeRole="24">
+            <ParticipantObjectIDTypeCode code="ITI-63" displayName="XCF Fetch" codeSystemName="IHE Transactions"/>
+            <ParticipantObjectName>Granger^Farley</ParticipantObjectName>
+            <ParticipantObjectQuery>PHF1ZXJ5OkFkaG9jUXVlcnlSZXF1ZXN0IHhtbG5zOnF1ZXJ5PSJ1cm46b2FzaXM6bmFtZXM6dGM6ZWJ4bWwtcmVncmVwOnhzZDpxdWVyeTozLjAiIHhtbG5zOnJpbT0idXJuOm9hc2lzOm5hbWVzOnRjOmVieG1sLXJlZ3JlcDp4c2Q6cmltOjMuMCI+DQo8cXVlcnk6UmVzcG9uc2VPcHRpb24gcmV0dXJuQ29tcG9zZWRPYmplY3RzPSJ0cnVlIiByZXR1cm5UeXBlPSJPYmplY3RSZWYiLz4NCjxyaW06QWRob2NRdWVyeSBpZD0idXJuOnV1aWQ6MTRkNGRlYmYtOGY5Ny00MjUxLTlhNzQtYTkwMDE2YjBhZjBkIj4NCjxyaW06U2xvdCBuYW1lPSIkWERTRG9jdW1lbnRFbnRyeVBhdGllbnRJZCI+DQo8cmltOlZhbHVlTGlzdD4NCjxyaW06VmFsdWU+Jzg2YjU0OWRjMzAwYjQ4OF5eXiZhbXA7MS4zLjYuMS40LjEuMjEzNjcuMjAwNS4zLjcmYW1wO0lTTyc8L3JpbTpWYWx1ZT4NCjwvcmltOlZhbHVlTGlzdD4NCjwvcmltOlNsb3Q+DQo8cmltOlNsb3QgbmFtZT0iJFhEU0RvY3VtZW50RW50cnlTdGF0dXMiPg0KPHJpbTpWYWx1ZUxpc3Q+DQo8cmltOlZhbHVlPigndXJuOm9hc2lzOm5hbWVzOnRjOmVieG1sLXJlZ3JlcDpTdGF0dXNUeXBlOkFwcHJvdmVkJyk8L3JpbTpWYWx1ZT4NCjwvcmltOlZhbHVlTGlzdD4NCjwvcmltOlNsb3Q+DQo8L3JpbTpBZGhvY1F1ZXJ5Pg0KPC9xdWVyeTpBZGhvY1F1ZXJ5UmVxdWVzdD4NCg==</ParticipantObjectQuery>
+            <ParticipantObjectDetail type="QueryEncoding" value="VVRGLTg="/>
+        </ParticipantObjectIdentification>
+
+    </AuditMessage>
+<AuditMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="healthcare-security-audit.xsd">
+
+    <EventIdentification EventActionCode="E" EventDateTime="2014-03-05T13:35:46.881+01:00" EventOutcomeIndicator="8">
+        <EventID code="110112" displayName="Query" codeSystemName="DCM"/>
+        <EventTypeCode code="ITI-63" displayName="XCF Fetch" codeSystemName="IHE Transactions"/>
+    </EventIdentification>
+
+    <ActiveParticipant UserID="http://www.w3.org/2005/08/addressing/anonymous" AlternativeUserID="8884" UserIsRequestor="true" NetworkAccessPointID="10.242.8.71" NetworkAccessPointTypeCode="2">
+        <RoleIDCode code="110153" displayName="Source" codeSystemName="DCM"/>
+    </ActiveParticipant>
+
+    <ActiveParticipant UserID="Umesh Phirke" UserIsRequestor="true"/>
+
+    <ActiveParticipant UserID="https://moss1.ihe.net:8011/openxds/services/DocumentRegistry" UserIsRequestor="false" NetworkAccessPointID="moss1.ihe.net" NetworkAccessPointTypeCode="1">
+        <RoleIDCode code="110152" displayName="Destination" codeSystemName="DCM"/>
+    </ActiveParticipant>
+
+    <AuditSourceIdentification AuditSourceID="PatientKeeper"/>
+
+    <ParticipantObjectIdentification ParticipantObjectID="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d" ParticipantObjectTypeCode="2" ParticipantObjectTypeCodeRole="24">
+        <ParticipantObjectIDTypeCode code="ITI-63" displayName="XCF Fetch" codeSystemName="IHE Transactions"/>
+        <ParticipantObjectName>Granger^Farley</ParticipantObjectName>
+        <ParticipantObjectQuery>PHF1ZXJ5OkFkaG9jUXVlcnlSZXF1ZXN0IHhtbG5zOnF1ZXJ5PSJ1cm46b2FzaXM6bmFtZXM6dGM6ZWJ4bWwtcmVncmVwOnhzZDpxdWVyeTozLjAiIHhtbG5zOnJpbT0idXJuOm9hc2lzOm5hbWVzOnRjOmVieG1sLXJlZ3JlcDp4c2Q6cmltOjMuMCI+DQo8cXVlcnk6UmVzcG9uc2VPcHRpb24gcmV0dXJuQ29tcG9zZWRPYmplY3RzPSJ0cnVlIiByZXR1cm5UeXBlPSJPYmplY3RSZWYiLz4NCjxyaW06QWRob2NRdWVyeSBpZD0idXJuOnV1aWQ6MTRkNGRlYmYtOGY5Ny00MjUxLTlhNzQtYTkwMDE2YjBhZjBkIj4NCjxyaW06U2xvdCBuYW1lPSIkWERTRG9jdW1lbnRFbnRyeVBhdGllbnRJZCI+DQo8cmltOlZhbHVlTGlzdD4NCjxyaW06VmFsdWU+Jzg2YjU0OWRjMzAwYjQ4OF5eXiZhbXA7MS4zLjYuMS40LjEuMjEzNjcuMjAwNS4zLjcmYW1wO0lTTyc8L3JpbTpWYWx1ZT4NCjwvcmltOlZhbHVlTGlzdD4NCjwvcmltOlNsb3Q+DQo8cmltOlNsb3QgbmFtZT0iJFhEU0RvY3VtZW50RW50cnlTdGF0dXMiPg0KPHJpbTpWYWx1ZUxpc3Q+DQo8cmltOlZhbHVlPigndXJuOm9hc2lzOm5hbWVzOnRjOmVieG1sLXJlZ3JlcDpTdGF0dXNUeXBlOkFwcHJvdmVkJyk8L3JpbTpWYWx1ZT4NCjwvcmltOlZhbHVlTGlzdD4NCjwvcmltOlNsb3Q+DQo8L3JpbTpBZGhvY1F1ZXJ5Pg0KPC9xdWVyeTpBZGhvY1F1ZXJ5UmVxdWVzdD4NCg==</ParticipantObjectQuery>
+        <ParticipantObjectDetail type="QueryEncoding" value="VVRGLTg="/>
+    </ParticipantObjectIdentification>
+    <ParticipantObjectIdentification ParticipantObjectID="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d" ParticipantObjectTypeCode="2" ParticipantObjectTypeCodeRole="24">
+        <ParticipantObjectIDTypeCode code="ITI-63" displayName="XCF Fetch" codeSystemName="IHE Transactions"/>
+        <ParticipantObjectName>Granger^Farley</ParticipantObjectName>
+        <ParticipantObjectQuery>PHF1ZXJ5OkFkaG9jUXVlcnlSZXF1ZXN0IHhtbG5zOnF1ZXJ5PSJ1cm46b2FzaXM6bmFtZXM6dGM6ZWJ4bWwtcmVncmVwOnhzZDpxdWVyeTozLjAiIHhtbG5zOnJpbT0idXJuOm9hc2lzOm5hbWVzOnRjOmVieG1sLXJlZ3JlcDp4c2Q6cmltOjMuMCI+DQo8cXVlcnk6UmVzcG9uc2VPcHRpb24gcmV0dXJuQ29tcG9zZWRPYmplY3RzPSJ0cnVlIiByZXR1cm5UeXBlPSJPYmplY3RSZWYiLz4NCjxyaW06QWRob2NRdWVyeSBpZD0idXJuOnV1aWQ6MTRkNGRlYmYtOGY5Ny00MjUxLTlhNzQtYTkwMDE2YjBhZjBkIj4NCjxyaW06U2xvdCBuYW1lPSIkWERTRG9jdW1lbnRFbnRyeVBhdGllbnRJZCI+DQo8cmltOlZhbHVlTGlzdD4NCjxyaW06VmFsdWU+Jzg2YjU0OWRjMzAwYjQ4OF5eXiZhbXA7MS4zLjYuMS40LjEuMjEzNjcuMjAwNS4zLjcmYW1wO0lTTyc8L3JpbTpWYWx1ZT4NCjwvcmltOlZhbHVlTGlzdD4NCjwvcmltOlNsb3Q+DQo8cmltOlNsb3QgbmFtZT0iJFhEU0RvY3VtZW50RW50cnlTdGF0dXMiPg0KPHJpbTpWYWx1ZUxpc3Q+DQo8cmltOlZhbHVlPigndXJuOm9hc2lzOm5hbWVzOnRjOmVieG1sLXJlZ3JlcDpTdGF0dXNUeXBlOkFwcHJvdmVkJyk8L3JpbTpWYWx1ZT4NCjwvcmltOlZhbHVlTGlzdD4NCjwvcmltOlNsb3Q+DQo8L3JpbTpBZGhvY1F1ZXJ5Pg0KPC9xdWVyeTpBZGhvY1F1ZXJ5UmVxdWVzdD4NCg==</ParticipantObjectQuery>
+        <ParticipantObjectDetail type="QueryEncoding" value="VVRGLTg="/>
+    </ParticipantObjectIdentification>
+
+</AuditMessage>
+</AuditMessages>

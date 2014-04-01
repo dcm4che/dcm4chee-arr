@@ -1,0 +1,28 @@
+version: 1
+
+dn: cn=Audit Record Repository,dicomDeviceName=syslog,cn=Devices,cn=DICOM Co
+ nfiguration,dc=example,dc=com
+objectClass: top
+objectClass: dcmAuditRecordRepository
+cn: Audit Record Repository
+dicomNetworkConnectionReference: cn=audit-udp,dicomDeviceName=syslog,cn=Devi
+ ces,cn=DICOM Configuration,dc=example,dc=com
+
+dn: cn=audit-udp,dicomDeviceName=syslog,cn=Devices,cn=DICOM Configuration,dc
+ =example,dc=com
+objectClass: top
+objectClass: dcmNetworkConnection
+objectClass: dicomNetworkConnection
+cn: audit-udp
+dcmProtocol: SYSLOG_UDP
+dicomHostname: localhost
+dicomPort: 514
+
+dn: dicomDeviceName=syslog,cn=Devices,cn=DICOM Configuration,dc=example,dc=c
+ om
+objectClass: top
+objectClass: dicomDevice
+objectClass: dcmDevice
+dicomDeviceName: syslog
+dicomInstalled: TRUE
+

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<script src="js/jquery-1.10.2.js"></script>
+<link rel="stylesheet" href="css/ui-darkness/jquery-ui-1.10.4.custom.css">
+<script src="js/jquery-ui-1.10.4.custom.js"></script>
+<link rel="stylesheet" href="css/style.css">
+<script  type="application/javascript">
+var currentdoc;
+$(document).ready(function(){
+
+
+
+});
+function successAjax(xml)
+{
+   currentdoc = xml;
+    //Event variables
+    var eventActionCode;
+    var eventDateTime;
+    var eventOutcomeIndicator;
+    var eventID_code;
+    var eventID_displayName;
+    var eventID_codeSystemName;
+    var eventID_originalText;
+    var eventTypeCode_code;
+    var eventTypeCode_displayName;
+    var eventTypeCode_codeSystemName;
+    var eventTypeCode_originalText;
+    var networkAccessPointTypeCode;
+    var userName;
+    var networkAccessPointID;
+    var userIsRequestor;
+    var userID;
+    var alternativeUserID;
+    var roleIDCode_code;
+    var roleIDCode_displayName;
+    var roleIDCode_codeSystemName;
+    var roleIDCode_originalText;
+    var auditSourceID;
+    var auditEnterpriseSiteID;
+    var auditSourceTypeCode;
+    var participantObjectID;
+    var participantObjectTypeCode;
+    var participantObjectTypeCodeRole;
+    var participantObjectIDTypeCode_code;
+    var participantObjectIDTypeCode_displayName;
+    var participantObjectIDTypeCode_codeSystemName;
+    var participantObjectIDTypeCode_originalText;
+    var participantObjectDataLifeCycle;
+    var participantObjectName;
+    var participantObjectQuery;
+
+    if($(xml).has('AuditMessage').length)
+    {
+
+        var children = $(xml).find("AuditMessage");
+
+        children.each(function(index){
+
+            var auditMessage = $(this);
+            //AuditMessage
+            $("<tr class='master'><th colspan='6' style='color: brown;font-size: 10pt'>AuditMessage"+(++index)+"</th></tr>").appendTo("#xmltable").click(function(){
+                $(this).nextUntil(".master").each(function()
+                        {
+
+                            $(this).toggle();
+                        }
+                );
+
+            });
+
+            //Event
+            //EventIdentification
+            var xmlPrimaryElement = auditMessage.find("EventIdentification");
+            xmlPrimaryElement.each(function() {
+                eventActionCode=$(this).attr('EventActionCode');
+                eventDateTime=$(this).attr('EventDateTime');
+                eventOutcomeIndicator=$(this).attr('EventOutcomeIndicator');
+            });
+
+            $("<tr class='main'><th colspan='6' style='color: brown;font-size: 10pt'>EventIdentification</th></tr>").appendTo("#xmltable").click(function(){
+                $(this).nextUntil(".main").each(function()
+                        {
+
+                            $(this).toggle();
+                        }
+                );
+
+            });
+            $("#xmltable").append("<tr><th>EventActionCode</th><th>EventDateTime</th><th>EventOutcomeIndicator</th><th>-</th><th>-</th><th>-</th></tr>"+"" +
+                    "<tr><td>"+eventActionCode+"</td><td>"+ new Date(eventDateTime)
+                    +"</td><td>"+eventOutcomeIndicator+"</td><td>-</td><td>-</td><td>-</td></tr><tr id='tableborder'></tr>");
+
+            //EventID
+            var xmlPrimaryElement = auditMessage.find("EventIdentification").find("EventID");
+            xmlPrimaryElement.each(function() {
+                eventID_code=$(this).attr('code');
+                eventID_displayName=$(this).attr('displayName');
+                eventID_codeSystemName=$(this).attr('codeSystemName');
+                eventID_originalText=$(this).attr('originalText');
+            });
+
+            $("#xmltable").append("<tr><th>EventID_code</th><th>EventID_displayName</th><th>EventID_codeSystemName</th><th>EventID_originalText</th><th>-</th><th>-</th></tr>"+"" +
+                    "<tr><td>"+eventID_code+"</td><td>"+eventID_displayName+"</td>"+"<td>"+eventID_codeSystemName+"</td>"+"<td>"+eventID_originalText+"</td><td>-</td><td>-</td>" +"</tr>"+
+                    "<tr id='tableborder'></tr>");
+
+            //EventTypeCode
+            var xmlPrimaryElement = auditMessage.find("EventIdentification").find("EventTypeCode");
+            xmlPrimaryElement.each(function() {
+                eventTypeCode_code=$(this).attr('code');
+                eventTypeCode_displayName=$(this).attr('displayName');
+                eventTypeCode_codeSystemName=$(this).attr('codeSystemName');
+                eventTypeCode_originalText=$(this).attr('originalText');
+            });
+
+            $("#xmltable").append("<tr><th>EventTypeCode_code</th><th>EventTypeCode_displayName</th><th>EventTypeCode_codeSystemName</th><th>EventTypeCode_originalText</th><th>-</th><th>-</th></tr>"+"" +
+                    "<tr><td>"+eventTypeCode_code+"</td><td>"+eventTypeCode_displayName+"</td>"+"<td>"+eventTypeCode_codeSystemName+"</td>"+"<td>"+eventTypeCode_originalText+"</td><td>-</td><td>-</td>" +"</tr>"+
+                    "<tr id='tableborder'></tr>");
+            
+            //ActiveParticipant
+            $("<tr class='main'><th colspan='6' style='color:brown; font-size: 10pt'>ActiveParticipants</th></tr>").appendTo("#xmltable").click(function(){
+                $(this).nextUntil(".main").each(function()
+                        {
+                            $(this).toggle();
+                        }
+                );
+
+
+
+            });
+            //ActiveParticipant
+            var xmlPrimaryElement = auditMessage.find("ActiveParticipant");
+            xmlPrimaryElement.each(function(index) {
+                networkAccessPointTypeCode=$(this).attr('NetworkAccessPointTypeCode');
+                userName=$(this).attr('UserName');
+                networkAccessPointID=$(this).attr('NetworkAccessPointID');
+                userIsRequestor=$(this).attr('UserIsRequestor');
+                userID=$(this).attr('UserID');
+                alternativeUserID=$(this).attr('AlternativeUserID');
+
+                $("#xmltable").append("<tr><th colspan='6' style='color: #366097'>ActiveParticipant "+(++index)+"</th></tr>" +
+                        "<tr><th>NetworkAccessPointTypeCode</th><th>NetworkAccessPointID</th><th>UserName</th><th>UserID</th><th>UserIsRequestor</th><th>AlternativeUserID</th></tr>"+"" +
+                        "<tr><td>"+networkAccessPointTypeCode+"</td>"+"<td>"+networkAccessPointID+"</td>"+"<td>"+userName+"</td>"+"<td>"+userID+"</td>"+"<td>"+userIsRequestor+"</td>"+"<td>"+alternativeUserID+"</td>"
+                        +"</tr><tr id='tableborder'></tr>");
+                //RoleIDCodetd
+
+                var xmlSecondaryElement = $(this).find("RoleIDCode");
+                xmlSecondaryElement.each(function() {
+                    roleIDCode_code=$(this).attr('code');
+                    roleIDCode_displayName=$(this).attr('displayName');
+                    roleIDCode_codeSystemName=$(this).attr('codeSystemName');
+                    roleIDCode_originalText=$(this).attr('originalText');
+                    
+                    $("#xmltable").append("<tr><th>RoleIDCode_code</th><th>RoleIDCode_displayName</th><th>RoleIDCode_codeSystemName</th><th>RoleIDCode_originalText</th><th>-</th><th>-</th></tr>"+"" +
+                            "<tr><td>"+roleIDCode_code+"</td><td>"+roleIDCode_displayName+"</td>"+"<td>"+roleIDCode_codeSystemName+"</td>"+"<td>"+roleIDCode_originalText+"</td><td>-</td><td>-</td>" +"</tr>"+
+                            "<tr id='tableborder'></tr>");
+                });
+
+            });
+
+            //AuditSource
+            //AuditSourceIdentification
+            var xmlPrimaryElement = auditMessage.find("AuditSourceIdentification");
+            xmlPrimaryElement.each(function() {
+                auditSourceID=$(this).attr('AuditSourceID');
+                auditEnterpriseSiteID=$(this).attr('AuditEnterpriseSiteID');
+                auditSourceTypeCode=$(this).find('AuditSourceTypeCode').attr('code');
+            });
+
+            $("<tr class='main' ><th colspan='6' style='color: brown;font-size: 10pt'>AuditSourceIdentification</th></tr>").appendTo("#xmltable").click(function(){
+                $(this).nextUntil(".main").each(function()
+                        {
+
+                            $(this).toggle();
+                        }
+                );
+            });
+            $("#xmltable").append("<tr><th>AuditSourceID</th><th>AuditEnterpriseSiteID</th><th>AuditSourceTypeCode</th><th>-</th><th>-</th><th>-</th></tr>"+"" +
+                    "<tr><td>"+auditSourceID+"</td><td>"+ auditEnterpriseSiteID
+                    +"</td><td>"+auditSourceTypeCode+"</td><td>-</td><td>-</td><td>-</td></tr><tr id='tableborder'></tr>");
+
+            //ParticipantObject
+            $("<tr class='main' ><th colspan='6' style='color: brown;font-size: 10pt'>ParticipantObjects</th></tr>").appendTo("#xmltable").click(function(){
+                $(this).nextUntil(".main, .master").each(function()
+                        {
+
+                            $(this).toggle();
+                        }
+                );
+            });
+            //ParticipantObjectIdentification many
+            var xmlPrimaryElement = auditMessage.find("ParticipantObjectIdentification");
+            xmlPrimaryElement.each(function(index) {
+                participantObjectID=$(this).attr('ParticipantObjectID');
+                participantObjectTypeCode=$(this).attr('ParticipantObjectTypeCode');
+                participantObjectTypeCodeRole=$(this).attr('ParticipantObjectTypeCodeRole');
+                participantObjectDataLifeCycle=$(this).attr('ParticipantObjectDataLifeCycle');
+
+                $("#xmltable").append("<tr><th colspan='6' style='color: #366097'>ParticipantObjectIdentification "+(++index)+"</th></tr>" +
+                        "<tr><th>ParticipantObjectID</th><th>ParticipantObjectTypeCode</th><th>ParticipantObjectTypeCodeRole</th><th>ParticipantObjectDataLifeCycle</th><th>-</th><th>-</th></tr>"+"" +
+                        "<tr><td>"+participantObjectID+"</td>"+"<td>"+participantObjectTypeCode+"</td>"+"<td>"+participantObjectTypeCodeRole+"</td>"+"<td>"+participantObjectDataLifeCycle+"</td><td>-</td><td>-</td>"
+                        +"</tr><tr id='tableborder'></tr>");
+
+                //ParticipantObjectIDTypeCode
+                var xmlSecondaryElement = $(this).find("ParticipantObjectIDTypeCode");
+                xmlSecondaryElement.each(function() {
+                    participantObjectIDTypeCode_code=$(this).attr('code');
+                    participantObjectIDTypeCode_displayName=$(this).attr('displayName');
+                    participantObjectIDTypeCode_codeSystemName=$(this).attr('codeSystemName');
+                    participantObjectIDTypeCode_originalText=$(this).attr('originalText');
+
+                    $("#xmltable").append("<tr><th>participantObjectIDTypeCode_code</th><th>participantObjectIDTypeCode_displayName</th><th>participantObjectIDTypeCode_codeSystemName</th><th>participantObjectIDTypeCode_originalText</th><th>-</th><th>-</th></tr>"+"" +
+                            "<tr><td>"+participantObjectIDTypeCode_code+"</td><td>"+participantObjectIDTypeCode_displayName+"</td>"+"<td>"+participantObjectIDTypeCode_codeSystemName+"</td>"+"<td>"+participantObjectIDTypeCode_originalText+"</td><td>-</td><td>-</td>" +"</tr>"+
+                            "<tr id='tableborder'></tr>");
+                });
+
+                //ParticipantObjectName
+                participantObjectName=$(this).find("ParticipantObjectName").text().trim();
+
+                $("#xmltable").append("<tr><th>ParticipantObjectName</th><th>-</th><th>-</th><th>-</th><th>-</th><th>-</th></tr>"+"" +
+                        "<tr><td>"+participantObjectName+"</td><td>"+ "-"
+                        +"</td><td>"+"-"+"</td><td>-</td><td>-</td><td>-</td></tr><tr id='tableborder'></tr>");
+                //ParticipantObjectQuery
+                participantObjectQuery=$(this).find("ParticipantObjectQuery").text().trim();
+                
+                $("#xmltable").append("<tr><th>ParticipantObjectQuery</th><th>-</th><th>-</th><th>-</th><th>-</th><th>-</th></tr>"+"" +
+                        "<tr><td style='word-break: break-all'>"+participantObjectQuery+"</td><td>"+ "-"
+                        +"</td><td>"+"-"+"</td><td>-</td><td>-</td><td>-</td></tr><tr id='tableborder'></tr>");
+
+
+            });
+
+        });
+    }
+    else
+    {
+        $("#xmltable").append("<tr colspan='6' style='color: brown;font-size: 10pt'><th>No Results Found</th></tr>");
+    }
+
+
+}
+function showXml()
+{
+//   var htmlStr = xmlToString(currentdoc);
+//    var str = console.log(htmlStr);
+//   var win = window.open();
+//   $(win.document.body).html(str.text());
+    getRecordsExternal(getParams());
+}
+console.log = function(message)
+{
+    return message;
+}
+function click_for_show_all()
+{
+
+    $("#xmltable").children().find('.master').click();
+
+}
+function getRecords(params)
+{
+    $("#xmltable").html("");
+    $.ajax({
+        type: "GET",
+        url: '/dcm4chee-arr/view/xmllist',///
+        dataType: "xml",
+        data: params,
+        success: function(xml){successAjax(xml);}
+    });
+}
+function getRecordsExternal(params)
+{
+   window.open("/dcm4chee-arr/view/xmllist?"+params);
+}
+function xmlToString(xmlData) {
+
+    var xmlString;
+    //IE
+    if (window.ActiveXObject){
+        xmlString = xmlData.xml;
+    }
+    // code for Mozilla, Firefox, Opera, etc.
+    else{
+        xmlString = (new XMLSerializer()).serializeToString(xmlData);
+    }
+    return xmlString;
+}
+function getParams()
+{
+    var params="";
+
+    //Events Filter Params
+    if($("#eventID").val()!="")
+    {
+    params+="eventID="+$("#eventID").val()+"&";
+    }
+    if($("#eventType").val()!="")
+    {
+        params+="eventTypeCode="+$("#eventType").val()+"&";
+    }
+    if($("#eventOutcome").val()!="")
+    {
+        params+="eventOutcomeIndicator="+$("#eventOutcome").val()+"&";
+    }
+    if($("#eventAction").val()!="")
+    {
+        params+="eventActionCode="+$("#eventAction").val()+"&";
+    }
+    var lowerDate = "lowerDateTime="+$("#from").val().toString().split("/")[2]+"/"+$("#from").val().toString().split("/")[0]+"/"+
+            $("#from").val().toString().split("/")[1]+"/00/00/00";
+    var upperDate = "upperDateTime="+$("#to").val().toString().split("/")[2]+"/"+$("#to").val().toString().split("/")[0]+"/"+
+            $("#to").val().toString().split("/")[1]+"/00/00/00";
+    console.log(lowerDate+ " "+ upperDate);
+    if($("#from").val()!="" && $("#to").val()!="")
+    {
+        params+= lowerDate+"&"+upperDate+"&";
+    }
+    else if($("#from").val()!="")
+    {
+        params+= lowerDate+"&";
+    }
+    else if($("#to").val()!="")
+    {
+        params+= upperDate+"&";
+    }
+
+    //Active Participants filter
+    if($("#userID").val()!="")
+    {
+        params+="userID="+$("#userID").val()+"&";
+    }
+    if($("#alternativeUserID").val()!="")
+    {
+        params+="alternativeUserID="+$("#alternativeUserID").val()+"&";
+    }
+    if($("#userName").val()!="")
+    {
+        params+="userName="+$("#userName").val()+"&";
+    }
+    if($("#userIsRequestor").val()!="")
+    {
+        params+="userIsRequestor="+$("#userIsRequestor").val()+"&";
+    }
+    if($("#roleIDCode").val()!="")
+    {
+        params+="roleIDCode="+$("#roleIDCode").val()+"&";
+    }
+    if($("#networkAccessPointID").val()!="")
+    {
+        params+="networkAccessPointID="+$("#networkAccessPointID").val()+"&";
+    }
+    //Audit Source Filter
+    if($("#auditSourceID").val()!="")
+    {
+        params+="auditSourceID="+$("#auditSourceID").val()+"&";
+    }
+    if($("#auditEnterpriseSiteID").val()!="")
+    {
+        params+="auditEnterpriseSiteID="+$("#auditEnterpriseSiteID").val()+"&";
+    }
+    if($("#auditSourceTypeCode").val()!="")
+    {
+        params+="auditSourceTypeCode="+$("#auditSourceTypeCode").val()+"&";
+    }
+
+    if(params.charAt(params.length-1)=='&')
+    params=params.substring(0,params.length-1);
+   return params;
+
+}
+$(function() {$(".button_style").button();});
+$(function() {$(".dateTime_style").datepicker();});
+$(function() {$("#event_filter").dialog({position:[0,100]});});
+$(function() {$("#ap_filter").dialog({position:[400,100]});});
+$(function() {$("#as_filter").dialog({position:[800,100]});});
+
+</script>
+</head>
+<body>
+<div id="output"></div>
+<div  style="background-color: #ffd700;width: 100%" id="Search">
+    <button class="button_style" id="showAstFilter" onclick="showXml();">Show Source</button>
+    <button class="button_style" id="showAstFilter" onclick="$('#as_filter').dialog('open');">Audit Source Filter</button>
+    <button class="button_style" id="showEventFilter" onclick="$('#event_filter').dialog('open');">Events Filter</button>
+    <button class="button_style" id="showApFilter" onclick="$('#ap_filter').dialog('open');">Active Participant Filter</button>
+    <button class="button_style" id="search" onclick="getRecords(getParams());">search</button>
+    <button class="button_style" id="click_for_show_all" onclick="click_for_show_all()">Expand/Fold all</button>
+    </div>
+    <div  id="event_filter"  title="Event Filter"><br>
+    <span style=" float:left; color: white">Event ID:</span><br>
+    <select id="eventID">
+        <option value="" >Any</option>
+        <option value="110100_DCM">Application Activity</option>
+        <option value="110101_DCM" >Audit Log Used</option>
+        <option value="110102_DCM" >Begin Transferring</option>
+        <option value="110103_DCM" >Instances Accessed</option>
+        <option value="110104_DCM" >Instances Transferred</option>
+        <option value="110105_DCM" >Study Deleted</option>
+        <option value="110106_DCM" >Export</option>
+        <option value="110107_DCM" >Import</option>
+        <option value="110108_DCM" >Network Entry</option>
+        <option value="110109_DCM" >Order Record</option>
+        <option value="110110_DCM" >Patient Record</option>
+        <option value="110111_DCM" >Procedure Record</option>
+        <option value="110112_DCM" >Query</option>
+        <option value="110113_DCM" >Security Alert</option>
+        <option value="110114_DCM" >User Authentication</option>
+        <option value="IHE0001_IHE" >HS Provision Event</option>
+        <option value="IHE0002_IHE" >Medication Event</option>
+        <option value="IHE0003_IHE" >PC Resource Assignment</option>
+        <option value="IHE0004_IHE" >PC Episode</option>
+        <option value="IHE0005_IHE" >PC Protocol</option>
+    </select>
+        <br><hr>
+        <span style=" float:left;color: white">Event Type:</span><br>
+        <select id="eventType">
+            <option value="" >Any</option>
+            <option value="110120_DCM" >Application Start</option>
+            <option value="110121_DCM" >Application Stop</option>
+            <option value="110122_DCM" >Login</option>
+            <option value="110123_DCM" >Logout</option>
+            <option value="110124_DCM" >Attach</option>
+            <option value="110125_DCM" >Detach</option>
+            <option value="110126_DCM" >Node Authentication</option>
+            <option value="110127_DCM" >Emergency Override Started</option>
+            <option value="110128_DCM" >Network Configuration</option>
+            <option value="110129_DCM" >Security Configuration</option>
+            <option value="110130_DCM" >Hardware Configuration</option>
+            <option value="110131_DCM" >Software Configuration</option>
+            <option value="110132_DCM" >Use of Restricted Function</option>
+            <option value="110133_DCM" >Audit Recording Stopped</option>
+            <option value="110134_DCM" >Audit Recording Started</option>
+            <option value="110135_DCM" >Object Security Attributes Changed</option>
+            <option value="110136_DCM" >Security Roles Changed</option>
+            <option value="110137_DCM" >User security Attributes Changed</option>
+            <option value="110138_DCM" >Emergency Override Stopped</option>
+            <option value="110139_DCM" >Remote Service Operation Started</option>
+            <option value="110140_DCM" >Remote Service Operation Stopped</option>
+            <option value="110141_DCM" >Local Service Operation Started</option>
+            <option value="110142_DCM" >Local Service Operation Stopped</option>
+        </select>
+
+        <br><hr>
+    <span  style=" ">Event Date/Time:<br>
+    <span style="color: white">From<br></span><input type="text" id="from" style="width: 119px; " class="dateTime_style"><br>
+    <span style="color: white">To<br>  </span><input type="text" id="to" style="width: 119px; " class="dateTime_style">
+
+    </span>
+        <br><hr>
+        <span style=";color: white">Event Outcome:</span><br>
+        <select id="eventOutcome">
+            <option value="" >Any</option>
+            <option value="0" >Success</option>
+            <option value="4" >Minor failure</option>
+            <option value="8" >Serious failure</option>
+            <option value="12" >Major failure</option>
+        </select>
+        <br><hr>
+        <span style=" color: white">Event Action:</span><br>
+        <select id="eventAction">
+            <option value="" >Any</option>
+            <option value="C" >Create</option>
+            <option value="R" >Read</option>
+            <option value="U" >Update</option>
+            <option value="D" >Delete</option>
+            <option value="E" >Execute</option>
+        </select>
+
+    </div>
+<div  id="ap_filter" title="Active Participants Filter   "><br>
+    <span style=";color: white">User ID:</span><br>
+    <input type="text" id="userID" value=""/>
+    <br><hr>
+    <span style=";color: white">Alternative User ID:</span><br>
+    <input type="text" id="alternativeUserID" value=""/>
+    <br><hr>
+    <span style=";color: white">User Name:</span><br>
+    <input type="text" id="userName" value=""/>
+    <br><hr>
+    <span style=" color: white">Is Requestor:</span><br>
+    <select id="userIsRequestor">
+        <option value="" >Any</option>
+        <option value="true" >Yes</option>
+        <option value="false" >No</option>
+    </select>
+    <br><hr>
+    <span style=" color: white">Role ID:</span><br>
+    <select id="roleIDCode">
+       <option value="" >Any</option>
+       <option value="110150_DCM" >Application</option>
+       <option value="110151_DCM">Application Launcher</option>
+       <option value="110152_DCM" >Destination</option>
+       <option value="110153_DCM" >Source</option>
+       <option value="110154_DCM" >Destination Media</option>
+       <option value="110155_DCM" >Source Media</option>
+    </select>
+    <br><hr>
+    <span style=";color: white">Network AP ID:</span><br>
+    <input type="text" id="networkAccessPointID" value=""/>
+    <br><hr>
+    </div>
+
+    <div  id="as_filter" title="Audit Source Filter"><br>
+        <span style=";color: white">Source ID:</span><br>
+        <input type="text" id="auditSourceID" value=""/>
+        <br><hr>
+        <span style=";color: white">Enterprise Site ID:</span><br>
+        <input type="text" id="auditEnterpriseSiteID" value=""/>
+        <br><hr>
+        <span style=";color: white">Type Code:</span><br>
+        <select id="auditSourceTypeCode">
+        <option value="" >Any</option>
+        <option value="1" >End-user display</option>
+        <option value="2" >Data acquisition</option>
+        <option value="3" >Web server</option>
+        <option value="4" >Application server</option>
+        <option value="5" >Database server</option>
+        <option value="6" >Security server</option>
+        <option value="7" >Network component</option>
+        <option value="8" >Operating software</option>
+        <option value="9" >External source</option>
+        </select>
+        </div>
+
+
+<table id="xmltable" style="padding-right:10px;font-size: 7pt" class="gridtable" ></table>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE preferences SYSTEM "http://java.sun.com/dtd/preferences.dtd">
+<preferences EXTERNAL_XML_VERSION="1.0">
+  <root type="user">
+      <map/>
+      <node name="dicomConfigurationRoot">
+        <map/>
+        <node name="dicomDevicesRoot">
+          <map/>
+          <node name="dcm4chee-arr">
+            <map>
+              <entry key="dcmKeyStoreKeyPin" value="changeit"/>
+			  <entry key="dcmKeyStorePin" value="changeit"/>
+              <entry key="dcmKeyStoreType" value="JKS"/>
+              <entry key="dcmKeyStoreURL" value="${jboss.server.config.url}/dcm4chee-arr/key.jks"/>
+              <entry key="dicomInstalled" value="true"/>
+            </map>
+			 <node name="dcmAuditLogger">
+              <map>
+			    <entry key="cn" value="Audit Logger"/>
+				<entry key="dcmAuditMessageSchemaURI" value=" http://www.dcm4che.org/DICOM/audit-message.rnc"/>
+				<entry key="dcmAuditRecordRepositoryDeviceReference" value="dicomConfigurationRoot/dicomDevicesRoot/dcm4chee-arr"/>
+				<entry key="dcmAuditSourceTypeCode" value="4"/>
+                <entry key="dicomNetworkConnectionReference.#" value="1"/>
+                <entry key="dicomNetworkConnectionReference.1" value="1"/>
+              </map>
+			  <node name="dcmAuditSuppressCriteria">
+			  <map>
+			  <entry key="cn" value="AuditSuppressCriteria1"/>
+<entry key="dcmAuditAlternativeUserID" value="AltUserID"/>
+<entry key="dcmAuditEventActionCode" value="E"/>
+<entry key="dcmAuditEventID" value="(110100, DCM, Application Activity)" />
+<entry key="dcmAuditEventOutcomeIndicator" value="0"/>
+<entry key="dcmAuditEventTypeCode" value="(110120, DCM, Application Start)"/>
+<entry key="dcmAuditEventTypeCode" value="(110121, DCM, Application Stop)"/>
+<entry key="dcmAuditNetworkAccessPointID" value="127.0.0.1"/>
+<entry key="dcmAuditUserID" value="UserID"/>
+<entry key="dcmAuditUserIsRequestor" value="TRUE"/>
+<entry key="dcmAuditUserRoleIDCode" value="(110151, DCM, Application Launcher)"/>
+			  </map>
+			  </node>
+            </node>
+            <node name="dcmAuditRecordRepository">
+              <map>
+                <entry key="dicomNetworkConnectionReference.#" value="2"/>
+                <entry key="dicomNetworkConnectionReference.1" value="1"/>
+                <entry key="dicomNetworkConnectionReference.2" value="2"/>
+              </map>
+            </node>
+            <node name="dcmNetworkAE">
+              <map/>
+            </node>
+            <node name="dcmNetworkConnection">
+              <map/>
+              <node name="1">
+                <map>
+                  <entry key="cn" value="audit-udp"/>
+                  <entry key="dcmProtocol" value="SYSLOG_UDP"/>
+                  <entry key="dicomHostname" value="10.231.163.243"/>
+                  <entry key="dicomPort" value="514"/>
+                </map>
+              </node>
+              <node name="2">
+                <map>
+                  <entry key="cn" value="audit-tls"/>
+                  <entry key="dcmProtocol" value="SYSLOG_TLS"/>
+                  <entry key="dcmTLSNeedClientAuth" value="false"/>
+                  <entry key="dcmTLSProtocol.#" value="2"/>
+                  <entry key="dcmTLSProtocol.1" value="TLSv1"/>
+                  <entry key="dcmTLSProtocol.2" value="SSLv3"/>
+                  <entry key="dicomHostname" value="10.231.163.243"/>
+                  <entry key="dicomPort" value="6514"/>
+                  <entry key="dicomTLSCipherSuite.#" value="1"/>
+                  <entry key="dicomTLSCipherSuite.1" value="TLS_RSA_WITH_AES_128_CBC_SHA"/>
+                </map>
+              </node>
+            </node>
+			<node name="arrCleanUp">
+			<map>
+			<entry key="cn" value="CleanUpConfigurationExtension"/>
+			<entry key="arrCleanUpUsesRetention" value="true"/>
+			<entry key="arrCleanUpUsesMaxRecords" value="true"/>
+			<entry key="arrCleanUpMaxRecords" value="15"/>
+			<entry key="arrCleanUpPollInterval" value="50"/>
+			<entry key="arrCleanUpRetentionTime" value="6"/>
+			<entry key="arrCleanUpRetentionTimeUnit" value="DAYS"/>
+			<entry key="arrCleanUpDeletePerTransaction" value="2"/>
+			<entry key="arrDefaultCleanUpPolicy" value="custom"/>
+			</map>
+			</node>
+			<node name="arrEventTypeFilter">
+			<map/>
+			<node name="110100^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110100^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110101^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110101^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110102^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110102^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110103^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110103^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110104^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110104^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110105^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110105^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110106^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110106^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110107^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110107^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110108^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110108^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110109^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110109^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110110^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110110^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110111^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110111^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110112^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110112^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110113^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110113^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="110114^DCM">
+				<map>
+				<entry key="eventIDTypeCode" value="110114^DCM"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			
+			<node name="IHE0001^IHE">
+				<map>
+				<entry key="eventIDTypeCode" value="IHE0001^IHE"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="IHE0002^IHE">
+				<map>
+				<entry key="eventIDTypeCode" value="IHE0002^IHE"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="IHE0003^IHE">
+				<map>
+				<entry key="eventIDTypeCode" value="IHE0003^IHE"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="IHE0004^IHE">
+				<map>
+				<entry key="eventIDTypeCode" value="IHE0004^IHE"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			<node name="IHE0005^IHE">
+				<map>
+				<entry key="eventIDTypeCode" value="IHE0005^IHE"/>
+				<entry key="eventTypeRetention" value="1"/>
+				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				</map>
+            </node>
+			</node>
+          </node>
+        </node>
+      </node>
+  </root>
+</preferences>

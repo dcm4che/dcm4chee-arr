@@ -1,0 +1,168 @@
+version: 1
+
+dn: eventIDTypeCode=110112^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110112^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110102_DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110102_DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110107^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110107^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=IHE0001^IHE,cn=Event Type Logging Filter,dicomDeviceName
+ =dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: IHE0001^IHE
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110105_DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110105_DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110113^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110113^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=IHE0005^IHE,cn=Event Type Logging Filter,dicomDeviceName
+ =dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: IHE0005^IHE
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110111^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110111^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110104_DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110104_DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110110^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110110^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=IHE0003^IHE,cn=Event Type Logging Filter,dicomDeviceName
+ =dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: IHE0003^IHE
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: cn=Event Type Logging Filter,dicomDeviceName=dcm4chee-arr,cn=Devices,cn=
+ DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventTypeFilter
+cn: Event Type Logging Filter
+
+dn: eventIDTypeCode=110101_DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110101_DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110100^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110100^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=IHE0004^IHE,cn=Event Type Logging Filter,dicomDeviceName
+ =dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: IHE0004^IHE
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=IHE0002^IHE,cn=Event Type Logging Filter,dicomDeviceName
+ =dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: IHE0002^IHE
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110106_DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110106_DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110114^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110114^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110108^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110108^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110109^DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110109^DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+
+dn: eventIDTypeCode=110103_DCM,cn=Event Type Logging Filter,dicomDeviceName=
+ dcm4chee-arr,cn=Devices,cn=DICOM Configuration,dc=example,dc=com
+objectClass: top
+objectClass: arrEventType
+eventIDTypeCode: 110103_DCM
+eventTypeRetention: 1
+eventTypeRetentionUnit: DAYS
+

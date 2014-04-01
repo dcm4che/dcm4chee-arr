@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+    <groupId>dcm4che.dcm4chee</groupId>
+    <artifactId>dcm4chee-arr-cdi</artifactId>
+  <packaging>pom</packaging>
+   <name>Audit Record Repository</name>
+     <version>4.3.0-SNAPSHOT</version>
+  <properties>
+ 	<db>oracle</db> 
+  	<ds>java:/arrDS</ds> 
+  	<show_sql>false</show_sql> 
+  	<hbm2ddl.auto>update</hbm2ddl.auto> 
+  </properties>
+  <description>Audit Record Repository deployable in CDI container</description>
+  <dependencyManagement>
+    <dependencies>
+  
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>1.1</version>
+        <scope>provided</scope>
+      </dependency>
+           <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <modules>
+<module>dcm4chee-arr-cdi-conf-prefs</module>
+<module>dcm4chee-arr-cdi-conf-ldap</module>
+<module>schema-export-master </module>
+<module>dcm4chee-arr-entities</module>
+<module>dcm4chee-arr-listeners-mdb</module>
+<module>dcm4chee-arr-cdi-service</module> 
+<module>dcm4chee-arr-cdi-rest</module>
+  <module>dcm4chee-arr-cdi-cleanup</module>
+<module>dcm4chee-arr-web</module>
+<module>dcm4chee-arr-cdi-war</module>
+  </modules>
+  <build>
+  <plugins>
+          <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+	<!-- <arguments>${ldap_in_use}</arguments> -->
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins> 
+  </build>
+   <repositories>
+    <repository>
+      <id>jboss</id>
+      <name>jboss Repository</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
+    </repository>
+    <repository>
+      <id>dcm4che</id>
+      <name>dcm4che Repository</name>
+      <url>http://www.dcm4che.org/maven2</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>maven2-repository.dev.java.net</id>
+      <name>Java.net Repository for Maven 2</name>
+      <url>http://download.java.net/maven/2</url>
+    </repository>
+    <repository>
+      <id>Codehaus Snapshots</id>
+      <url>http://snapshots.repository.codehaus.org/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>Codehaus Snapshots</id>
+      <url>http://snapshots.repository.codehaus.org/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  <distributionManagement>
+    <repository>
+      <id>www.dcm4che.org</id>
+      <name>dcm4che Repository</name>
+      <url>scp://www.dcm4che.org:443/var/www/maven2</url>
+    </repository>
+  </distributionManagement>
+</project>
