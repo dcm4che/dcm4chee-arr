@@ -433,6 +433,12 @@ Setup JBoss AS 7
 	 keytool -import -alias mynewkey -file mypublic.cert --storetype JKS --keystore server.truststore
 	 
 	 
+	 TOTEST: If you would prefer to have your certificates on LDAP without having to use a local trust store this is possible 
+	 using the following configuration scheme:
+	 1.	add a dicomAuthorizedNodeCertificateReference attribute to your device node with the value a node that is either a device or uses pkiUser ldap object class.
+	 2.	in the referenced node have a userCertificate attribute, specify it is binary and in the value you should add the certificate file 
+	 (this can be done wasily with the ldap browser, just point to your certificate file using load certificate when adding attribute value)
+	 
 11.	Add Jms queue to the jboss configuration via CLI as follows:
 
 	[standalone@localhost:9999 /] jms-queue add --queue-address=ARRIncoming --entries=queue/ARRIncoming
