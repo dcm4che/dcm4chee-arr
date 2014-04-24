@@ -1,19 +1,11 @@
 package org.dcm4chee.arr.entities.test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
-
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
-
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -32,19 +24,11 @@ import org.dcm4chee.arr.entities.ParticipantObject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.FormatStage;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenResolvedArtifact;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 @RunWith(Arquillian.class)
 public class TestEntities {
@@ -55,19 +39,6 @@ public class TestEntities {
 		AuditRecord.class, Code.class, ParticipantObject.class,
 		ActiveParticipant.class);
 	File[] libs =  Maven.resolver().loadPomFromFile("testpom.xml").importTestDependencies().importRuntimeAndTestDependencies().resolve().withoutTransitivity().asFile();   
-//	JavaArchive f = Maven
-//		.resolver()
-//		.resolve(
-//			"dcm4che.dcm4chee:dcm4chee-arr-listeners-mdb:4.3.0-SNAPSHOT")
-//		.withoutTransitivity().asSingle(JavaArchive.class);
-//	jar1.addAsManifestResource(
-//		new FileAsset(
-//			new File(
-//				"src/main/resources-${db}/META-INF/test-persistence.xml")),
-//		"persistence.xml").addAsManifestResource(
-//		new FileAsset(new File(
-//			"src/main/resources-${db}/META-INF/beans.xml")),
-//		"beans.xml");
 war1.addAsLibraries(libs);
 	return war1;
     }
