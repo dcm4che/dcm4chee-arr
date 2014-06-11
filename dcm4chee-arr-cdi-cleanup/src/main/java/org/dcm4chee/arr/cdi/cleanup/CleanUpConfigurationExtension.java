@@ -65,7 +65,7 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
 	private int arrCleanUpMaxRecords;
 	
 	//specify poll interval (service starts to delete each poll interval)
-	@ConfigField(name="arrCleanUpPollInterval" ,def="1")
+	@ConfigField(name="arrCleanUpPollInterval" ,def="3600")
 	private int arrCleanUpPollInterval;
 	
 	//specify retention time (together with the retention unit are used to compare with every object creation date to delte or not) ie 1MONTH
@@ -82,7 +82,40 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
 	@ConfigField(name="arrDefaultCleanUpPolicy", def="all")
 	private String arrDefaultCleanUpPolicy;
 	
-	/**
+	@ConfigField(name="arrsafeClean", def="true")
+	private boolean arrSafeClean;
+	
+	@ConfigField(name="arrBackUpPollInterval", def="3600")
+        private int arrBackUpPollInterval;
+	
+	@ConfigField(name="arrBackUpDir", def="Audit-Record-Repository-BackUps")
+        private String arrBackUpDir;
+	
+	public boolean isArrSafeClean() {
+        return arrSafeClean;
+    }
+
+    public void setArrSafeClean(boolean arrSafeClean) {
+        this.arrSafeClean = arrSafeClean;
+    }
+
+    public int getArrBackUpPollInterval() {
+        return arrBackUpPollInterval;
+    }
+
+    public void setArrBackUpPollInterval(int arrBackUpPollInterval) {
+        this.arrBackUpPollInterval = arrBackUpPollInterval;
+    }
+
+    public String getArrBackUpDir() {
+        return arrBackUpDir;
+    }
+
+    public void setArrBackUpDir(String arrBackUpDir) {
+        this.arrBackUpDir = arrBackUpDir;
+    }
+
+    /**
      * Gets the arr default clean up policy.
      * 
      * @return the arr default clean up policy

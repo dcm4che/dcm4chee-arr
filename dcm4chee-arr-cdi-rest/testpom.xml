@@ -4,43 +4,43 @@
   <name>Audit Record Repository Entities</name>
   <groupId>dcm4che.dcm4chee</groupId>
   <artifactId>custom-resolver-service-tests</artifactId>
-  <version>4.3.0-SNAPSHOT</version>
+  <version>4.4.0-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>dcm4che.dcm4chee</groupId>
       <artifactId>dcm4chee-arr-entities</artifactId>
       <classifier>${db}</classifier>
-      <version>${parent.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>dcm4che.dcm4chee</groupId>
       <artifactId>dcm4chee-arr-cdi-cleanup</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.version}</version>
     </dependency>
         <dependency>
       <groupId>dcm4che.dcm4chee</groupId>
       <artifactId>dcm4chee-arr-cdi-service</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>dcm4che.dcm4chee</groupId>
       <artifactId>dcm4chee-arr-cdi-conf-ldap</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
     <groupId>org.dcm4che</groupId>
     <artifactId>dcm4che-conf-api</artifactId>
-    <version>${dcm4che.version}</version>
+    <version>3.3.4-SNAPSHOT</version>
     </dependency>
     <dependency>
     <groupId>org.dcm4che</groupId>
     <artifactId>dcm4che-net</artifactId>
-    <version>${dcm4che.version}</version>
+    <version>3.3.4-SNAPSHOT</version>
     </dependency>
     <dependency>
     <groupId>org.dcm4che</groupId>
     <artifactId>dcm4che-net-audit</artifactId>
-    <version>${dcm4che.version}</version>
+    <version>3.3.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

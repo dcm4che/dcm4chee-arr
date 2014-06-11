@@ -32,6 +32,10 @@
 
 package org.dcm4chee.arr.cdi.cleanup.ejb;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +48,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.log4j.Logger;
+import org.dcm4chee.arr.cdi.cleanup.CleanUpConfigurationExtension;
 import org.dcm4chee.arr.entities.AuditRecord;
 
 /**
@@ -65,15 +70,56 @@ public class AuditRecordDeleteBean {
 
 /**
      * Delete record.
+ * @param cleanUpConfig 
      * 
      * @param pk
      *            the pk
      */
-  public void deleteRecord(long pk) {
-    em.remove(em.find(AuditRecord.class, pk));
+  public void deleteRecord(CleanUpConfigurationExtension cleanUpConfig, long pk) {
+      AuditRecord recordToDelete = em.find(AuditRecord.class, pk);
+      if(cleanUpConfig.isArrSafeClean())
+          backup(recordToDelete, cleanUpConfig.getArrBackUpDir());
+    em.remove(recordToDelete);
   }
 
-  /**
+  private void backup(AuditRecord recordToDelete, String backUpDir) {
+      String uniqueHash = ""+new String(""+System.currentTimeMillis()).hashCode();
+    String backUpFileName = "Audit"+"-"+uniqueHash+"-from-"+recordToDelete.getSourceID()+"-DB-"+recordToDelete.getPk()+".tmp";
+    log.info("Backing up file "+backUpFileName+" using backup dir "+backUpDir);
+    File backUpFile = new File(backUpDir,backUpFileName);
+    FileOutputStream fout = null;
+    try {
+        fout = new FileOutputStream(backUpFile);
+    } catch (FileNotFoundException e) {
+        log.error("Error creating temporary backup file backup dir is configure wrong ",e);
+    }
+    byte[] blob= recordToDelete.getXmldata();
+    try {
+        fout.write(blob);
+    } catch (IOException e) {
+        log.error("Error writing backup file ",e);
+    }
+    finally{
+        try {
+            fout.close();
+        } catch (IOException e) {
+            log.error("Error closing backup file output stream ",e);
+        }
+    }
+    File finalTarget = new File(backUpFile.getPath().substring(0,backUpFile.getPath().length()-4));
+    log.info("renaming from "+backUpFile.getPath() + " to "+finalTarget.getPath());
+    if(backUpFile.renameTo(finalTarget))
+    {
+        log.info("Wrote backup file "+backUpFileName);
+    }
+    else
+    {
+        log.error("Error renaming file, non final backup data present and will not be archived");
+    }
+    
+}
+
+/**
      * Gets the pks by retention time.
      * 
      * @param retention

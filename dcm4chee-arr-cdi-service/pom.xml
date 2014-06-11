@@ -4,7 +4,7 @@
   <parent>
     <groupId>dcm4che.dcm4chee</groupId>
     <artifactId>dcm4chee-arr-cdi</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>dcm4chee-arr-cdi-service</artifactId>
   <name>Audit Record Repository CDI Service</name>
@@ -39,19 +39,19 @@
     <dependency>
       <groupId>org.dcm4che</groupId>
       <artifactId>dcm4che-conf-api</artifactId>
-      <version>${dcm4che.version}</version>
+      <version>3.3.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.dcm4che</groupId>
       <artifactId>dcm4che-net-audit</artifactId>
-      <version>${dcm4che.version}</version>
+      <version>3.3.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.dcm4che</groupId>
       <artifactId>dcm4che-net</artifactId>
-      <version>${dcm4che.version}</version>
+      <version>3.3.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!-- Testing dependencies -->

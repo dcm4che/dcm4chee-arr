@@ -12,36 +12,36 @@ objectclass: organizationalUnit
 objectclass: top
 ou: attributetypes
 
-dn: m-oid=1.2.40.0.13.1.15.30.3.9, ou=attributetypes, cn=EventTypeLoggingSchema,
+dn: m-oid=1.2.40.0.13.1.15.30.3.12, ou=attributetypes, cn=EventTypeLoggingSchema,
   ou=schema
 objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
-m-oid: 1.2.40.0.13.1.15.30.3.9
+m-oid: 1.2.40.0.13.1.15.30.3.12
 m-name: eventIDTypeCode
 m-description: event type codes multi valued
 m-equality: caseExactMatch
 m-substr: caseExactSubstringsMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
 
-dn: m-oid=1.2.40.0.13.1.15.30.3.10, ou=attributetypes, cn=EventTypeLoggingSchema
+dn: m-oid=1.2.40.0.13.1.15.30.3.13, ou=attributetypes, cn=EventTypeLoggingSchema
  , ou=schema
 objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
-m-oid: 1.2.40.0.13.1.15.30.3.10
+m-oid: 1.2.40.0.13.1.15.30.3.13
 m-name: eventTypeRetention
 m-description: event cleanup retention interval
 m-equality: integerMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
 m-singleValue: TRUE
 
-dn: m-oid=1.2.40.0.13.1.15.30.3.11, ou=attributetypes, cn=EventTypeLoggingSchema
+dn: m-oid=1.2.40.0.13.1.15.30.3.14, ou=attributetypes, cn=EventTypeLoggingSchema
  , ou=schema
 objectclass: metaAttributeType
 objectclass: metaTop
 objectclass: top
-m-oid: 1.2.40.0.13.1.15.30.3.11
+m-oid: 1.2.40.0.13.1.15.30.3.14
 m-name: eventTypeRetentionUnit
 m-description: time unit for event retention time
 m-equality: caseExactMatch

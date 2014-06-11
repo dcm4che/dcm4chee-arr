@@ -110,7 +110,7 @@ public class LdapConfigTest {
     }
 
     private Properties ldapEnv() throws ConfigurationException, IOException {
-	String url = "src/main/test/resources/ldap.properties";
+	String url = "src/test/resources/ldap.properties";
 
 	Properties p = new Properties();
 	InputStream in = null;

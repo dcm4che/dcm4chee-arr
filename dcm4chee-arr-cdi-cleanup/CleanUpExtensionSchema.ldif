@@ -96,6 +96,43 @@ m-equality: caseExactMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
 m-singleValue: TRUE
 
+
+dn: m-oid=1.2.40.0.13.1.15.30.3.8, ou=attributetypes, cn=CleanUpExtensionSchema,
+  ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.2.40.0.13.1.15.30.3.8
+m-name: arrSafeClean
+m-description: Backup Deleted Files
+m-equality: booleanMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.7 
+m-singleValue: TRUE
+
+dn: m-oid=1.2.40.0.13.1.15.30.3.9, ou=attributetypes, cn=CleanUpExtensionSchema,
+  ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.2.40.0.13.1.15.30.3.9
+m-name: arrBackUpPollInterval
+m-description: Arr BackUp Poll interval
+m-equality: integerMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singleValue: TRUE
+
+dn: m-oid=1.2.40.0.13.1.15.30.3.10, ou=attributetypes, cn=CleanUpExtensionSchema,
+  ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.2.40.0.13.1.15.30.3.10
+m-name: arrBackUpDir
+m-description: BackUp Directory
+m-equality: caseExactMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singleValue: TRUE
+
 dn: ou=comparators, cn=CleanUpExtensionSchema, ou=schema
 objectclass: organizationalUnit
 objectclass: top
@@ -153,6 +190,9 @@ m-must: cn
 m-may: arrCleanUpUsesRetention
 m-may: arrCleanUpUsesMaxRecords
 m-may: arrCleanUpRetentionTimeUnit
+m-may: arrBackUpPollInterval
+m-may: arrSafeClean
+m-may: arrBackUpDir
 
 dn: ou=syntaxcheckers, cn=CleanUpExtensionSchema, ou=schema
 objectclass: organizationalUnit
