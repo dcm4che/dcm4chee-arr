@@ -47,3 +47,29 @@ See [INSTALL.md](https://github.com/dcm4che/dcm4chee-arr/blob/master/INSTALL.md)
 License
 -------
 * [Mozilla Public License Version 1.1](http://www.mozilla.org/MPL/1.1/)
+
+List of Request Parameters for RESTful queries
+--------------------------------------
+
+lowerDateTime    
+upperDateTime    
+eventID    
+eventTypeCode  
+eventOutcomeIndicator  
+eventActionCode  
+userID  
+alternativeUserID  
+userName  
+userIsRequestor  
+roleIDCode  
+networkAccessPointID  
+networkAccessPointTypeCode  
+auditSourceID  
+auditEnterpriseSiteID  
+auditSourceTypeCode  
+participantObjectID  
+participantObjectTypeCode  
+participantObjectName  
+participantObjectTypeCode  
+participantObjectTypeCodeRole  
+participantObjectDataLifeCycle  

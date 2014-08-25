@@ -507,7 +507,7 @@ public class AuditRecordQueryBean implements AuditRecordQueryLocal {
         for (int i = 0; i < ss.length; i++)
             if ((codes[i] = ss[i].split("_")).length < 2)
                 throw new IllegalArgumentException("Error: " + name 
-                        + " parameter is invalid! Must be in format code^codeSystemName");
+                        + " parameter is invalid! Must be in format code_codeSystemName");
         return codes;
     }
 
