@@ -92,143 +92,143 @@
 			<map/>
 			<node name="110100^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110100^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110100^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110101^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110101^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110101^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110102^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110102^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110102^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110103^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110103^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110103^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110104^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110104^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110104^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110105^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110105^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110105^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110106^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110106^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110106^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110107^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110107^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110107^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110108^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110108^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110108^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110109^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110109^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110109^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110110^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110110^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110110^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110111^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110111^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110111^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110112^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110112^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110112^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110113^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110113^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110113^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="110114^DCM">
 				<map>
-				<entry key="eventIDTypeCode" value="110114^DCM"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="110114^DCM"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			
 			<node name="IHE0001^IHE">
 				<map>
-				<entry key="eventIDTypeCode" value="IHE0001^IHE"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="IHE0001^IHE"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="IHE0002^IHE">
 				<map>
-				<entry key="eventIDTypeCode" value="IHE0002^IHE"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="IHE0002^IHE"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="IHE0003^IHE">
 				<map>
-				<entry key="eventIDTypeCode" value="IHE0003^IHE"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="IHE0003^IHE"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="IHE0004^IHE">
 				<map>
-				<entry key="eventIDTypeCode" value="IHE0004^IHE"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="IHE0004^IHE"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			<node name="IHE0005^IHE">
 				<map>
-				<entry key="eventIDTypeCode" value="IHE0005^IHE"/>
-				<entry key="eventTypeRetention" value="1"/>
-				<entry key="eventTypeRetentionUnit" value="DAYS"/>
+				<entry key="arrEventIDTypeCode" value="IHE0005^IHE"/>
+				<entry key="arrEventTypeRetention" value="1"/>
+				<entry key="arrEventTypeRetentionUnit" value="DAYS"/>
 				</map>
             </node>
 			</node>
