@@ -1,106 +1,53 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-  	<groupId>dcm4che.dcm4chee</groupId>
+  	<groupId>org.dcm4che.dcm4chee-arr</groupId>
   	<artifactId>dcm4chee-arr-cdi</artifactId>
-  	<version>4.4.0-SNAPSHOT</version>
+  	<version>4.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>dcm4chee-arr-cdi-war</artifactId>
   <name>Audit Record Repository WAR</name>
   <packaging>war</packaging>
   <dependencies>
     <dependency>
-      <groupId>dcm4che.dcm4chee</groupId>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-entities</artifactId>
       <classifier>${db}</classifier>
-      <version>4.4.0-SNAPSHOT</version>
+      <version>${parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>dcm4che.dcm4chee</groupId>
-      <artifactId>dcm4chee-arr-listeners-mdb</artifactId>
-      <type>ejb</type>
-      <version>4.4.0-SNAPSHOT</version>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
+      <artifactId>dcm4chee-arr-cdi-conf</artifactId>
+      <version>${parent.version}</version>
     </dependency>
 	<dependency>
-      <groupId>dcm4che.dcm4chee</groupId>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
+      <artifactId>dcm4chee-arr-cdi-conf-producer</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
+      <artifactId>dcm4chee-arr-listeners-mdb</artifactId>
+      <type>ejb</type>
+      <version>${parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-cdi-service</artifactId>
       <type>ejb</type>
-      <version>4.4.0-SNAPSHOT</version>
+      <version>${parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>dcm4che.dcm4chee</groupId>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-cdi-rest</artifactId>
-      <version>${project.version}</version>
+      <version>${parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>dcm4che.dcm4chee</groupId>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-cdi-cleanup</artifactId>
-      <version>${project.version}</version>
+      <version>${parent.version}</version>
     </dependency>
   </dependencies>
-  <profiles>
-    <profile>
-      <id>prefs</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>dcm4che.dcm4chee</groupId>
-          <artifactId>dcm4chee-arr-cdi-conf-prefs</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>ldap</id>
-      <activation>
-        <property>
-          <name>ldap</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>dcm4che.dcm4chee</groupId>
-          <artifactId>dcm4chee-arr-cdi-conf-ldap</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-  
-<!-- <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.1.1</version>
-        <configuration>
-          <classifier>${db}</classifier>
-	  <modules>
-	  <jarModule>
-              <groupId>dcm4che.dcm4chee</groupId>
-              <artifactId>dcm4chee-arr-entities</artifactId>
-              <classifier>${db}</classifier>
-			 <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-	    <ejbModule>
-              <groupId>dcm4che.dcm4chee</groupId>
-              <artifactId>dcm4chee-arr-listeners-mdb</artifactId>
-            </ejbModule>
- 	  <jarModule>
-              <groupId>dcm4che.dcm4chee</groupId>
-              <artifactId>dcm4chee-arr-cdi-service</artifactId>
-            </jarModule>
-            <webModule>
-              <groupId>dcm4che.dcm4chee</groupId>
-              <artifactId>dcm4chee-arr-cdi-war</artifactId>
-              <contextRoot>dcm4chee-arr</contextRoot>
-            </webModule>
-          </modules>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build> -->
   <build>
     <plugins>
       <plugin>

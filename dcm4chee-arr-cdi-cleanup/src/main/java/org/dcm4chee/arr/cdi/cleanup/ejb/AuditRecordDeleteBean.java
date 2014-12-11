@@ -43,12 +43,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.apache.log4j.Logger;
-import org.dcm4chee.arr.cdi.cleanup.CleanUpConfigurationExtension;
+import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 import org.dcm4chee.arr.entities.AuditRecord;
 
 /**

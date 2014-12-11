@@ -40,6 +40,7 @@ import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
 import org.dcm4chee.arr.cdi.Impl.ReloadEvent;
 import org.dcm4chee.arr.cdi.Impl.StartCleanUpEvent;
 import org.dcm4chee.arr.cdi.Impl.StopCleanUpEvent;
+import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 
 /**
  * The Interface AuditRecordRepositoryCleanupImpl.

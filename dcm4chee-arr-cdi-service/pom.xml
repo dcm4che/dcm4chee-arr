@@ -2,15 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>dcm4che.dcm4chee</groupId>
+    <groupId>org.dcm4che.dcm4chee-arr</groupId>
     <artifactId>dcm4chee-arr-cdi</artifactId>
-    <version>4.4.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>dcm4chee-arr-cdi-service</artifactId>
   <name>Audit Record Repository CDI Service</name>
-  <properties>
-    <src.dir>ejbModule/new-src</src.dir>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
@@ -21,7 +18,6 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
-      <version>1.1-PRD</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -39,19 +35,16 @@
     <dependency>
       <groupId>org.dcm4che</groupId>
       <artifactId>dcm4che-conf-api</artifactId>
-      <version>3.3.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.dcm4che</groupId>
       <artifactId>dcm4che-net-audit</artifactId>
-      <version>3.3.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.dcm4che</groupId>
       <artifactId>dcm4che-net</artifactId>
-      <version>3.3.4-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <!-- Testing dependencies -->
@@ -143,19 +136,7 @@
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
-      <properties>
-        <src.dir>ejbModule/new-src</src.dir>
-        <sourceDirectory>${src.dir}</sourceDirectory>
-      </properties>
       <build>
-        <resources>
-          <resource>
-            <directory>ejbModule</directory>
-            <excludes>
-              <exclude>**/*.java</exclude>
-            </excludes>
-          </resource>
-        </resources>
         <plugins>
           <plugin>
             <artifactId>maven-jar-plugin</artifactId>
@@ -163,7 +144,7 @@
             <configuration>
               <archive>
                 <manifestEntries>
-                  <Dependencies>org.dcm4che.net,org.dcm4che.net-audit</Dependencies>
+                  <Dependencies>org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api</Dependencies>
                 </manifestEntries>
               </archive>
             </configuration>
@@ -197,10 +178,6 @@
     </profile>
     <profile>
       <id>default</id>
-      <properties>
-        <src.dir>ejbModule/new-src</src.dir>
-        <sourceDirectory>${src.dir}</sourceDirectory>
-      </properties>
       <build>
         <plugins>
           <plugin>
@@ -209,7 +186,7 @@
             <configuration>
               <archive>
                 <manifestEntries>
-                  <Dependencies>org.dcm4che.net,org.dcm4che.net-audit</Dependencies>
+                  <Dependencies>org.dcm4che.net, org.dcm4che.net-audit, org.dcm4che.conf.api</Dependencies>
                 </manifestEntries>
               </archive>
             </configuration>
@@ -221,14 +198,6 @@
             <extensions>true</extensions>
           </plugin>
         </plugins>
-        <resources>
-          <resource>
-            <directory>ejbModule</directory>
-            <excludes>
-              <exclude>**/*.java</exclude>
-            </excludes>
-          </resource>
-        </resources>
       </build>
       
     </profile>

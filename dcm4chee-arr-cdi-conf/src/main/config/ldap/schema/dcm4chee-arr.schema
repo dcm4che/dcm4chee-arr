@@ -1,0 +1,131 @@
+attributetype ( 1.2.40.0.13.1.15.30.3.1 
+  NAME 'arrCleanUpPollInterval' 
+  DESC 'Arr cleanup polling interval' 
+  EQUALITY integerMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.2 
+  NAME 'arrCleanUpRetentionTime' 
+  DESC 'Arr cleanup retention interval' 
+  EQUALITY integerMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.3 
+  NAME 'arrCleanUpMaxRecords' 
+  DESC 'Arr cleanup maximum number of records to keep' 
+  EQUALITY integerMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.4 
+  NAME 'arrCleanUpUsesRetention' 
+  DESC 'Specify if retention is to be used as cleanup policy' 
+  EQUALITY booleanMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.5 
+  NAME 'arrCleanUpUsesMaxRecords' 
+  DESC 'Specify if max records to keep is to be used as cleanup policy' 
+  EQUALITY booleanMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.6 
+  NAME 'arrCleanUpDeletePerTransaction' 
+  DESC 'Specify how many records to delete per transaction' 
+  EQUALITY integerMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.7 
+  NAME 'arrCleanUpRetentionTimeUnit' 
+  DESC 'time unit for retention time' 
+  EQUALITY caseExactMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+  SINGLE-VALUE 
+ )
+ 
+attributetype ( 1.2.40.0.13.1.15.30.3.8 
+  NAME 'arrSafeClean' 
+  DESC 'Backup Deleted Files' 
+  EQUALITY booleanMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.9
+  NAME 'arrBackUpPollInterval' 
+  DESC 'Arr Backup Poll interval' 
+  EQUALITY integerMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.10 
+  NAME 'arrBackUpDir' 
+  DESC 'BackUp Directory Path' 
+  EQUALITY caseExactMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+  SINGLE-VALUE 
+ )
+ 
+attributetype ( 1.2.40.0.13.1.15.30.3.11 
+  NAME 'arrDefaultCleanUpPolicy' 
+  DESC 'Default clean up policy' 
+  EQUALITY caseExactMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+  SINGLE-VALUE 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.12
+   NAME 'arrEventIDTypeCode'
+   DESC 'event type codes multi valued'
+   EQUALITY caseExactMatch
+   SUBSTR caseExactSubstringsMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+ )
+
+attributetype ( 1.2.40.0.13.1.15.30.3.13
+  NAME 'arrEventTypeRetention' 
+  DESC 'event cleanup retention interval' 
+  EQUALITY integerMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 
+  SINGLE-VALUE 
+ )
+ 
+attributetype ( 1.2.40.0.13.1.15.30.3.14
+  NAME 'arrEventTypeRetentionUnit' 
+  DESC 'time unit for event retention time' 
+  EQUALITY caseExactMatch 
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 
+  SINGLE-VALUE 
+ )
+
+objectclass ( 1.2.40.0.13.1.15.30.4.1 
+  NAME 'arrCleanUp' 
+  DESC 'Arr CleanUp object class' 
+  SUP top 
+  STRUCTURAL 
+  MUST ( arrDefaultCleanUpPolicy $ arrCleanUpUsesRetention $ arrCleanUpUsesMaxRecords $ cn ) 
+  MAY (arrBackUpDir $ arrSafeClean $ arrBackUpPollInterval $ arrCleanUpPollInterval $ arrCleanUpRetentionTime $ arrCleanUpRetentionTimeUnit $ arrCleanUpMaxRecords $ arrCleanUpDeletePerTransaction ) 
+ )
+
+objectclass ( 1.2.40.0.13.1.15.30.4.2 
+  NAME 'arrEventType'
+  DESC 'event type object used for matching with the key attribute in each member ldap node'
+  SUP top STRUCTURAL
+  MUST ( 
+    arrEventIDTypeCode $ 
+    arrEventTypeRetention )
+  MAY (
+    arrEventTypeRetentionUnit) )
+ 

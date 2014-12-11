@@ -38,11 +38,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
@@ -59,9 +61,8 @@ import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceReloaded;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
 import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryCleanup;
-import org.dcm4chee.arr.cdi.cleanup.CleanUpConfigurationExtension;
-import org.dcm4chee.arr.cdi.cleanup.EventTypeFilterExtension;
-import org.dcm4chee.arr.cdi.cleanup.EventTypeObject;
+import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
+import org.dcm4chee.arr.cdi.conf.EventTypeObject;
 import org.dcm4chee.arr.cdi.Impl.ReloadEvent;
 import org.dcm4chee.arr.cdi.Impl.StartCleanUpEvent;
 import org.dcm4chee.arr.cdi.Impl.StopCleanUpEvent;
@@ -99,9 +100,9 @@ public class AuditRecordRepositoryCleanupImpl implements
 
     public CleanUpConfigurationExtension getCleanUpConfig() {
         return cleanUpConfig;
-    }
-
-    private EventTypeFilterExtension eventFilter = null;
+    } 
+    
+    private Map<String, EventTypeObject> eventFilter  = null;
 
     private Runnable cleanProcedure = new Runnable() {
 
@@ -119,11 +120,9 @@ public class AuditRecordRepositoryCleanupImpl implements
             } else if (cleanUpConfig.getArrDefaultCleanUpPolicy()
                     .compareToIgnoreCase("custom") == 0) {
                 log.info("Custom cleanup policy is used");
-                for (Entry<String, EventTypeObject> obj : eventFilter
-                        .getEventTypeFilter().getEntries()) {
-                    cleanWithCustomRetentionPolicy(obj.getValue().getCodeID(),
-                            obj.getValue().getRetentionTime(), obj.getValue()
-                                    .getRetentionTimeUnit(),
+                for (EventTypeObject obj : toCollection(eventFilter)) {
+                    cleanWithCustomRetentionPolicy(obj.getCodeID(),
+                            obj.getRetentionTime(), obj.getRetentionTimeUnit(),
                             cleanUpConfig.getArrCleanUpDeletePerTransaction());
                     // log.info("Processed Entry from ldap from event filter: "
                     // + obj.getKey() + "\n with retention time = "
@@ -230,6 +229,13 @@ public class AuditRecordRepositoryCleanupImpl implements
 
     }
 
+    protected Collection<EventTypeObject> toCollection(Map<String, EventTypeObject> eventFilterMap) {
+        Collection<EventTypeObject> result = new ArrayList<EventTypeObject>();
+        for(String key : eventFilterMap.keySet())
+            result.add(eventFilterMap.get(key));
+        return result;
+    }
+
     /**
      * Clean with custom retention policy. checks for each event id type code in
      * the configuration and according to retention time and unit deletes them
@@ -329,8 +335,7 @@ public class AuditRecordRepositoryCleanupImpl implements
         this.device = start.getDevice();
         this.cleanUpConfig = device
                 .getDeviceExtension(CleanUpConfigurationExtension.class);
-        this.eventFilter = device
-                .getDeviceExtension(EventTypeFilterExtension.class);
+        this.eventFilter = cleanUpConfig.getEventTypeFilter();
         if (scheduledCleanProcedure == null
                 && (this.cleanUpConfig.isArrCleanUpUsesMaxRecords() || this.cleanUpConfig
                         .isArrCleanUpUsesRetention())) {
@@ -379,8 +384,7 @@ public class AuditRecordRepositoryCleanupImpl implements
         this.device = reload.getDevice();
         this.cleanUpConfig = device
                 .getDeviceExtension(CleanUpConfigurationExtension.class);
-        this.eventFilter = device
-                .getDeviceExtension(EventTypeFilterExtension.class);
+        this.eventFilter = cleanUpConfig.getEventTypeFilter();
         if (reload.isState()) {
             log.info("Reloaded cleanup service configuration");
             if (running)

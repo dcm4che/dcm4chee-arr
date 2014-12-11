@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>dcm4che.dcm4chee</groupId>
+  <groupId>org.dcm4che.dcm4chee-arr</groupId>
   <artifactId>dcm4chee-arr-cdi</artifactId>
   <packaging>pom</packaging>
   <name>Audit Record Repository</name>
-  <version>4.4.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <properties>
     <db>oracle</db>
     <ds>java:/arrDS</ds>
     <show_sql>false</show_sql>
     <hbm2ddl.auto>update</hbm2ddl.auto>
-    <dcm4che.version>3.3.3-SNAPSHOT</dcm4che.version>
+    <dcm4che.version>3.3.5-SNAPSHOT</dcm4che.version>
   </properties>
   <description>Audit Record Repository deployable in CDI container</description>
   <dependencyManagement>
@@ -28,11 +28,53 @@
         <version>4.11</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+          <groupId>org.dcm4che</groupId>
+          <artifactId>dcm4che-conf-api</artifactId>
+          <version>${dcm4che.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.dcm4che</groupId>
+          <artifactId>dcm4che-conf-core-api</artifactId>
+          <version>${dcm4che.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.dcm4che</groupId>
+          <artifactId>dcm4che-conf-core</artifactId>
+          <version>${dcm4che.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che</groupId>
+        <artifactId>dcm4che-core</artifactId>
+        <version>${dcm4che.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che</groupId>
+        <artifactId>dcm4che-net</artifactId>
+        <version>${dcm4che.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che</groupId>
+        <artifactId>dcm4che-audit</artifactId>
+        <version>${dcm4che.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che</groupId>
+        <artifactId>dcm4che-net-audit</artifactId>
+        <version>${dcm4che.version}</version>
+        <scope>provided</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <modules>
-    <module>dcm4chee-arr-cdi-conf-prefs</module>
-    <module>dcm4chee-arr-cdi-conf-ldap</module>
+    <module>dcm4chee-arr-cdi-conf</module>
+    <module>dcm4chee-arr-cdi-conf-producer</module>
     <module>schema-export-master </module>
     <module>dcm4chee-arr-entities</module>
     <module>dcm4chee-arr-listeners-mdb</module>

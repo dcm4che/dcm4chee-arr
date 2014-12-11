@@ -2,22 +2,22 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>Audit Record Repository Entities</name>
-  <groupId>dcm4che.dcm4chee</groupId>
+  <groupId>org.dcm4che.dcm4chee-arr</groupId>
   <artifactId>custom-resolver-entities-tests</artifactId>
-  <version>4.4.0-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <!--<properties> <org.hibernate.version>4.1.7.Final</org.hibernate.version> 
     </properties> -->
   <dependencies>
     <dependency>
-      <groupId>dcm4che.dcm4chee</groupId>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-entities</artifactId>
       <classifier>${db}</classifier>
-      <version>4.4.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>dcm4che.dcm4chee</groupId>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-listeners-mdb</artifactId>
-      <version>4.4.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
   </project>
