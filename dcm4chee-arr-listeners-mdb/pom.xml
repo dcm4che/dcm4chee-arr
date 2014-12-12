@@ -100,9 +100,6 @@
   <profiles>
     <profile>
       <id>jboss7</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <build>
         <resources>
           <resource>
@@ -143,7 +140,10 @@
       </dependencies>
     </profile>
     <profile>
-      <id>setup</id>
+      <id>default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>

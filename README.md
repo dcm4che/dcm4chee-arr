@@ -21,11 +21,13 @@ iv-Supports audit reporting via either TLS or UDP.
 
 2)Provides support for LDAP and Java preferences configuration
 
-3)Provides a fully configurable and customizable clean up mechanism for the audit record repository.
+3)Provides a configurable and customizable clean up mechanism for the audit record repository.
 
-4)provides a restful service for controlling the service as well as querying the repository.
+4)Provides a configurable and customizable Back up mechanism for the audit record repository.
 
-5)Provides a simple web interface for filtering queries.
+5)provides a restful service for controlling the service as well as querying the repository.
+
+6)Provides a simple web interface for filtering queries.
 
 
 Build
@@ -50,7 +52,6 @@ License
 
 List of Request Parameters for RESTful queries
 --------------------------------------
-
 lowerDateTime    
 upperDateTime    
 eventID    

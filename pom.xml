@@ -11,6 +11,8 @@
     <show_sql>false</show_sql>
     <hbm2ddl.auto>update</hbm2ddl.auto>
     <dcm4che.version>3.3.5-SNAPSHOT</dcm4che.version>
+    <querydsl.version>3.2.3</querydsl.version>
+	<skipTests>true</skipTests>
   </properties>
   <description>Audit Record Repository deployable in CDI container</description>
   <dependencyManagement>
@@ -48,7 +50,7 @@
     <dependency>
       <groupId>com.mysema.querydsl</groupId>
       <artifactId>querydsl-jpa</artifactId>
-      <version>2.0.2</version>
+      <version>${querydsl.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -242,6 +244,7 @@
     <module>dcm4chee-arr-cdi-cleanup</module>
     <module>dcm4chee-arr-web</module>
     <module>dcm4chee-arr-cdi-war</module>
+	<module>dcm4chee-arr-assembly</module>
   </modules>
   <build>
     <plugins>

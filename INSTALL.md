@@ -7,16 +7,16 @@ Requirements
     and [Oracle JDK](http://java.com/en/download)
 
 -   [JBoss Application Server 7.1.1.Final](http://www.jboss.org/jbossas/downloads)
-	or [JBoss Enterprise Application Platform 6.x](http://www.jboss.org/jbossas/downloads)
+    or [JBoss Enterprise Application Platform 6.x](http://www.jboss.org/jbossas/downloads)
 
 -   Supported SQL Database:
     - [MySQL 5.6](http://dev.mysql.com/downloads/mysql)
     - [PostgreSQL 9.2.1](http://www.postgresql.org/download/)
-	  (not yet tested!)
+      (not yet tested!)
     - [Firebird 2.5.1](http://www.firebirdsql.org/en/firebird-2-5-1/)
-	  (not yet tested!)
+      (not yet tested!)
     - [DB2 10.1](http://www-01.ibm.com/software/data/db2/express/download.html)
-	  (not yet tested!)
+      (not yet tested!)
     - [Oracle 11g](http://www.oracle.com/technetwork/products/express-edition/downloads/)
     - [Microsoft SQL Server](http://www.microsoft.com/en-us/download/details.aspx?id=29062)
       (not yet tested!)
@@ -27,12 +27,12 @@ Requirements
 -   LDAP Browser - [Apache Directory Studio 1.5.3](http://directory.apache.org/studio/)
 
     *Note*: Both LDAP and Java Preferences can be used to configure
-	the ARR, however you need to do the configuration changes manually,
-	either in the LDAP tree or in the Preferences XML file.
-	Also be careful to load the Preferences XML file in case you will use
-	Preferences as your configuration.
-	A tool for loading preferences XML is available in the dcm4che library [xml2prefs, xml2prefs.bat]
-	(http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
+    the ARR, however you need to do the configuration changes manually,
+    either in the LDAP tree or in the Preferences XML file.
+    Also be careful to load the Preferences XML file in case you will use
+    Preferences as your configuration.
+    A tool for loading preferences XML is available in the dcm4che library [xml2prefs, xml2prefs.bat]
+    (http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
 
 
 Build the binary
@@ -50,9 +50,9 @@ After installation of [Maven 3](http://maven.apache.org):
 Initial Database Population
 -------------------
 After building the source, an initial database population can be done using the generated DDL file
-in the following directory [dcm4chee-arr-cdi/dcm4chee-arr-entities/target/]
-the file will have the following name create-table-${db}.ddl with ${db} as suffix signifying database
-used (this is just a maven filter) ie. if you build for oracle it will be create-table-oracle.ddl
+in the following directory [dcm4chee-arr-cdi/dcm4chee-arr-entities/target/] or in the assembly zip sql
+folder, the file will have the following name create-table-${db}.ddl with ${db} as suffix signifying
+database used (this is just a maven filter) ie. if you build for oracle it will be create-table-oracle.ddl
 
 Initialize Database
 -------------------
@@ -170,12 +170,119 @@ Initialize Database
 Setup LDAP Server
 -----------------
 
+
 ### OpenDJ
-Not yet tested.
+
+1.  Copy LDAP schema files for OpenDJ from DCM4CHEE ARR distribution to
+    OpenDJ schema configuration directory:
+
+        > cp ./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/ldap/opendj/* $OPENDJ_HOME/config/schema/ [UNIX]
+        > copy .\dcm4chee-arr-4.0.0-SNAPSHOT-mysql\ldap\opendj\* %OPENDJ_HOME%\config\schema\ [Windows]
+
+2.  Run OpenDJ GUI based setup utility
+
+        > $OPENDJ_HOME/setup
+    
+    Log the values choosen for
+    -  LDAP Listener port (1389)
+    -  Root User DN (cn=Directory Manager)
+    -  Root User Password (secret)
+    -  Directory Base DN (dc=example,dc=com)
+
+    needed for the LDAP connection configuration of DCM4CHEE ARR.
+
+4. After initial setup, you may start and stop OpenDJ by
+
+        > $OPENDJ_HOME/bin/start-ds
+        > $OPENDJ_HOME/bin/stopt-ds
+
+
+### OpenLDAP
+
+OpenLDAP binary distributions are available for most Linux distributions and
+for [Windows](http://www.userbooster.de/en/download/openldap-for-windows.aspx).
+
+OpenLDAP can be alternatively configured by
+
+- [slapd.conf configuration file](http://www.openldap.org/doc/admin24/slapdconfig.html)
+- [dynamic runtime configuration](http://www.openldap.org/doc/admin24/slapdconf2.html)
+
+See also [Converting old style slapd.conf file to cn=config format][1]
+
+[1]: http://www.openldap.org/doc/admin24/slapdconf2.html#Converting%20old%20style%20{{slapd.conf}}%285%29%20file%20to%20{{cn=config}}%20format
+
 #### OpenLDAP with slapd.conf configuration file
-Not yet tested.
+
+1.  Copy LDAP schema files for OpenLDAP from the assembly zip to
+    OpenLDAP schema configuration directory:
+
+        > cp ./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/ldap/schema/* /etc/openldap/schema/ [UNIX]
+        > copy .\dcm4chee-arr-4.0.0-SNAPSHOT-mysql\ldap\schema\* \Program Files\OpenLDAP\schema\ [Windows]
+
+2.  Add references to schema files in `slapd.conf`, e.g.:
+
+        include         /etc/openldap/schema/core.schema
+        include         /etc/openldap/schema/dicom.schema
+        include         /etc/openldap/schema/dcm4che.schema
+        include         /etc/openldap/schema/dcm4chee-arr.schema
+
+3.  You may also change the default values for 
+
+        suffix          "dc=my-domain,dc=com"
+        rootdn          "cn=Manager,dc=my-domain,dc=com"
+        rootpw          secret
+   
+    in `slapd.conf`.
+
+
 #### OpenLDAP with dynamic runtime configuration
-Not yet tested.
+
+1.  Import LDAP schema files for OpenLDAP runtime configuration, binding as
+    root user of the config backend, using OpenLDAP CL utility ldapadd, e.g.:
+
+        > ldapadd -xW -Dcn=config -f ./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/ldap/slapd/dicom.ldif
+        > ldapadd -xW -Dcn=config -f ./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/ldap/slapd/dcm4che.ldif
+        > ldapadd -xW -Dcn=config -f ./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/ldap/slapd/dcm4chee-arr.ldif
+
+    If you don't know the root user and its password of the config backend, you may
+    look into `/etc/openldap/slap.d/cn=config/olcDatabase={0}config.ldif`:
+
+        olcRootDN: cn=config
+        olcRootPW:: VmVyeVNlY3JldA==
+
+    and decode the base64 decoded password, e.g:
+
+        > echo -n VmVyeVNlY3JldA== | base64 -d
+        VerySecret
+
+    If there is no `olcRootPW` entry, you may just add one.
+
+    You may also specify the password in plan text, e.g:
+
+        olcRootPW: VerySecret
+
+2.  Directory Base DN and Root User DN can be modified by changing the values of
+    attributes
+
+        olcSuffix: dc=my-domain,dc=com
+        olcRootDN: cn=Manager,dc=my-domain,dc=com
+
+    of object `olcDatabase={1}hdb,cn=config` by specifing the new values in a 
+    LDIF file (e.g. `modify-baseDN.ldif`)
+
+        dn: olcDatabase={1}hdb,cn=config
+        changetype: modify
+        replace: olcSuffix
+        olcSuffix: dc=example,dc=com
+        -
+        replace: olcRootDN
+        olcRootDN: cn=Manager,dc=example,dc=com
+        -
+
+    and applying it using OpenLDAP CL utility ldapmodify, e.g.:
+
+        > ldapmodify -xW -Dcn=config -f modify-baseDN.ldif
+
 ### Apache DS 2.0
 
 1.  Install [Apache DS 2.0.0-M8](http://directory.apache.org/apacheds/2.0/downloads.html)
@@ -192,13 +299,12 @@ Not yet tested.
             Bind password:   secret
 
 3.  Import LDAP schema files for Apache DS:
-	dcm4chee-arr-cdi-conf-ldap/src/main/config/apacheds/
-	imports are to be done in this order:
-	
+    dcm4chee-arr-4.0.0-SNAPSHOT-mysql\ldap\schema\*
+    imports are to be done in this order:
+    
         1.dicom.ldif
         2.dcm4che.ldif
-		3.CleanUpExtensionSchema.ldif
-		4.EventTypeLoggingSchema.ldif
+        3.dcm4chee-arr.ldif
 
     using the LDIF import function of Apache Directory Studio LDAP Browser.
 
@@ -232,16 +338,16 @@ Import sample configuration into LDAP Server
             Bind password:   secret
         Browser Options:
             Base DN: dc=example,dc=com
-			
-2.	Import basic configuration template dcm4chee-arr-cdi-conf-ldap/src/main/config/
-	
-		1.init-config.ldif
-		2.arrdevice-sample(no init).ldif
-		3.AuditLogger_with_supress_criteria.ldif
-			
+            
+2.    Import basic configuration template dcm4chee-arr-cdi-conf-ldap/src/main/config/
+    
+        1.init-config.ldif
+        2.arrdevice-sample(no init).ldif
+        3.AuditLogger_with_supress_criteria.ldif
+            
 2.  If you configured a different Directory Base DN than`dc=example,dc=com`,
     you have to replace all occurrences of `dc=example,dc=com` in LDIF files
-	before import by your Directory Base DN, e.g.:
+    before import by your Directory Base DN, e.g.:
 
         > sed -i s/dc=example,dc=com/dc=my-domain,dc=com/ init-config.ldif
         > sed -i s/dc=example,dc=com/dc=my-domain,dc=com/ arrdevice-sample(no init).ldif
@@ -250,35 +356,40 @@ Import sample configuration into LDAP Server
 Setup Java Preferences (LDAP alternative)
 ----------------
 1.  Load the sample xml file dcm4chee-arr-sample.xml from dcm4chee-arr-cdi-conf-prefs/src/main/config/
-	into your system properties.
-2.	A tool for loading preferences XML is available in the dcm4che library [xml2prefs, xml2prefs.bat]
-	(http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
-		
-		
+    into your system properties.
+2.    A tool for loading preferences XML is available in the dcm4che library [xml2prefs, xml2prefs.bat]
+    (http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
+        
+        
 Setup JBoss AS 7
 ----------------
 
-1.  Create DCM4CHEE ARR LDAP Connection configuration file
-    `$JBOSS_HOME/standalone/configuration/dcm4chee-arr/ldap.properties`:
+1.  To configure the Audit Record Repository to use LDAP, put the following into
+    the Jboss configuration/standalone.xml, and adjust the
+    parameters according to the LDAP server installed:
 
-        java.naming.factory.initial=com.sun.jndi.ldap.LdapCtxFactory
-		java.naming.ldap.attributes.binary=dicomVendorData
-		java.naming.provider.url=ldap://localhost:10389/dc=example,dc=com
-		java.naming.security.principal=uid=admin,ou=system
-		java.naming.security.credentials=secret
+        <system-properties>
+            <property name="org.dcm4che.conf.storage" value="ldap" />
+            <property name="org.dcm4che.conf.ldap.url" value="ldap://localhost:10389/dc=example,dc=com" />
+            <property name="org.dcm4che.conf.ldap.principal" value="uid=admin,ou=system" />
+            <property name="org.dcm4che.conf.ldap.credentials" value="secret" />
+        </system-properties>
 
-    If required adjust it to your LDAP Server configuration.
+    Check the application log during startup to see which values are actually used.
 
-2.  Install required libraries as JBoss AS 7 modules:
-    
-	The Jboss modules can be obtained from the dcm4che library as follows:
-		1. Download https://github.com/dcm4che/dcm4che/archive/master.zip
-		2. Extract archive
-		3.cd dcm4che/dcm4che-jboss-modules/
-		4. mvn install
-		5.unzip target/dcm4che-jboss-modules-3.0.0-SNAPSHOT.zip -d /$JBOSS_HOME
+To use preferences change the org.dcm4che.conf.storage value to "prefs"
 
-4.  Install JDBC Driver. DCM4CHEE ARR does not include
+3.  Install DCM4CHE {lib-version} libraries as Jboss modules:
+
+        > cd  $JBOSS_HOME
+        > unzip ./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/jboss-module/dcm4che-jboss-modules-{lib-version}.zip
+
+4.  Install QueryDSL 3.2.3 libraries as WildFly module:
+
+        > cd  $JBOSS_HOME
+        > unzip ./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/jboss-module/querydsl-jboss-modules-3.2.3.zip
+
+5.  Install JDBC Driver. DCM4CHEE Audit Record Repository 4.x binary distributions do not include
     a JDBC driver for the database for license issues. You may download it from:
     -   [MySQL](http://www.mysql.com/products/connector/)
     -   [PostgreSQL]( http://jdbc.postgresql.org/)
@@ -289,26 +400,27 @@ Setup JBoss AS 7
     -   [Microsoft SQL Server](http://msdn.microsoft.com/data/jdbc/)
 
     The JDBC driver can be installed either as a deployment or as a core module.
-    [See](https://docs.jboss.org/author/display/AS71/Developer+Guide#DeveloperGuide-InstalltheJDBCdriver)
+    [See](https://docs.jboss.org/author/display/WFLY8/Developer+Guide#DeveloperGuide-InstalltheJDBCdriver)
     
     Installation as deployment is limited to JDBC 4-compliant driver consisting of **one** JAR.
 
-    For installation as a core module:
-		1.	Download https://github.com/dcm4che/jdbc-jboss-modules/archive/master.zip
-		2.	Extract archive and mvn install
-		3.	Extract target/jdbc-jboss-modules-1.0.0-${db}.zip to $JBOSS_HOME and copy
-			the JDBC Driver file(s) into the sub-directory,
-			
-		e.g.:
-        >cp mysql-connector-java-5.1.22-bin.jar  $JBOSS_HOME/modules/com/mysql/main/
+    For installation as a core module, `./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/jboss-module/jdbc-jboss-modules-1.0.0-<database>.zip`
+    already provides a module definition file `module.xml`. You just need to extract the ZIP file into
+    $JBOSS_HOME and copy the JDBC Driver file(s) into the sub-directory, e.g.:
+
+        > cd $JBOSS_HOME
+        > unzip ./dcm4chee-arr-4.0.0-SNAPSHOT-mysql/jboss-module/jdbc-jboss-modules-1.0.0-db2.zip
+        > cd $DB2_HOME/java
+        > cp db2jcc4.jar db2jcc_license_cu.jar $JBOSS_HOME/modules/com/ibm/db2/main/
 
     Verify, that the actual JDBC Driver file(s) name matches the path(s) in the provided
     `module.xml`, e.g.:
 
          <?xml version="1.0" encoding="UTF-8"?>
-         <module xmlns="urn:jboss:module:1.1" name="com.mysql">
+         <module xmlns="urn:jboss:module:1.1" name="com.ibm.db2">
              <resources>
-                 <resource-root path="mysql-connector-java-5.1.22-bin.jar"/>
+                 <resource-root path="db2jcc4.jar"/>
+                 <resource-root path="db2jcc_license_cu.jar"/>
              </resources>
          
              <dependencies>
@@ -318,7 +430,7 @@ Setup JBoss AS 7
          </module>
 
 
-5.  Start JBoss AS 7 or EAP 6.X in standalone mode with the Java EE 6 Full Profile configuration.
+6.  Start JBoss AS 7 or EAP 6.X in standalone mode with the Java EE 6 Full Profile configuration.
     To preserve the original JBoss AS 7 configuration you may copy the original
     configuration file for JavaEE 6 Full Profile:
 
@@ -352,7 +464,7 @@ Setup JBoss AS 7
                 
     Running JBoss AS 7 in domain mode should work, but was not yet tested.
 
-6.  Add JDBC Driver into the server configuration using JBoss AS 7 CLI in a new console window:
+7.  Add JDBC Driver into the server configuration using JBoss AS 7 CLI in a new console window:
 
         > $JBOSS_HOME/bin/jboss-cli.sh -c [UNIX]
         > %JBOSS_HOME%\bin\jboss-cli.bat -c [Windows]
@@ -363,7 +475,7 @@ Setup JBoss AS 7
 
         [standalone@localhost:9999 /] /subsystem=datasources/jdbc-driver=mysql:add(driver-module-name=com.mysql,driver-name=mysql)
 
-7.  Create and enable a new Data Source bound to JNDI name `java:/arrDS` using JBoss AS 7 CLI:
+8.  Create and enable a new Data Source bound to JNDI name `java:/arrDS` using JBoss AS 7 CLI:
 
         [standalone@localhost:9999 /] data-source add --name=arrDS \
         >     --driver-name=<driver-name> \
@@ -381,68 +493,63 @@ Setup JBoss AS 7
     -  Oracle: `jdbc:oracle:thin:@localhost:1521:<database-name>`
     -  Microsoft SQL Server: `jdbc:sqlserver://localhost:1433;databaseName=<database-name>`
 
-8.  Specify a ldap location by system property org.dcm4chee.arr.ldap
-    using JBoss AS 7 CLI:
-
-        [standalone@localhost:9999 /] /system-property=org.dcm4chee.arr.ldap:add(value=<url>)
-
 9.  By default, DCM4CHEE ARR will assume `dcm4chee-arr` as its Device Name, used to find its
     configuration in the configuration backend (LDAP Server or Java Preferences). You may specify a different
     Device Name by system property `org.dcm4chee.arr.deviceName` using JBoss AS 7 CLI:
 
         [standalone@localhost:9999 /] /system-property=org.dcm4chee.arr.deviceName:add(value=<device-name>)
 
-		*Note*
-		If you change the device name from the default you will have to change the dn of the sample configuration
-		to match the new device name fom dcm4chee-arr to the new name.
-		
+        *Note*
+        If you change the device name from the default you will have to change the dn of the sample configuration
+        to match the new device name fom dcm4chee-arr to the new name.
+        
 10. DCM4CHEE ARR requires a keystore file for TLS as well as a truststore
-	 
-	 By default DCM4CHEE ARR will assume that both the keystore and the truststore are at ${jboss.server.config.url}/dcm4chee-arr/key.jks
-	 from the sample config provided and will assume such keystore is of type JKS and with password changeit,
-	 It will also assume that you have a key inside with a password changeit.
-	 
-	 It is up to you to change these configurations according to your needs, if you require proper TLS authentication,
-	 then you should provide a new configuration parameter in the ldap config with the following attributes :
-	 
-	 dcmTrustStoreType
-	 dcmTrustStoreURL
-	 dcmTrustStorePin
-	 
-	 You will also need to change the property dcmTLSNeedClientAuth in the audit-tls sample connection configuration
-	 to true, thus allowing the ARR to load the trust store and authenticate the incoming certificates.
-	 
-	 To generate your own key and keystore use the keytool supplied with the jdk as follows:
-	 
-	 
-	 keytool.exe -genkey -alias mynewkey -keyalg RSA -validity 365  -storetype JKS --keystore myserver.store
-	 
-	 
-	 you will be prompted for everything and in the end the file myserver.store will be generated.
-	 
-	 
-	 To extract your public key from the truststore use keytool as follows:
-	 
-	 
-	 keytool -export -alias mynewkey --keystore test.store -rfc -file mypublic.cert
-	 
-	 
-	 Next step is to create a truststore and add your public certificate to it.
-	 
-	 
-	 keytool -import -alias mynewkey -file mypublic.cert --storetype JKS --keystore server.truststore
-	 
-	 
-	 TOTEST: If you would prefer to have your certificates on LDAP without having to use a local trust store this is possible 
-	 using the following configuration scheme:
-	 1.	add a dicomAuthorizedNodeCertificateReference attribute to your device node with the value a node that is either a device or uses pkiUser ldap object class.
-	 2.	in the referenced node have a userCertificate attribute, specify it is binary and in the value you should add the certificate file 
-	 (this can be done wasily with the ldap browser, just point to your certificate file using load certificate when adding attribute value)
-	 
-11.	Add Jms queue to the jboss configuration via CLI as follows:
+     
+     By default DCM4CHEE ARR will assume that both the keystore and the truststore are at ${jboss.server.config.url}/dcm4chee-arr/key.jks
+     from the sample config provided and will assume such keystore is of type JKS and with password changeit,
+     It will also assume that you have a key inside with a password changeit.
+     
+     It is up to you to change these configurations according to your needs, if you require proper TLS authentication,
+     then you should provide a new configuration parameter in the ldap config with the following attributes :
+     
+     dcmTrustStoreType
+     dcmTrustStoreURL
+     dcmTrustStorePin
+     
+     You will also need to change the property dcmTLSNeedClientAuth in the audit-tls sample connection configuration
+     to true, thus allowing the ARR to load the trust store and authenticate the incoming certificates.
+     
+     To generate your own key and keystore use the keytool supplied with the jdk as follows:
+     
+     
+     keytool.exe -genkey -alias mynewkey -keyalg RSA -validity 365  -storetype JKS --keystore myserver.store
+     
+     
+     you will be prompted for everything and in the end the file myserver.store will be generated.
+     
+     
+     To extract your public key from the truststore use keytool as follows:
+     
+     
+     keytool -export -alias mynewkey --keystore test.store -rfc -file mypublic.cert
+     
+     
+     Next step is to create a truststore and add your public certificate to it.
+     
+     
+     keytool -import -alias mynewkey -file mypublic.cert --storetype JKS --keystore server.truststore
+     
+     
+     TOTEST: If you would prefer to have your certificates on LDAP without having to use a local trust store this is possible 
+     using the following configuration scheme:
+     1.    add a dicomAuthorizedNodeCertificateReference attribute to your device node with the value a node that is either a device or uses pkiUser ldap object class.
+     2.    in the referenced node have a userCertificate attribute, specify it is binary and in the value you should add the certificate file 
+     (this can be done wasily with the ldap browser, just point to your certificate file using load certificate when adding attribute value)
+     
+11.    Add Jms queue to the jboss configuration via CLI as follows:
 
-	[standalone@localhost:9999 /] jms-queue add --queue-address=ARRIncoming --entries=queue/ARRIncoming
-	 
+    [standalone@localhost:9999 /] jms-queue add --queue-address=ARRIncoming --entries=queue/ARRIncoming
+     
 12. Deploy DCM4CHEE ARR using JBoss AS 7 CLI, e.g.:
 
         [standalone@localhost:9999 /] deploy dcm4chee-arr-cdi/dcm4chee-arr-cdi-war/target/dcm4chee-arr-cdi-war-4.3.0-SNAPSHOT-${db}.war
@@ -453,10 +560,10 @@ Setup JBoss AS 7
 13. You may undeploy DCM4CHEE ARR at any time using JBoss AS 7 CLI, e.g.:
 
         [standalone@localhost:9999 /] undeploy dcm4chee-arr-cdi-war-4.3.0-SNAPSHOT-${db}.war
-		
+        
 14. You can also use the provided web interface for querying the ARR in an organized and clean way.
-	To install the web application just deploy it on jboss as follows:
-		[standalone@localhost:9999 /] deploy dcm4chee-arr-cdi/dcm4chee-arr-web/target/dcm4chee-arr-web-4.3.0-SNAPSHOT-${db}.war
+    To install the web application just deploy it on jboss as follows:
+        [standalone@localhost:9999 /] deploy dcm4chee-arr-cdi/dcm4chee-arr-web/target/dcm4chee-arr-web-4.3.0-SNAPSHOT-${db}.war
 
 Testing DCM4CHEE ARR 4.3.0-SNAPSHOT
 ----------------------------
@@ -474,7 +581,7 @@ to http://ip-address-of-JBOSSSERVER:JBOSSPORT/dcm4chee-arr/ctrl/start
 
 Test Receive Audits:
 A tool for sending Audit messages is available in the dcm4che library [syslog, syslog.bat]
-	(http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
+    (http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
 
 Here is a test message
 
@@ -496,6 +603,6 @@ To query for this received audit message just point your browser to
 http://ip-address-of-JBOSSSERVER:JBOSSPORT/dcm4chee-arr/view/xmllist?UserID=admin&AuditSourceID=SOMESOURCE
 
 Testing the Web application:
-To query the archive using the web application provided just point you browser to
+To query the ARR using the web application provided just point you browser to
 http://ip-address-of-JBOSSSERVER:JBOSSPORT/dcm4chee-arr-web/
 
