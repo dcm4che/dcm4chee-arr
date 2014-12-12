@@ -48,7 +48,8 @@ import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 // TODO: Auto-generated Javadoc
@@ -64,7 +65,7 @@ public class Code implements Serializable {
 
     private static final long serialVersionUID = 4271322436818986479L;
 
-    private static final Logger log = Logger.getLogger(Code.class);
+    private static final Logger log = LoggerFactory.getLogger(Code.class);
     
     @Id
     @GeneratedValue

@@ -42,7 +42,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -53,7 +52,7 @@ import javax.jms.QueueSession;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+
 import org.dcm4che3.audit.ActiveParticipant;
 import org.dcm4che3.audit.AuditMessage;
 import org.dcm4che3.audit.AuditMessages;
@@ -75,6 +74,8 @@ import org.dcm4chee.arr.cdi.Impl.RemoteSource;
 import org.dcm4chee.arr.cdi.Impl.StartStopEvent;
 import org.dcm4chee.arr.cdi.Impl.UsedEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * The Class ActivityLogger. Manages the creation of audit log
  * started/stopped/used messages
@@ -83,7 +84,7 @@ import org.dcm4chee.arr.cdi.Impl.UsedEvent;
  */
 public class ActivityLogger {
 
-    private static final Logger log = Logger.getLogger(ActivityLogger.class);
+    private static final Logger log = LoggerFactory.getLogger(ActivityLogger.class);
 
     private static final String QUEUE_FACTORY = "/ConnectionFactory";
     private static final String QUEUE = "queue/ARRIncoming";

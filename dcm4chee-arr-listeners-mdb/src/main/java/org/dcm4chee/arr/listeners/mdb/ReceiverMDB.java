@@ -37,8 +37,6 @@
 
 package org.dcm4chee.arr.listeners.mdb;
 
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import javax.ejb.ActivationConfigProperty;
@@ -47,22 +45,9 @@ import javax.inject.Inject;
 import javax.jms.BytesMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
-import org.dcm4chee.arr.entities.AuditRecord;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class ReceiverMDB.
@@ -85,7 +70,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
                 propertyValue = "1") })
 public class ReceiverMDB implements MessageListener {
 
-private static final Logger log = Logger.getLogger(ReceiverMDB.class);
+private static final Logger log = LoggerFactory.getLogger(ReceiverMDB.class);
 
  
     

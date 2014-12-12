@@ -39,15 +39,15 @@ import java.util.List;
 import java.util.TimeZone;
 
 import javax.ejb.EJBException;
-import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 
-import org.apache.log4j.Logger;
 import org.dcm4chee.arr.entities.ActiveParticipant;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.arr.entities.Code;
 import org.dcm4chee.arr.entities.ParticipantObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -63,7 +63,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class AuditRecordHandler extends DefaultHandler {
 
-    private static final Logger log = Logger
+    private static final Logger log = LoggerFactory
 	    .getLogger(AuditRecordHandler.class);
 
     private final EntityManager em;

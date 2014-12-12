@@ -46,7 +46,6 @@ public class TestEntities {
                 .importTestDependencies().importRuntimeAndTestDependencies()
                 .resolve().withoutTransitivity().asFile();
         war1.addAsLibraries(libs);
-        war1.as(ZipExporter.class).exportTo(new File("test.war"), true);
         return war1;
     }
 

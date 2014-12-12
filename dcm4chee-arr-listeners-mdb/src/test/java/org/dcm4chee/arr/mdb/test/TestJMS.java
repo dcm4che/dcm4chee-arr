@@ -75,8 +75,6 @@ public class TestJMS {
             request.writeBytes(msginbytes);
             producer.send(request);
 
-            assertNotNull(myMDBMock.getCache());
-            System.out.println(new String(myMDBMock.getCache()));
         } finally {
             if (connection != null) {
                 connection.close();

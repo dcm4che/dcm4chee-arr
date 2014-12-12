@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.jms.BytesMessage;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
@@ -16,7 +15,9 @@ import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.naming.InitialContext;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.dcm4che3.net.Connection;
 import org.dcm4che3.net.audit.AuditRecordHandler;
 
@@ -32,7 +33,7 @@ import org.dcm4che3.net.audit.AuditRecordHandler;
 @ApplicationScoped
 public class AuditRecordRepositoryHandlerImpl implements AuditRecordHandler {
     
-    private static final Logger log=Logger.getLogger(AuditRecordRepositoryHandlerImpl.class);
+    private static final Logger log=LoggerFactory.getLogger(AuditRecordRepositoryHandlerImpl.class);
 
     private static final String QUEUE_FACTORY = "/ConnectionFactory";
     private static final String QUEUE = "queue/ARRIncoming";

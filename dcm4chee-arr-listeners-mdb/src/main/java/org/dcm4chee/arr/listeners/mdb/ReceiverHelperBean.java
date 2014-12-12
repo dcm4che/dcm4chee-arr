@@ -3,6 +3,7 @@ package org.dcm4chee.arr.listeners.mdb;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.jms.BytesMessage;
@@ -14,9 +15,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.log4j.Logger;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.arr.listeners.mdb.AuditRecordHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLFilter;
@@ -31,7 +33,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 @LocalBean
 public class ReceiverHelperBean implements ReceiverHelperBeanLocal {
     
-    private static final Logger log = Logger.getLogger(ReceiverHelperBean.class);
+    private static final Logger log = LoggerFactory.getLogger(ReceiverHelperBean.class);
     private static final int MSG_PROMPT_LEN = 200;
     
     private static final String IHEYR4_TO_ATNA_XSL = "arr-iheyr4-to-atna.xsl";

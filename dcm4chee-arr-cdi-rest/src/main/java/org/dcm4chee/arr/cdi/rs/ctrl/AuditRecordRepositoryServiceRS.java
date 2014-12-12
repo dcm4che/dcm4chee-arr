@@ -44,7 +44,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryService;;
 
 /**
@@ -59,7 +61,7 @@ public class AuditRecordRepositoryServiceRS {
     private AuditRecordRepositoryService service;
     
     
-    private static final Logger log = Logger.getLogger(AuditRecordRepositoryServiceRS.class);
+    private static final Logger log = LoggerFactory.getLogger(AuditRecordRepositoryServiceRS.class);
 
     /**
      * isRunning

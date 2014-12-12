@@ -55,7 +55,9 @@ import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.dcm4che3.net.Device;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceReloaded;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
@@ -82,7 +84,7 @@ public class AuditRecordRepositoryCleanupImpl implements
     @Inject
     private AuditRecordDeleteBean removeTool;
 
-    private static final Logger log = Logger
+    private static final Logger log = LoggerFactory
             .getLogger(AuditRecordRepositoryCleanupImpl.class);
 
     private ScheduledFuture<?> scheduledCleanProcedure = null;

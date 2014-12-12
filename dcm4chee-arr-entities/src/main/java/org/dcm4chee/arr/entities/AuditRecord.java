@@ -61,7 +61,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.hibernate.annotations.Index;
 
 /**
@@ -76,7 +78,7 @@ public class AuditRecord implements Serializable {
 
     private static final long serialVersionUID = -4138396955398529612L;
 
-    private static final Logger log = Logger.getLogger(AuditRecord.class);
+    private static final Logger log = LoggerFactory.getLogger(AuditRecord.class);
     
     @Id
     @GeneratedValue

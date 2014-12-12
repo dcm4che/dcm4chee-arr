@@ -42,7 +42,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
 import org.dcm4che3.conf.api.ConfigurationException;
 import org.dcm4che3.conf.api.DicomConfiguration;
 import org.dcm4che3.net.Connection;
@@ -55,6 +54,9 @@ import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStopped;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
 import org.dcm4chee.arr.cdi.Impl.StartStopEvent;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.Startup;
 import javax.ejb.Singleton;
@@ -70,7 +72,7 @@ import javax.ejb.Singleton;
 @Singleton
 public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositoryService {
 
-    private static final Logger log = Logger.getLogger(AuditRecordRepositoryServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(AuditRecordRepositoryServiceImpl.class);
   private static final String DEVICE_NAME_PROPERTY = "org.dcm4chee.arr.deviceName";
   private static final String DEF_DEVICE_NAME = "dcm4chee-arr";
   private static String[] JBOSS_PROPERITIES = {"jboss.home", "jboss.modules", "jboss.server.base",
@@ -133,6 +135,7 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
      *             the configuration exception
      */
   public Device findDevice() throws ConfigurationException {
+      conf.sync();
     return conf.findDevice(
 	    System.getProperty(
 	    DEVICE_NAME_PROPERTY, 
@@ -159,7 +162,7 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
 
       start();
     } catch (RuntimeException re) {
-      log.error(re);
+      log.error(re.getMessage());
       throw re;
     } catch (Exception e) {
       throw new RuntimeException(e);

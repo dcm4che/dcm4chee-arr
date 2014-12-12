@@ -46,9 +46,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 import org.dcm4chee.arr.entities.AuditRecord;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class AuditRecordDeleteBean.
@@ -58,7 +60,7 @@ import org.dcm4chee.arr.entities.AuditRecord;
 @Stateless
 public class AuditRecordDeleteBean {
 
-  private static final Logger log=Logger.getLogger(AuditRecordDeleteBean.class);
+  private static final Logger log=LoggerFactory.getLogger(AuditRecordDeleteBean.class);
   
   @PersistenceContext(unitName = "dcm4chee-arr")
   private EntityManager em;

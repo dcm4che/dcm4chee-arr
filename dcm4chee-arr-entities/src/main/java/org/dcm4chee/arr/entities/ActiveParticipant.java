@@ -51,7 +51,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 import javax.persistence.Table;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class ActiveParticipant.
@@ -66,7 +68,7 @@ public class ActiveParticipant implements Serializable {
 
     private static final long serialVersionUID = 513457139488147710L;
 
-    private static final Logger log = Logger.getLogger(ActiveParticipant.class);
+    private static final Logger log = LoggerFactory.getLogger(ActiveParticipant.class);
     
     @Id
     @GeneratedValue

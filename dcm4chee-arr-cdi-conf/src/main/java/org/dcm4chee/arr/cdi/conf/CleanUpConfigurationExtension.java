@@ -53,7 +53,7 @@ import org.dcm4che3.net.DeviceExtension;
  * @author Hesham Elbadawi bsdreko@gmail.com
  */
 
-@LDAP(objectClasses = "arrCleanUp", noContainerNode = true)
+@LDAP(objectClasses = "arrCleanUp")
 @ConfigurableClass
 public class CleanUpConfigurationExtension extends DeviceExtension {
 
@@ -65,6 +65,7 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
 
     // checks if max record count is to be used for deletion
     // @ConfigField(name="arrCleanUpUsesMaxRecords" ,def="false")
+    @ConfigurableProperty(name = "arrCleanUpUsesMaxRecords", defaultValue = "false")
     private boolean arrCleanUpUsesMaxRecords;
 
     // specify max number of records to keep
