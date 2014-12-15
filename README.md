@@ -19,7 +19,7 @@ iii-Uses dcm4che implementation for SYSLOG protocol.
 
 iv-Supports audit reporting via either TLS or UDP.
 
-2)Provides support for LDAP and Java preferences configuration
+2)Provides support for LDAP and JSON file configuration
 
 3)Provides a configurable and customizable clean up mechanism for the audit record repository.
 
@@ -29,12 +29,13 @@ iv-Supports audit reporting via either TLS or UDP.
 
 6)Provides a simple web interface for filtering queries.
 
+7)Supports new dcm4che library version 3.3.5
 
 Build
 -----
 After installation of [Maven 3](http://maven.apache.org):
 
-   for java preferences config profile:
+   for JSON file config:
  
       mvn install -Ddb={db2|firebird|h2|mysql|oracle|psql|sqlserver}
       

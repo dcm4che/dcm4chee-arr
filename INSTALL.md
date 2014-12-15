@@ -1,4 +1,4 @@
-Getting Started with DCM4CHEE ARR 4.3.0-SNAPSHOT
+Getting Started with DCM4CHEE ARR 4.x
 ==================================================
 
 Requirements
@@ -26,13 +26,11 @@ Requirements
 
 -   LDAP Browser - [Apache Directory Studio 1.5.3](http://directory.apache.org/studio/)
 
-    *Note*: Both LDAP and Java Preferences can be used to configure
+    *Note*: Both LDAP and JSON can be used to configure
     the ARR, however you need to do the configuration changes manually,
-    either in the LDAP tree or in the Preferences XML file.
-    Also be careful to load the Preferences XML file in case you will use
-    Preferences as your configuration.
-    A tool for loading preferences XML is available in the dcm4che library [xml2prefs, xml2prefs.bat]
-    (http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
+    either in the LDAP tree or in the JSON file.
+    Also be careful to load the JSON file in case you will use
+    JSON as your configuration.
 
 Download and extract binary distribution package
 ------------------------------------------------
@@ -339,14 +337,11 @@ Import sample configuration into LDAP Server
         > sed -i s/dc=example,dc=com/dc=my-domain,dc=com/ arrdevice-sample(no init).ldif
         > sed -i s/dc=example,dc=com/dc=my-domain,dc=com/ AuditLogger_with_supress_criteria.ldif
 
-Setup Java Preferences (LDAP alternative)
+Setup JSON (LDAP alternative)
 ----------------
-1.  Load the sample xml file dcm4chee-arr-sample.xml from dcm4chee-arr-cdi-conf-prefs/src/main/config/
-    into your system properties.
-2.    A tool for loading preferences XML is available in the dcm4che library [xml2prefs, xml2prefs.bat]
-    (http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
-        
-        
+1.  Load the sample JSON file sample-config.json from /dcm4chee-arr-4.0.0-SNAPSHOT-${db}/json/
+    into your $JBOSS_HOME/standalone/configuration/ folder.
+
 Setup JBoss AS 7
 ----------------
 
@@ -363,7 +358,7 @@ Setup JBoss AS 7
 
     Check the application log during startup to see which values are actually used.
 
-To use preferences change the org.dcm4che.conf.storage value to "prefs"
+To use JSON change the org.dcm4che.conf.storage value to "json_file"
 
 3.  Install DCM4CHE {lib-version} libraries as Jboss modules:
 
@@ -480,7 +475,7 @@ To use preferences change the org.dcm4che.conf.storage value to "prefs"
     -  Microsoft SQL Server: `jdbc:sqlserver://localhost:1433;databaseName=<database-name>`
 
 9.  By default, DCM4CHEE ARR will assume `dcm4chee-arr` as its Device Name, used to find its
-    configuration in the configuration backend (LDAP Server or Java Preferences). You may specify a different
+    configuration in the configuration backend (LDAP Server JSON file). You may specify a different
     Device Name by system property `org.dcm4chee.arr.deviceName` using JBoss AS 7 CLI:
 
         [standalone@localhost:9999 /] /system-property=org.dcm4chee.arr.deviceName:add(value=<device-name>)
@@ -538,20 +533,20 @@ To use preferences change the org.dcm4che.conf.storage value to "prefs"
      
 12. Deploy DCM4CHEE ARR using JBoss AS 7 CLI, e.g.:
 
-        [standalone@localhost:9999 /] deploy dcm4chee-arr-cdi/dcm4chee-arr-cdi-war/target/dcm4chee-arr-cdi-war-4.3.0-SNAPSHOT-${db}.war
+        [standalone@localhost:9999 /] deploy dcm4chee-arr-cdi/dcm4chee-arr-cdi-war/target/dcm4chee-arr-cdi-war-4.0.0-${db}.war
 
     Verify that DCM4CHEE ARR was deployed and started successfully, e.g.:
 
 
 13. You may undeploy DCM4CHEE ARR at any time using JBoss AS 7 CLI, e.g.:
 
-        [standalone@localhost:9999 /] undeploy dcm4chee-arr-cdi-war-4.3.0-SNAPSHOT-${db}.war
+        [standalone@localhost:9999 /] undeploy dcm4chee-arr-cdi-war-4.0.0-${db}.war
         
 14. You can also use the provided web interface for querying the ARR in an organized and clean way.
     To install the web application just deploy it on jboss as follows:
-        [standalone@localhost:9999 /] deploy dcm4chee-arr-cdi/dcm4chee-arr-web/target/dcm4chee-arr-web-4.3.0-SNAPSHOT-${db}.war
+        [standalone@localhost:9999 /] deploy dcm4chee-arr-cdi/dcm4chee-arr-web/target/dcm4chee-arr-web-4.0.0.war
 
-Testing DCM4CHEE ARR 4.3.0-SNAPSHOT
+Testing DCM4CHEE ARR 4.0.0
 ----------------------------
 Test running:
 to test your ARR service is running you can do this via restful service after deployment just point your browser

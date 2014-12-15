@@ -4,7 +4,7 @@
   <name>Audit Record Repository Entities</name>
   <groupId>org.dcm4che.dcm4chee-arr</groupId>
   <artifactId>custom-resolver-service-tests</artifactId>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>4.0.0</version>
   <dependencies>
     <dependency>
       <groupId>org.dcm4che.dcm4chee-arr</groupId>

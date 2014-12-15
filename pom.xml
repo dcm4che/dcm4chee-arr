@@ -5,12 +5,12 @@
   <artifactId>dcm4chee-arr-cdi</artifactId>
   <packaging>pom</packaging>
   <name>Audit Record Repository</name>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>4.0.0</version>
   <properties>
     <ds>java:/arrDS</ds>
     <show_sql>false</show_sql>
     <hbm2ddl.auto>update</hbm2ddl.auto>
-    <dcm4che.version>3.3.5-SNAPSHOT</dcm4che.version>
+    <dcm4che.version>3.3.5</dcm4che.version>
     <querydsl.version>3.2.3</querydsl.version>
 	<skipTests>true</skipTests>
   </properties>
