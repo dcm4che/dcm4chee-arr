@@ -12,11 +12,11 @@ dcmKeyStorePin:: Y2hhbmdlaXQ=
 dcmKeyStoreType: JKS
 dcmKeyStoreURL: ${jboss.server.config.url}/dcm4chee-arr/key.jks
 
-dn: cn=Audit Record Repository,dicomDeviceName=dcm4chee-arr,cn=Devices,cn=DI
+dn: cn=AuditRecordRepository,dicomDeviceName=dcm4chee-arr,cn=Devices,cn=DI
  COM Configuration,dc=example,dc=com
 objectClass: top
 objectClass: dcmAuditRecordRepository
-cn: Audit Record Repository
+cn: AuditRecordRepository
 dicomNetworkConnectionReference: cn=audit-udp,dicomDeviceName=dcm4chee-arr,c
  n=Devices,cn=DICOM Configuration,dc=example,dc=com
 dicomNetworkConnectionReference: cn=audit-tls,dicomDeviceName=dcm4chee-arr,c
@@ -65,11 +65,11 @@ cn: AuditEventsCleanUp
 objectClass: dcmCollection
 objectClass: top
 
-dn: cn=Audit Logger,dicomDeviceName=dcm4chee-arr,cn=Devices,cn=DICOM Configu
+dn: cn=AuditLogger,dicomDeviceName=dcm4chee-arr,cn=Devices,cn=DICOM Configu
  ration,dc=example,dc=com
 objectClass: top
 objectClass: dcmAuditLogger
-cn: Audit Logger
+cn: AuditLogger
 dcmAuditRecordRepositoryDeviceReference: dicomDeviceName=dcm4chee-arr,cn=Dev
  ices,cn=DICOM Configuration,dc=example,dc=com
 dicomNetworkConnectionReference: cn=audit-udp,dicomDeviceName=dcm4chee-arr,c

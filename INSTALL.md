@@ -34,25 +34,11 @@ Requirements
     A tool for loading preferences XML is available in the dcm4che library [xml2prefs, xml2prefs.bat]
     (http://sourceforge.net/projects/dcm4che/files/dcm4che3/3.3.1/dcm4che-3.3.1-bin.zip)
 
-
-Build the binary
+Download and extract binary distribution package
 ------------------------------------------------
-After installation of [Maven 3](http://maven.apache.org):
-
-   for java preferences config profile:
- 
-      mvn install -Ddb={db2|firebird|h2|mysql|oracle|psql|sqlserver}
-      
-   for ldap config profile:
-  
-      mvn install -Ddb={db2|firebird|h2|mysql|oracle|psql|sqlserver} -Dldap={apacheds|opends|slapd}
-
-Initial Database Population
--------------------
-After building the source, an initial database population can be done using the generated DDL file
-in the following directory [dcm4chee-arr-cdi/dcm4chee-arr-entities/target/] or in the assembly zip sql
-folder, the file will have the following name create-table-${db}.ddl with ${db} as suffix signifying
-database used (this is just a maven filter) ie. if you build for oracle it will be create-table-oracle.ddl
+DCM4CHEE Audit Record Repository 4.x binary distributions for different databases can be obtained
+from [Sourceforge](https://sourceforge.net/projects/dcm4che/files/dcm4chee-arr4/).
+Extract (unzip) your chosen download to the directory of your choice.
 
 Initialize Database
 -------------------

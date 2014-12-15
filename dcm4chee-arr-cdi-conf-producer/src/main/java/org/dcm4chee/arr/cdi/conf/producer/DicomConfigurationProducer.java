@@ -50,7 +50,8 @@ import org.dcm4che3.net.audit.AuditRecordRepository;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 
 /**
- * @author Gunter Zeilinger <gunterze@gmail.com>
+ * @author Gunter Zeilinger <gunterz@gmail.com>
+ * @author Hesham Elbadawi <bsdreko@gmail.com>
  *
  */
 public class DicomConfigurationProducer {

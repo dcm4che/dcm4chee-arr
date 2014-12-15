@@ -31,7 +31,7 @@
       <outputDirectory>.</outputDirectory>
       <includes>
         <include>ldap/**</include>
-        <include>prefs/**</include>
+        <include>json/**</include>
       </includes>
       <lineEnding>dos</lineEnding>
     </fileSet>
