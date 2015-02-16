@@ -36,7 +36,7 @@
       <lineEnding>dos</lineEnding>
     </fileSet>
     <fileSet>
-      <directory>../dcm4chee-arc-entities/target</directory>
+      <directory>../dcm4chee-arr-entities/target</directory>
       <includes>
         <include>create-table-${db}.ddl</include>
       </includes>

@@ -59,6 +59,12 @@
     </dependency>
     <dependency>
       <groupId>org.dcm4che.dcm4chee-arr</groupId>
+      <artifactId>dcm4chee-arr-entities</artifactId>
+      <version>${project.version}</version>
+      <classifier>${db}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-web</artifactId>
       <version>${project.version}</version>
       <type>war</type>
