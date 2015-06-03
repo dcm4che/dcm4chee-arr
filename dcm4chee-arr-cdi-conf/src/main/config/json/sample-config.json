@@ -4,236 +4,184 @@
     "dicomUniqueAETitlesRegistryRoot" : { },
     "dicomDevicesRoot" : {
       "dcm4chee-arr" : {
-        "dicomInstitutionName" : [ ],
-        "dicomSoftwareVersion" : [ ],
-        "dicomInstalled" : true,
-        "dicomInstitutionDepartmentName" : [ ],
         "dcmLimitOpenAssociations" : 0,
-        "dicomNetworkAE" : { },
-        "dicomDeviceName" : "dcm4chee-arr",
-        "dicomVendorData" : [ ],
-        "dicomPrimaryDeviceType" : [ ],
-        "dicomInstitutionAddress" : [ ],
-        "dicomConnection" : [ {
-          "dcmBlacklistedHostname" : [ ],
-          "dcmTCPNoDelay" : true,
-          "dcmIdleTimeout" : 0,
-          "dicomTLSCipherSuite" : [ ],
-          "dcmAARQTimeout" : 0,
-          "dcmTCPSendBufferSize" : 0,
-          "dcmProtocol" : "SYSLOG_UDP",
-          "dcmAAACTimeout" : 0,
-          "dcmTCPCloseDelay" : 50,
-          "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
-          "dcmMaxOpsPerformed" : 1,
-          "dcmTLSNeedClientAuth" : true,
-          "dcmResponseTimeout" : 0,
-          "dcmPackPDV" : true,
-          "cn" : "audit-udp",
-          "dcmARRPTimeout" : 0,
-          "dcmTCPConnectTimeout" : 0,
-          "dcmTCPReceiveBufferSize" : 0,
-          "dicomHostname" : "localhost",
-          "dicomPort" : 514,
-          "dcmMaxOpsInvoked" : 1,
-          "dcmTCPBacklog" : 50,
-          "dcmReceivePDULength" : 16378,
-          "dcmRetrieveTimeout" : 0,
-          "dcmSendPDULength" : 16378
-        }, {
-          "dcmBlacklistedHostname" : [ ],
-          "dcmTCPNoDelay" : true,
-          "dcmIdleTimeout" : 0,
-          "dicomTLSCipherSuite" : [ "TLS_RSA_WITH_AES_128_CBC_SHA", "SSL_RSA_WITH_3DES_EDE_CBC_SHA" ],
-          "dcmAARQTimeout" : 0,
-          "dcmTCPSendBufferSize" : 0,
-          "dcmProtocol" : "SYSLOG_TLS",
-          "dcmAAACTimeout" : 0,
-          "dcmTCPCloseDelay" : 50,
-          "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
-          "dcmMaxOpsPerformed" : 1,
-          "dcmTLSNeedClientAuth" : true,
-          "dcmResponseTimeout" : 0,
-          "dcmPackPDV" : true,
-          "cn" : "dicom-tls",
-          "dcmARRPTimeout" : 0,
-          "dcmTCPConnectTimeout" : 0,
-          "dcmTCPReceiveBufferSize" : 0,
-          "dicomHostname" : "localhost",
-          "dicomPort" : 6514,
-          "dcmMaxOpsInvoked" : 1,
-          "dcmTCPBacklog" : 50,
-          "dcmReceivePDULength" : 16378,
-          "dcmRetrieveTimeout" : 0,
-          "dcmSendPDULength" : 16378
-        }, {
-          "dcmBlacklistedHostname" : [ ],
-          "dcmTCPNoDelay" : true,
-          "dcmIdleTimeout" : 0,
-          "dicomTLSCipherSuite" : [ ],
-          "dcmAARQTimeout" : 0,
-          "dcmTCPSendBufferSize" : 0,
-          "dcmProtocol" : "SYSLOG_UDP",
-          "dcmAAACTimeout" : 0,
-          "dcmTCPCloseDelay" : 50,
-          "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
-          "dcmMaxOpsPerformed" : 1,
-          "dcmTLSNeedClientAuth" : true,
-          "dcmResponseTimeout" : 0,
-          "dcmPackPDV" : true,
-          "cn" : "audit-udp",
-          "dcmARRPTimeout" : 0,
-          "dcmTCPConnectTimeout" : 0,
-          "dcmTCPReceiveBufferSize" : 0,
-          "dicomHostname" : "localhost",
-          "dicomPort" : -1,
-          "dcmMaxOpsInvoked" : 1,
-          "dcmTCPBacklog" : 50,
-          "dcmReceivePDULength" : 16378,
-          "dcmRetrieveTimeout" : 0,
-          "dcmSendPDULength" : 16378
-        } ],
-        "dicomRelatedDeviceReference" : [ ],
-        "dicomInstitutionCode" : [ ],
         "deviceExtensions" : {
+          "AuditLogger" : {
+            "dcmAuditIncludeInstanceUID" : false,
+            "dcmAuditRecordRepositoryDeviceReference" : "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']",
+            "dcmAuditSourceTypeCode" : [ "4" ],
+            "dcmAuditSuppressCriteria" : [ ],
+            "dicomNetworkConnectionReference" : [ "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']/dicomConnection[cn='audit-udp']" ]
+          },
           "AuditRecordRepository" : {
             "dicomNetworkConnectionReference" : [ "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']/dicomConnection[cn='audit-udp']" ]
           },
-          "AuditLogger" : {
-            "dcmAuditMajorFailureSeverity" : 2,
-            "dcmAuditSuppressCriteria" : [ ],
-            "dcmAuditSourceTypeCode" : [ "4" ],
-            "dcmAuditFacility" : 10,
-            "dcmAuditTimestampInUTC" : false,
-            "dicomNetworkConnectionReference" : [ "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']/dicomConnection[cn='audit-udp']" ],
-            "dcmAuditIncludeInstanceUID" : false,
-            "dcmAuditMessageID" : "DICOM+RFC3881",
-            "dcmAuditMessageBOM" : true,
-            "dcmAuditRecordRepositoryDeviceReference" : "dcm4chee-arr",
-            "dcmAuditSuccessSeverity" : 5,
-            "dcmAuditMessageSchemaURI" : "http://www.dcm4che.org/DICOM/audit-message.rnc",
-            "dcmAuditSeriousFailureSeverity" : 3,
-            "dcmAuditMessageEncoding" : "UTF-8",
-            "dcmAuditMessageFormatXML" : false,
-            "dcmAuditLoggerRetryInterval" : 0,
-            "dcmAuditMinorFailureSeverity" : 4
-          },
           "CleanUpConfigurationExtension" : {
-            "arrCleanUpUsesMaxRecords" : false,
-            "arrDefaultCleanUpPolicy" : "all",
-            "arrCleanUpMaxRecords" : 19,
-            "arrBackUpDir" : "/Audit-Record-Repository-BackUps",
-            "arrCleanUpPollInterval" : 3600,
-            "arrCleanUpDeletePerTransaction" : 2,
-            "arrsafeClean" : true,
-            "arrBackUpPollInterval" : 3600,
-            "arrCleanUpRetentionTime" : 1,
             "AuditEventsCleanUp" : {
-              "IHE0002^IHE" : {
-                "arrEventIDTypeCode" : "IHE0002^IHE",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110107^DCM" : {
-                "arrEventIDTypeCode" : "110107^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "IHE0003^IHE" : {
-                "arrEventIDTypeCode" : "IHE0003^IHE",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110104^DCM" : {
-                "arrEventIDTypeCode" : "110104^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110114^DCM" : {
-                "arrEventIDTypeCode" : "110114^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110106^DCM" : {
-                "arrEventIDTypeCode" : "110106^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
               "110100^DCM" : {
                 "arrEventIDTypeCode" : "110100^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110105^DCM" : {
-                "arrEventIDTypeCode" : "110105^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
               },
               "110101^DCM" : {
                 "arrEventIDTypeCode" : "110101^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
               },
               "110102^DCM" : {
                 "arrEventIDTypeCode" : "110102^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110108^DCM" : {
-                "arrEventIDTypeCode" : "110108^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110110^DCM" : {
-                "arrEventIDTypeCode" : "110110^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "IHE0001^IHE" : {
-                "arrEventIDTypeCode" : "IHE0001^IHE",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "IHE0004^IHE" : {
-                "arrEventIDTypeCode" : "IHE0004^IHE",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110112^DCM" : {
-                "arrEventIDTypeCode" : "110112^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110109^DCM" : {
-                "arrEventIDTypeCode" : "110109^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110111^DCM" : {
-                "arrEventIDTypeCode" : "110111^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "110113^DCM" : {
-                "arrEventIDTypeCode" : "110113^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
-              },
-              "IHE0005^IHE" : {
-                "arrEventIDTypeCode" : "IHE0005^IHE",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
               },
               "110103^DCM" : {
                 "arrEventIDTypeCode" : "110103^DCM",
-                "arrEventTypeRetentionUnit" : "DAYS",
-                "arrEventTypeRetention" : 1
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110104^DCM" : {
+                "arrEventIDTypeCode" : "110104^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110105^DCM" : {
+                "arrEventIDTypeCode" : "110105^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110106^DCM" : {
+                "arrEventIDTypeCode" : "110106^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110107^DCM" : {
+                "arrEventIDTypeCode" : "110107^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110108^DCM" : {
+                "arrEventIDTypeCode" : "110108^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110109^DCM" : {
+                "arrEventIDTypeCode" : "110109^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110110^DCM" : {
+                "arrEventIDTypeCode" : "110110^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110111^DCM" : {
+                "arrEventIDTypeCode" : "110111^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110112^DCM" : {
+                "arrEventIDTypeCode" : "110112^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110113^DCM" : {
+                "arrEventIDTypeCode" : "110113^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "110114^DCM" : {
+                "arrEventIDTypeCode" : "110114^DCM",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "IHE0001^IHE" : {
+                "arrEventIDTypeCode" : "IHE0001^IHE",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "IHE0002^IHE" : {
+                "arrEventIDTypeCode" : "IHE0002^IHE",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "IHE0003^IHE" : {
+                "arrEventIDTypeCode" : "IHE0003^IHE",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "IHE0004^IHE" : {
+                "arrEventIDTypeCode" : "IHE0004^IHE",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
+              },
+              "IHE0005^IHE" : {
+                "arrEventIDTypeCode" : "IHE0005^IHE",
+                "arrEventTypeRetention" : 1,
+                "arrEventTypeRetentionUnit" : "DAYS"
               }
             },
-            "arrCleanUpRetentionTimeUnit" : "DAYS",
-            "arrCleanUpUsesRetention" : false
+            "arrBackUPStorageGroupID" : "DEFAULT",
+            "arrBackUPUseDailyFolder" : true
+          },
+          "StorageDeviceExtension" : {
+            "Storage System Groups" : {
+              "DEFAULT" : {
+                "Storage Container" : {
+                  "dcmProviderName" : "org.dcm4chee.storage.zip"
+                },
+                "Storage Systems" : {
+                  "online" : {
+                    "StatusFileExtensions" : {
+                      ".archived" : "ARCHIVED"
+                    },
+                    "dcmProviderName" : "org.dcm4chee.storage.filesystem",
+                    "dcmStorageSystemID" : "online",
+                    "dcmStorageSystemPath" : "/var/local/dcm4chee-arr/backup"
+                  }
+                },
+                "StorageAccessTimeOffsetMap" : { },
+                "dcmActiveStorageSystemID" : [ "online" ],
+                "dcmBaseStorageAccessTime" : 2000,
+                "dcmRetrieveAET" : [ ],
+                "dcmStorageSystemGroupID" : "DEFAULT"
+              }
+            }
           }
-        }
+        },
+        "dicomConnection" : [ {
+          "cn" : "audit-udp",
+          "dcmBlacklistedHostname" : [ ],
+          "dcmProtocol" : "SYSLOG_UDP",
+          "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
+          "dicomHostname" : "localhost",
+          "dicomPort" : 514,
+          "dicomTLSCipherSuite" : [ ]
+        }, {
+          "cn" : "dicom-tls",
+          "dcmBlacklistedHostname" : [ ],
+          "dcmProtocol" : "SYSLOG_TLS",
+          "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
+          "dicomHostname" : "localhost",
+          "dicomPort" : 6514,
+          "dicomTLSCipherSuite" : [ "TLS_RSA_WITH_AES_128_CBC_SHA", "SSL_RSA_WITH_3DES_EDE_CBC_SHA" ]
+        }, {
+          "cn" : "audit-udp",
+          "dcmBlacklistedHostname" : [ ],
+          "dcmProtocol" : "SYSLOG_UDP",
+          "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
+          "dicomHostname" : "localhost",
+          "dicomTLSCipherSuite" : [ ]
+        } ],
+        "dicomDeviceName" : "dcm4chee-arr",
+        "dicomInstalled" : true,
+        "dicomInstitutionAddress" : [ ],
+        "dicomInstitutionCode" : [ ],
+        "dicomInstitutionDepartmentName" : [ ],
+        "dicomInstitutionName" : [ ],
+        "dicomNetworkAE" : { },
+        "dicomPrimaryDeviceType" : [ ],
+        "dicomRelatedDeviceReference" : [ ],
+        "dicomSoftwareVersion" : [ ],
+        "dicomVendorData" : [ ]
       }
     }
   }

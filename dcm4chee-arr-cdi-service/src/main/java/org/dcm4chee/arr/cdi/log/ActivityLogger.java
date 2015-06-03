@@ -52,7 +52,6 @@ import javax.jms.QueueSession;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-
 import org.dcm4che3.audit.ActiveParticipant;
 import org.dcm4che3.audit.AuditMessage;
 import org.dcm4che3.audit.AuditMessages;
@@ -76,6 +75,7 @@ import org.dcm4chee.arr.cdi.Impl.UsedEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * The Class ActivityLogger. Manages the creation of audit log
  * started/stopped/used messages
@@ -84,7 +84,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ActivityLogger {
 
-    private static final Logger log = LoggerFactory.getLogger(ActivityLogger.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(ActivityLogger.class);
 
     private static final String QUEUE_FACTORY = "/ConnectionFactory";
     private static final String QUEUE = "queue/ARRIncoming";
@@ -112,36 +113,34 @@ public class ActivityLogger {
      *             Signals that an I/O exception has occurred.
      */
     public void startFired(
-	    @Observes @AuditRecordRepositoryServiceStarted StartStopEvent start)
-	    throws NamingException, JMSException, IOException {
-	auditLogger = start.getDevice().getDeviceExtension(AuditLogger.class);
-	msg = initialize(start, auditLogger);
-	if (!auditLogger.isAuditMessageSuppressed(msg)) {
-	   sendToJMS(msg);
-	    log.info("Observed start event and sent auditrecordrepository started to jms queue");
-	} else {
-	    log.info("Observed start event and suppressed auditrecordrepository started");
-	}
+            @Observes @AuditRecordRepositoryServiceStarted StartStopEvent start)
+            throws NamingException, JMSException, IOException {
+        auditLogger = start.getDevice().getDeviceExtension(AuditLogger.class);
+        msg = initialize(start, auditLogger);
+        if (!auditLogger.isAuditMessageSuppressed(msg)) {
+            sendToJMS(msg);
+            log.info("Observed start event and sent auditrecordrepository started to jms queue");
+        } else {
+            log.info("Observed start event and suppressed auditrecordrepository started");
+        }
     }
 
-    private void sendToJMS(AuditMessage msg) throws NamingException, JMSException, IOException {
-	// TODO Auto-generated method stub
-	 InitialContext jndiCtx = new InitialContext();
-	    connFactory = (QueueConnectionFactory) jndiCtx
-		    .lookup(QUEUE_FACTORY);
-	    queue = (Queue) jndiCtx.lookup(QUEUE);
-	    conn = connFactory.createQueueConnection();
-	    session = conn.createQueueSession(false,
-		    QueueSession.AUTO_ACKNOWLEDGE);
-	    sender = session.createSender(queue);
-	    BytesMessage Bmsg = session.createBytesMessage();
-	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	    AuditMessages.toXML(msg, bos, formatXML, encoding, schemaURI);
-	    byte[] msginbytes = bos.toByteArray();
-	    Bmsg.writeBytes(msginbytes);
-	    sender.send(Bmsg);
-	    conn.close();
-	    session.close();
+    private void sendToJMS(AuditMessage msg) throws NamingException,
+            JMSException, IOException {
+        InitialContext jndiCtx = new InitialContext();
+        connFactory = (QueueConnectionFactory) jndiCtx.lookup(QUEUE_FACTORY);
+        queue = (Queue) jndiCtx.lookup(QUEUE);
+        conn = connFactory.createQueueConnection();
+        session = conn.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
+        sender = session.createSender(queue);
+        BytesMessage Bmsg = session.createBytesMessage();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        AuditMessages.toXML(msg, bos, formatXML, encoding, schemaURI);
+        byte[] msginbytes = bos.toByteArray();
+        Bmsg.writeBytes(msginbytes);
+        sender.send(Bmsg);
+        conn.close();
+        session.close();
     }
 
     /**
@@ -157,16 +156,16 @@ public class ActivityLogger {
      *             Signals that an I/O exception has occurred.
      */
     public void stopFired(
-	    @Observes @AuditRecordRepositoryServiceStopped StartStopEvent stop)
-	    throws NamingException, JMSException, IOException {
-	auditLogger = stop.getDevice().getDeviceExtension(AuditLogger.class);
-	msg = initialize(stop, auditLogger);
-	if (!auditLogger.isAuditMessageSuppressed(msg)) {
-	    sendToJMS(msg);
-	    log.info("Observed stop event and sent auditrecordrepository stopped to jms queue");
-	} else {
-	    log.info("Observed stop event and suppressed auditrecordrepository stopped");
-	}
+            @Observes @AuditRecordRepositoryServiceStopped StartStopEvent stop)
+            throws NamingException, JMSException, IOException {
+        auditLogger = stop.getDevice().getDeviceExtension(AuditLogger.class);
+        msg = initialize(stop, auditLogger);
+        if (!auditLogger.isAuditMessageSuppressed(msg)) {
+            sendToJMS(msg);
+            log.info("Observed stop event and sent auditrecordrepository stopped to jms queue");
+        } else {
+            log.info("Observed stop event and suppressed auditrecordrepository stopped");
+        }
     }
 
     /**
@@ -182,79 +181,79 @@ public class ActivityLogger {
      *             Signals that an I/O exception has occurred.
      */
     public void usedFired(
-	    @Observes @AuditRecordRepositoryServiceUsed UsedEvent used)
-	    throws NamingException, JMSException, IOException {
-	auditLogger = used.getDevice().getDeviceExtension(AuditLogger.class);
-	msg = initialize(used, auditLogger);
-	if (!auditLogger.isAuditMessageSuppressed(msg)) {
-	    sendToJMS(msg);
-	    log.info("Observed used event and sent auditrecordrepository used to jms queue");
-	} else {
-	    log.info("Observed Used event and suppressed auditrecordrepository used");
-	}
+            @Observes @AuditRecordRepositoryServiceUsed UsedEvent used)
+            throws NamingException, JMSException, IOException {
+        auditLogger = used.getDevice().getDeviceExtension(AuditLogger.class);
+        msg = initialize(used, auditLogger);
+        if (!auditLogger.isAuditMessageSuppressed(msg)) {
+            sendToJMS(msg);
+            log.info("Observed used event and sent auditrecordrepository used to jms queue");
+        } else {
+            log.info("Observed Used event and suppressed auditrecordrepository used");
+        }
     }
 
     public AuditMessage initialize(BasicEvent event, AuditLogger logger) {
-	AuditMessage msg = new AuditMessage();
-	if (event.getSource() instanceof LocalSource) {
+        AuditMessage msg = new AuditMessage();
+        if (event.getSource() instanceof LocalSource) {
 
-	    // Event
-	    msg.setEventIdentification(AuditMessages.createEventIdentification(
-		    EventID.ApplicationActivity, EventActionCode.Execute,
-		    logger.timeStamp(), EventOutcomeIndicator.Success, null,
-		    event.isState() ? EventTypeCode.ApplicationStart
-			    : EventTypeCode.ApplicationStop));
+            // Event
+            msg.setEventIdentification(AuditMessages.createEventIdentification(
+                    EventID.ApplicationActivity, EventActionCode.Execute,
+                    logger.timeStamp(), EventOutcomeIndicator.Success, null,
+                    event.isState() ? EventTypeCode.ApplicationStart
+                            : EventTypeCode.ApplicationStop));
 
-	    // Active Participant 1: Application started (1)
-	    msg.getActiveParticipant().add(
-		    logger.createActiveParticipant(false,
-			    RoleIDCode.Application));
+            // Active Participant 1: Application started (1)
+            msg.getActiveParticipant().add(
+                    logger.createActiveParticipant(false,
+                            RoleIDCode.Application));
 
-	    // Active Participant 2: Persons and or processes that started the
-	    // Application
-	    msg.getActiveParticipant().add(
-		    logger.createActiveParticipant(true, event.getSource()
-			    .getIdentity(), null, null, event.getSource()
-			    .getHost(), RoleIDCode.ApplicationLauncher));
+            // Active Participant 2: Persons and or processes that started the
+            // Application
+            msg.getActiveParticipant().add(
+                    logger.createActiveParticipant(true, event.getSource()
+                            .getIdentity(), null, null, event.getSource()
+                            .getHost(), RoleIDCode.ApplicationLauncher));
 
-	    msg.getAuditSourceIdentification().add(
-		    logger.createAuditSourceIdentification());
+            msg.getAuditSourceIdentification().add(
+                    logger.createAuditSourceIdentification());
 
-	    return msg;
-	} else if (event instanceof UsedEvent) {
-	    // Event
-	    EventIdentification eventIdentification = new EventIdentification();
-	    eventIdentification.setEventID(EventID.AuditLogUsed);
-	    eventIdentification.setEventActionCode(EventActionCode.Read);
-	    eventIdentification.setEventDateTime(logger.timeStamp());
-	    eventIdentification
-		    .setEventOutcomeIndicator(EventOutcomeIndicator.Success);
-	    eventIdentification.setEventOutcomeDescription(null);
-	    msg.setEventIdentification(eventIdentification);
+            return msg;
+        } else if (event instanceof UsedEvent) {
+            // Event
+            EventIdentification eventIdentification = new EventIdentification();
+            eventIdentification.setEventID(EventID.AuditLogUsed);
+            eventIdentification.setEventActionCode(EventActionCode.Read);
+            eventIdentification.setEventDateTime(logger.timeStamp());
+            eventIdentification
+                    .setEventOutcomeIndicator(EventOutcomeIndicator.Success);
+            eventIdentification.setEventOutcomeDescription(null);
+            msg.setEventIdentification(eventIdentification);
 
-	    // Active Participant 2: Persons and or processes that started the
-	    // Application
+            // Active Participant 2: Persons and or processes that started the
+            // Application
 
-	    ActiveParticipant ap = new ActiveParticipant();
-	    ap.setUserIsRequestor(true);
-	    ap.setUserID(((RemoteSource) event.getSource()).getRemoteIdentity());
-	    ap.setNetworkAccessPointID(((RemoteSource) event.getSource())
-		    .getRemoteHost());
-	    ap.setNetworkAccessPointTypeCode("2");
-	    msg.getActiveParticipant().add(ap);
-	    msg.getAuditSourceIdentification().add(
-		    logger.createAuditSourceIdentification());
-	    ParticipantObjectIdentification po = new ParticipantObjectIdentification();
-	    po.setParticipantObjectID(((RemoteSource) event.getSource())
-		    .getURI());
-	    po.setParticipantObjectTypeCode("2");
-	    po.setParticipantObjectTypeCodeRole("13");
-	    po.setParticipantObjectIDTypeCode(ParticipantObjectIDTypeCode.URI);
-	    po.setParticipantObjectName("Security Audit Log");
-	    msg.getParticipantObjectIdentification().add(po);
-	    return msg;
-	}
-	return null;
+            ActiveParticipant ap = new ActiveParticipant();
+            ap.setUserIsRequestor(true);
+            ap.setUserID(((RemoteSource) event.getSource()).getRemoteIdentity());
+            ap.setNetworkAccessPointID(((RemoteSource) event.getSource())
+                    .getRemoteHost());
+            ap.setNetworkAccessPointTypeCode("2");
+            msg.getActiveParticipant().add(ap);
+            msg.getAuditSourceIdentification().add(
+                    logger.createAuditSourceIdentification());
+            ParticipantObjectIdentification po = new ParticipantObjectIdentification();
+            po.setParticipantObjectID(((RemoteSource) event.getSource())
+                    .getURI());
+            po.setParticipantObjectTypeCode("2");
+            po.setParticipantObjectTypeCodeRole("13");
+            po.setParticipantObjectIDTypeCode(ParticipantObjectIDTypeCode.URI);
+            po.setParticipantObjectName("Security Audit Log");
+            msg.getParticipantObjectIdentification().add(po);
+            return msg;
+        }
+        return null;
     }
 
 }

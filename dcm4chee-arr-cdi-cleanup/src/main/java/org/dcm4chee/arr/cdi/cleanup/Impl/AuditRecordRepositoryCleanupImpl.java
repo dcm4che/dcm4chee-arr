@@ -57,18 +57,26 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.dcm4che3.data.Attributes;
 import org.dcm4che3.net.Device;
+import org.dcm4che3.util.AttributesFormat;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceReloaded;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
 import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryCleanup;
+import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryExport;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 import org.dcm4chee.arr.cdi.conf.EventTypeObject;
 import org.dcm4chee.arr.cdi.Impl.ReloadEvent;
 import org.dcm4chee.arr.cdi.Impl.StartCleanUpEvent;
 import org.dcm4chee.arr.cdi.Impl.StopCleanUpEvent;
 import org.dcm4chee.arr.cdi.cleanup.ejb.AuditRecordDeleteBean;
+import org.dcm4chee.arr.entities.AuditRecord;
+import org.dcm4chee.storage.ContainerEntry;
+import org.dcm4chee.storage.StorageContext;
+import org.dcm4chee.storage.conf.StorageDeviceExtension;
+import org.dcm4chee.storage.conf.StorageSystem;
+import org.dcm4chee.storage.service.StorageService;
 
 /**
  * The Class AuditRecordRepositoryCleanupImpl. implementation of a clean up
@@ -80,6 +88,9 @@ import org.dcm4chee.arr.cdi.cleanup.ejb.AuditRecordDeleteBean;
 @ApplicationScoped
 public class AuditRecordRepositoryCleanupImpl implements
         AuditRecordRepositoryCleanup {
+
+    @Inject
+    private AuditRecordRepositoryExport exportService;
 
     @Inject
     private AuditRecordDeleteBean removeTool;
@@ -126,87 +137,9 @@ public class AuditRecordRepositoryCleanupImpl implements
                     cleanWithCustomRetentionPolicy(obj.getCodeID(),
                             obj.getRetentionTime(), obj.getRetentionTimeUnit(),
                             cleanUpConfig.getArrCleanUpDeletePerTransaction());
-                    // log.info("Processed Entry from ldap from event filter: "
-                    // + obj.getKey() + "\n with retention time = "
-                    // + obj.getValue().getRetentionTime());
                 }
             }
 
-        }
-    };
-    private Runnable backUpProcedure = new Runnable() {
-
-        @Override
-        public void run() {
-            if (cleanUpConfig.isArrSafeClean()) {
-                log.info("Started back up procedure ...");
-                LinkedList<File> files = new LinkedList<File>();
-                for (File file : backUpDir.listFiles()) {
-                    if (!file.getName().endsWith("tmp") && file.getName().startsWith("Audit") && !file.isDirectory()) {
-                        files.add(file);
-                        log.debug("added file " + file.getPath());
-                    }
-                }
-                if (files.size() > 0) {
-
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(new Date(System.currentTimeMillis()));
-                    int year = cal.get(Calendar.YEAR);
-                    int month = cal.get(Calendar.MONTH);
-                    int day = cal.get(Calendar.DAY_OF_MONTH);
-                    int hour = cal.get(Calendar.HOUR_OF_DAY);
-                    int minute = cal.get(Calendar.MINUTE);
-                    String targetDirName = year + "-" + month + "-" + day + "-"
-                            + hour + "-" + minute;
-                    File targetDir = new File(backUpDir, targetDirName);
-                    try {
-                        if (!targetDir.exists()) {
-                            targetDir.mkdir();
-                        }
-                    } catch (Exception e) {
-                        log.error("Error creating backup directory ", e);
-                    }
-                    File targetFile = new File(targetDir, "AuditLogs-"
-                            + targetDirName + ".zip");
-                    ZipOutputStream zout = null;
-                    try {
-                        zout = new ZipOutputStream(new BufferedOutputStream(
-                                new FileOutputStream(targetFile)));
-                    } catch (FileNotFoundException e) {
-                        log.error(
-                                "Error creating backup zip - Probably a wrong backup directory specified ",
-                                e);
-                    }
-                    try {
-                        FileInputStream in = null;
-                        byte[] buffer = new byte[1024];
-                        int cnt;
-                        for (int i = 0; i < files.size(); i++) {
-                            log.debug("reading file for backup" + files.get(i).getPath());
-                            in = new FileInputStream(files.get(i));
-                            zout.putNextEntry(new ZipEntry(files.get(i)
-                                    .getName()));
-                            while ((cnt = in.read(buffer)) > 0) {
-                                zout.write(buffer, 0, cnt);
-                            }
-                            zout.closeEntry();
-                            in.close();
-                            files.get(i).delete();
-                        }
-
-                    } catch (IOException e) {
-                        log.error("Error writing backUp ", e);
-                    } finally {
-                        try {
-                            zout.close();
-                        } catch (IOException e) {
-                            log.error("Unable to close Zip file - Cause ", e);
-                        }
-                    }
-                }
-            } else {
-                log.info("Safe clean up is disabled unable to perform backup");
-            }
         }
     };
 
@@ -224,9 +157,9 @@ public class AuditRecordRepositoryCleanupImpl implements
             log.info("Deleting records with the following pks:");
             for (long pk : l) {
                 removeTool.deleteRecord(cleanUpConfig, pk);
-                log.info("pk = " + pk);
-
+                log.info("pk = {}" , pk);
             }
+            exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
         }
 
     }
@@ -260,8 +193,9 @@ public class AuditRecordRepositoryCleanupImpl implements
             log.info("Deleting records with the following pks:");
             for (long pk : l) {
                 removeTool.deleteRecord(cleanUpConfig, pk);
-                log.info("pk = " + pk);
+                log.info("pk = {}", pk);
             }
+            exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
         }
 
     }
@@ -283,8 +217,9 @@ public class AuditRecordRepositoryCleanupImpl implements
             log.info("Deleting records with the following pks:");
             for (long pk : l) {
                 removeTool.deleteRecord(cleanUpConfig, pk);
-                log.info("pk = " + pk);
+                log.info("pk = {}", pk);
             }
+            exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
         }
     }
 
@@ -307,22 +242,18 @@ public class AuditRecordRepositoryCleanupImpl implements
                     cleanProcedure, 0,
                     (long) this.cleanUpConfig.getArrCleanUpPollInterval(),
                     TimeUnit.SECONDS);
-            if (this.cleanUpConfig.isArrSafeClean()) {
-                backUpDir = new File(cleanUpConfig.getArrBackUpDir());
-                if (!backUpDir.exists())
-                    backUpDir.mkdir();
-                scheduledBackUpProcedure = device.scheduleWithFixedDelay(
-                        backUpProcedure, 0,
-                        (long) this.cleanUpConfig.getArrBackUpPollInterval(),
-                        TimeUnit.SECONDS);
-
-                log.info("Initialized BackUp thread with poll interval of "
-                        + (long) this.cleanUpConfig.getArrBackUpPollInterval()
-                        + " SECONDS");
-            }
-            log.info("Initialized cleanup thread with poll interval of "
-                    + (long) this.cleanUpConfig.getArrCleanUpPollInterval()
-                    + " SECONDS");
+//            if (this.cleanUpConfig.isArrSafeClean()) {
+//                scheduledBackUpProcedure = device.scheduleWithFixedDelay(
+//                        backUpProcedure, 0,
+//                        (long) this.cleanUpConfig.getArrBackUpPollInterval(),
+//                        TimeUnit.SECONDS);
+//
+//                log.info("Initialized BackUp thread with poll interval of "
+//                        + (long) this.cleanUpConfig.getArrBackUpPollInterval()
+//                        + " SECONDS");
+//            }
+            log.info("Initialized cleanup thread with poll interval of {} SECONDS"
+                    , (long) this.cleanUpConfig.getArrCleanUpPollInterval());
         }
     }
 

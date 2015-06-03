@@ -29,7 +29,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Dependencies>org.dcm4che.conf.core, org.dcm4che.conf.api, org.dcm4che.conf.core-api</Dependencies>
+              <Dependencies>org.dcm4che.conf.core, org.dcm4che.conf.api, org.dcm4che.conf.core, org.dcm4che.conf.core-api, org.dcm4che.conf.dicom</Dependencies>
             </manifestEntries>
           </archive>
         </configuration>

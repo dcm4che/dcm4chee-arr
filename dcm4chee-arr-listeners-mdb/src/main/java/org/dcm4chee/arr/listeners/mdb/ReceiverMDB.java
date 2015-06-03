@@ -76,15 +76,17 @@ private static final Logger log = LoggerFactory.getLogger(ReceiverMDB.class);
     
     @Inject
     private ReceiverHelperBean helper;
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
      */
     public void onMessage(Message msg) {
-    	if(!(msg instanceof BytesMessage)) {
-    		log.warn("Ignore unsupported " + msg.getClass().getName());
-    		return;
-    	}
+        if (!(msg instanceof BytesMessage)) {
+            log.warn("Ignore unsupported " + msg.getClass().getName());
+            return;
+        }
         try {
             BytesMessage bytesMessage = (BytesMessage) msg;
             Date receiveDate = new Date(msg.getJMSTimestamp());
@@ -96,8 +98,8 @@ private static final Logger log = LoggerFactory.getLogger(ReceiverMDB.class);
             log.error("Failed processing Byte Message", e);
             return;
         }
-	
-     }
+
+    }
 
 
 }

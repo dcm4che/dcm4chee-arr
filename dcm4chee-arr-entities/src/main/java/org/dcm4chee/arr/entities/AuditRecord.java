@@ -129,6 +129,9 @@ public class AuditRecord implements Serializable {
     @Column(name = "iheyr4")
     private boolean iheYr4;
 
+    @Column(name = "is_due_delete", nullable = false, updatable = true)
+    private boolean isDueDelete;
+
     @Lob
     @Column(name = "xmldata", length = 262144)
     private byte[] xmldata;
@@ -439,6 +442,14 @@ public class AuditRecord implements Serializable {
      */
     public void setXmldata(byte[] xmldata) {
         this.xmldata = xmldata;
+    }
+
+    public boolean isDueDelete() {
+        return isDueDelete;
+    }
+
+    public void setDueDelete(boolean isDueDelete) {
+        this.isDueDelete = isDueDelete;
     }
 
     /**

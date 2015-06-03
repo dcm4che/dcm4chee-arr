@@ -39,15 +39,15 @@
 package org.dcm4chee.arr.cdi.conf.producer;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 
-import org.dcm4che3.conf.api.ConfigurationException;
 import org.dcm4che3.conf.api.DicomConfiguration;
+import org.dcm4che3.conf.core.api.ConfigurationException;
 import org.dcm4che3.conf.dicom.DicomConfigurationBuilder;
 import org.dcm4che3.net.audit.AuditLogger;
 import org.dcm4che3.net.audit.AuditRecordRepository;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
+import org.dcm4chee.storage.conf.StorageDeviceExtension;
 
 /**
  * @author Gunter Zeilinger <gunterz@gmail.com>
@@ -65,10 +65,8 @@ public class DicomConfigurationProducer {
         builder.registerDeviceExtension(AuditRecordRepository.class);
         builder.registerDeviceExtension(AuditLogger.class);
         builder.registerDeviceExtension(CleanUpConfigurationExtension.class);
+        builder.registerDeviceExtension(StorageDeviceExtension.class);
         return builder.build();
     }
 
-    public static void dispose(@Disposes DicomConfiguration conf) {
-        conf.close();
-    }
 }

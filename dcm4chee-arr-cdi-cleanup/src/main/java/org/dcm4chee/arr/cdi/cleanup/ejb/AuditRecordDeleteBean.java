@@ -48,7 +48,6 @@ import javax.persistence.PersistenceContext;
 
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 import org.dcm4chee.arr.entities.AuditRecord;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,10 +64,6 @@ public class AuditRecordDeleteBean {
   @PersistenceContext(unitName = "dcm4chee-arr")
   private EntityManager em;
 
-  public EntityManager getEm() {
-    return em;
-}
-
 /**
      * Delete record.
  * @param cleanUpConfig 
@@ -78,47 +73,13 @@ public class AuditRecordDeleteBean {
      */
   public void deleteRecord(CleanUpConfigurationExtension cleanUpConfig, long pk) {
       AuditRecord recordToDelete = em.find(AuditRecord.class, pk);
-      if(cleanUpConfig.isArrSafeClean())
-          backup(recordToDelete, cleanUpConfig.getArrBackUpDir());
-    em.remove(recordToDelete);
+      if(recordToDelete.isDueDelete())
+          return;
+      if(!cleanUpConfig.isArrSafeClean())
+          em.remove(recordToDelete);
+      else
+          recordToDelete.setDueDelete(true);
   }
-
-  private void backup(AuditRecord recordToDelete, String backUpDir) {
-      String uniqueHash = ""+new String(""+System.currentTimeMillis()).hashCode();
-    String backUpFileName = "Audit"+"-"+uniqueHash+"-from-"+recordToDelete.getSourceID()+"-DB-"+recordToDelete.getPk()+".tmp";
-    log.info("Backing up file "+backUpFileName+" using backup dir "+backUpDir);
-    File backUpFile = new File(backUpDir,backUpFileName);
-    FileOutputStream fout = null;
-    try {
-        fout = new FileOutputStream(backUpFile);
-    } catch (FileNotFoundException e) {
-        log.error("Error creating temporary backup file backup dir is configure wrong ",e);
-    }
-    byte[] blob= recordToDelete.getXmldata();
-    try {
-        fout.write(blob);
-    } catch (IOException e) {
-        log.error("Error writing backup file ",e);
-    }
-    finally{
-        try {
-            fout.close();
-        } catch (IOException e) {
-            log.error("Error closing backup file output stream ",e);
-        }
-    }
-    File finalTarget = new File(backUpFile.getPath().substring(0,backUpFile.getPath().length()-4));
-    log.info("renaming from "+backUpFile.getPath() + " to "+finalTarget.getPath());
-    if(backUpFile.renameTo(finalTarget))
-    {
-        log.info("Wrote backup file "+backUpFileName);
-    }
-    else
-    {
-        log.error("Error renaming file, non final backup data present and will not be archived");
-    }
-    
-}
 
 /**
      * Gets the pks by retention time.
@@ -232,10 +193,23 @@ public class AuditRecordDeleteBean {
           retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
           break;
       }
-      List<Long> l =
-          em.createQuery(queryStr).setParameter("retentionUnitsAgo", retentionUnitsAgo).setParameter("codeVal", codeVal).setParameter("designatorVal", designatorVal)
+      @SuppressWarnings("unchecked")
+    List<Long> l =
+          em.createQuery(queryStr).setParameter("retentionUnitsAgo",
+                  retentionUnitsAgo).setParameter("codeVal", codeVal)
+                  .setParameter("designatorVal", designatorVal)
               .setMaxResults(deletePerTransaction).getResultList();
+      
       log.debug("Executed the following JPQL statement: \n"+queryStr);
       return l;
+    }
+
+    public List<AuditRecord> getRecordsDueOrderByEventType() {
+        String queryStr = "SELECT r FROM org.dcm4chee.arr.entities.AuditRecord"
+                + " r where r.isDueDelete = true order by r.eventID";
+        @SuppressWarnings("unchecked")
+        List<AuditRecord> records = em.createQuery(queryStr).getResultList();
+        log.debug("Executed the following JPQL statement: \n" + queryStr);
+        return records;
     }
 }

@@ -133,7 +133,15 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
-    
+        <!-- Storage Dependencies -->
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-storage</groupId>
+      <artifactId>dcm4chee-storage-conf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-storage</groupId>
+      <artifactId>dcm4chee-storage-service</artifactId>
+    </dependency>
   </dependencies>
   <profiles>
     <profile>
@@ -152,7 +160,7 @@
             <configuration>
               <archive>
                 <manifestEntries>
-                  <Dependencies>org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api</Dependencies>
+                  <Dependencies>org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api, org.dcm4che.conf.core, org.dcm4che.conf.core-api, org.dcm4che.conf.dicom</Dependencies>
                 </manifestEntries>
               </archive>
             </configuration>
@@ -188,7 +196,7 @@
             <configuration>
               <archive>
                 <manifestEntries>
-                  <Dependencies>org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api</Dependencies>
+                  <Dependencies>org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api, org.dcm4che.conf.core, org.dcm4che.conf.core-api, org.dcm4che.conf.dicom</Dependencies>
                 </manifestEntries>
               </archive>
             </configuration>

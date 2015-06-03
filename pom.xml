@@ -10,8 +10,9 @@
     <ds>java:/arrDS</ds>
     <show_sql>false</show_sql>
     <hbm2ddl.auto>update</hbm2ddl.auto>
-    <dcm4che.version>3.3.5</dcm4che.version>
+    <dcm4che.version>3.3.7-SNAPSHOT</dcm4che.version>
     <querydsl.version>3.2.3</querydsl.version>
+    <dcm4chee-storage.version>2.0.0-SNAPSHOT</dcm4chee-storage.version>
 	<skipTests>true</skipTests>
   </properties>
   <description>Audit Record Repository deployable in CDI container</description>
@@ -108,6 +109,63 @@
       <version>1.7.6</version>
       <scope>provided</scope>
     </dependency>
+    <!-- Storage Dependencies -->
+    <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-conf</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-service</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-archiver</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+        <type>ejb</type>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-filecache</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-tar</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-zip</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-filesystem</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-cloud</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-encrypt</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-cifs</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.dcm4che.dcm4chee-storage</groupId>
+        <artifactId>dcm4chee-storage-sftp</artifactId>
+        <version>${dcm4chee-storage.version}</version>
+      </dependency>
 <!-- Testing dependencies -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -207,6 +265,12 @@
       <version>${dcm4che.version}</version>
         <scope>provided</scope>
       </dependency>
+      <dependency>
+      <groupId>org.dcm4che</groupId>
+      <artifactId>dcm4che-conf-dicom</artifactId>
+      <version>${dcm4che.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.dcm4che</groupId>
       <artifactId>dcm4che-core</artifactId>

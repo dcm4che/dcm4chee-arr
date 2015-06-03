@@ -6,7 +6,6 @@ import java.util.Date;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.jms.BytesMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.xml.transform.Templates;
@@ -81,6 +80,7 @@ public class ReceiverHelperBean implements ReceiverHelperBeanLocal {
             rec.setReceiveDateTime(receiveDate);
             rec.setIHEYr4(iheyr4);
             rec.setXmldata(xmldata);
+            rec.setDueDelete(false);
             em.persist(rec);
             if (log.isDebugEnabled()) {
                 log.debug("Finished processing - " + prompt(xmldata));

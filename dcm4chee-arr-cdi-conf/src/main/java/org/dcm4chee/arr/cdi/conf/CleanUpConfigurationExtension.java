@@ -40,10 +40,10 @@ package org.dcm4chee.arr.cdi.conf;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dcm4che3.conf.api.extensions.ReconfiguringIterator;
 import org.dcm4che3.conf.core.api.ConfigurableClass;
 import org.dcm4che3.conf.core.api.ConfigurableProperty;
 import org.dcm4che3.conf.core.api.LDAP;
-import org.dcm4che3.conf.core.util.ConfigIterators;
 import org.dcm4che3.net.DeviceExtension;
 
 /**
@@ -103,9 +103,12 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
     @ConfigurableProperty(name="arrBackUpPollInterval", defaultValue="3600")
     private int arrBackUpPollInterval;
 
-    //specify Backup Directory Name
-    @ConfigurableProperty(name="arrBackUpDir", defaultValue="Audit-Record-Repository-BackUps")
-    private String arrBackUpDir;
+    //specify Backup Stiorage Group ID
+    @ConfigurableProperty(name= "arrBackUPStorageGroupID", defaultValue="DEFAULT")
+    private String arrBackUPStorageGroupID;
+
+    @ConfigurableProperty(name = "arrBackUPUseDailyFolder", defaultValue = "TRUE")
+    private boolean arrBackUPUseDailyFolder;
 
     public boolean isArrSafeClean() {
         return arrSafeClean;
@@ -121,14 +124,6 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
 
     public void setArrBackUpPollInterval(int arrBackUpPollInterval) {
         this.arrBackUpPollInterval = arrBackUpPollInterval;
-    }
-
-    public String getArrBackUpDir() {
-        return arrBackUpDir;
-    }
-
-    public void setArrBackUpDir(String arrBackUpDir) {
-        this.arrBackUpDir = arrBackUpDir;
     }
 
     /**
@@ -303,6 +298,23 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
     @Override
     public void reconfigure(DeviceExtension from) {
         CleanUpConfigurationExtension clUpExt = (CleanUpConfigurationExtension) from;
-        ConfigIterators.reconfigure(clUpExt, this, CleanUpConfigurationExtension.class);
+        ReconfiguringIterator.reconfigure(clUpExt, this, CleanUpConfigurationExtension.class);
     }
+
+    public String getArrBackUPStorageGroupID() {
+        return arrBackUPStorageGroupID;
+    }
+
+    public void setArrBackUPStorageGroupID(String arrBackUPStorageGroupID) {
+        this.arrBackUPStorageGroupID = arrBackUPStorageGroupID;
+    }
+
+    public boolean isArrBackUPUseDailyFolder() {
+        return arrBackUPUseDailyFolder;
+    }
+
+    public void setArrBackUPUseDailyFolder(boolean arrBackUPUseDailyFolder) {
+        this.arrBackUPUseDailyFolder = arrBackUPUseDailyFolder;
+    }
+
 }

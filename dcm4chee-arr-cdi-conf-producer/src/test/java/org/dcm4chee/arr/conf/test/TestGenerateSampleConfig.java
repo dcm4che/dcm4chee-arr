@@ -36,11 +36,12 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-package org.dcm4chee.archive.conf;
+package org.dcm4chee.arr.conf.test;
 
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -55,6 +56,11 @@ import org.dcm4che3.net.audit.AuditRecordRepository;
 import org.dcm4che3.util.ResourceLocator;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 import org.dcm4chee.arr.cdi.conf.EventTypeObject;
+import org.dcm4chee.storage.conf.Availability;
+import org.dcm4chee.storage.conf.Container;
+import org.dcm4chee.storage.conf.StorageDeviceExtension;
+import org.dcm4chee.storage.conf.StorageSystem;
+import org.dcm4chee.storage.conf.StorageSystemGroup;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -112,7 +118,8 @@ public class TestGenerateSampleConfig  {
         ext.setArrCleanUpDeletePerTransaction(2);
         ext.setArrSafeClean(true);
         ext.setArrBackUpPollInterval(3600);
-        ext.setArrBackUpDir("/Audit-Record-Repository-BackUps");
+        ext.setArrBackUPUseDailyFolder(true);
+        ext.setArrBackUPStorageGroupID("DEFAULT");
         device.addDeviceExtension(ext);
     }
 
@@ -153,8 +160,9 @@ public class TestGenerateSampleConfig  {
         builder.registerDeviceExtension(AuditRecordRepository.class);
         builder.registerDeviceExtension(AuditLogger.class);
         builder.registerDeviceExtension(CleanUpConfigurationExtension.class);
+        builder.registerDeviceExtension(StorageDeviceExtension.class);
  
-        config = builder.cache().build();
+        config = builder.cache(false).build();
     }
     
     @Test
@@ -169,8 +177,35 @@ public class TestGenerateSampleConfig  {
         arrDevice.addConnection(dicomTLS);
         addAuditLogger(arrDevice, arrDevice);
         addCleanUpExtension(arrDevice);
+        addStorageExtension(arrDevice);
         config.persist(arrDevice);
         config.sync();
+    }
+
+    private void addStorageExtension(Device arrDevice) {
+        StorageSystem arr = new StorageSystem();
+        arr.setStorageSystemID("online");
+        arr.setProviderName("org.dcm4chee.storage.filesystem");
+        arr.setStorageSystemPath("/var/local/dcm4chee-arr/backup");
+        arr.setAvailability(Availability.ONLINE);
+        Map<String,String> exts = new LinkedHashMap<String, String>();
+        exts.put(".archived", "ARCHIVED");
+        arr.setStatusFileExtensions(exts);
+
+
+        Container container = new Container();
+        container.setProviderName("org.dcm4chee.storage.zip");
+
+        StorageSystemGroup online = new StorageSystemGroup();
+        
+        online.setGroupID("DEFAULT");
+        online.addStorageSystem(arr);
+        online.setBaseStorageAccessTime(2000);
+        online.setActiveStorageSystemIDs(arr.getStorageSystemID());
+        online.setContainer(container);
+        StorageDeviceExtension ext = new StorageDeviceExtension();
+        ext.addStorageSystemGroup(online);
+        arrDevice.addDeviceExtension(ext);
     }
 
 }
