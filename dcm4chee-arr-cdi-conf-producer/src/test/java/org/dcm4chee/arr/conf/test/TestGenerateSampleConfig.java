@@ -90,25 +90,35 @@ public class TestGenerateSampleConfig  {
         auditUDP.setProtocol(protocol);
         arrDevice.addConnection(auditUDP);
         arr.addConnection(auditUDP);
+        Connection dicomTLS = new Connection("dicom-tls", "localhost", 6514);
+        dicomTLS.setTlsCipherSuites(
+                Connection.TLS_RSA_WITH_AES_128_CBC_SHA,
+                Connection.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
+        dicomTLS.setProtocol(Protocol.SYSLOG_TLS);
+        arrDevice.addConnection(dicomTLS);
+        addAuditLogger(arrDevice);
+        addCleanUpExtension(arrDevice);
+        addStorageExtension(arrDevice);
         return arrDevice ;
     }
 
-    private void addAuditLogger(Device device, Device arrDevice) {
+    private void addAuditLogger(Device arrDevice) {
         Connection auditUDP = new Connection("audit-udp", "localhost");
         auditUDP.setProtocol(Connection.Protocol.SYSLOG_UDP);
-        device.addConnection(auditUDP);
+        arrDevice.addConnection(auditUDP);
 
         AuditLogger auditLogger = new AuditLogger();
-        device.addDeviceExtension(auditLogger);
+        arrDevice.addDeviceExtension(auditLogger);
         auditLogger.addConnection(auditUDP);
         auditLogger.setAuditSourceTypeCodes("4");
         auditLogger.setAuditRecordRepositoryDevice(arrDevice);
     }
 
-    private void addCleanUpExtension(Device device) {
+    private void addCleanUpExtension(Device arrDevice) {
         CleanUpConfigurationExtension ext = new CleanUpConfigurationExtension();
+        
         ext.setEventTypeFilter(getEventTypeFilter());
-        ext.setArrCleanUpUsesRetention(false);
+        ext.setArrCleanUpUsesRetention(true);
         ext.setArrCleanUpUsesMaxRecords(false);
         ext.setArrCleanUpMaxRecords(19);
         ext.setArrCleanUpPollInterval(3600);
@@ -120,9 +130,35 @@ public class TestGenerateSampleConfig  {
         ext.setArrBackUpPollInterval(3600);
         ext.setArrBackUPUseDailyFolder(true);
         ext.setArrBackUPStorageGroupID("DEFAULT");
-        device.addDeviceExtension(ext);
+        arrDevice.addDeviceExtension(ext);
+
     }
 
+    private void addStorageExtension(Device arrDevice) {
+        StorageSystem arr = new StorageSystem();
+        arr.setStorageSystemID("online");
+        arr.setProviderName("org.dcm4chee.storage.filesystem");
+        arr.setStorageSystemPath("/var/local/dcm4chee-arr/backup");
+        arr.setAvailability(Availability.ONLINE);
+        Map<String,String> exts = new LinkedHashMap<String, String>();
+        exts.put(".archived", "ARCHIVED");
+        arr.setStatusFileExtensions(exts);
+
+
+        Container container = new Container();
+        container.setProviderName("org.dcm4chee.storage.zip");
+
+        StorageSystemGroup online = new StorageSystemGroup();
+        
+        online.setGroupID("DEFAULT");
+        online.addStorageSystem(arr);
+        online.setBaseStorageAccessTime(2000);
+        online.setActiveStorageSystemIDs(arr.getStorageSystemID());
+        online.setContainer(container);
+        StorageDeviceExtension ext = new StorageDeviceExtension();
+        ext.addStorageSystemGroup(online);
+        arrDevice.addDeviceExtension(ext);
+    }
     private Map<String, EventTypeObject> getEventTypeFilter() {
         Map<String, EventTypeObject> eventTypeFilter = 
                 new HashMap<String, EventTypeObject>();
@@ -162,50 +198,17 @@ public class TestGenerateSampleConfig  {
         builder.registerDeviceExtension(CleanUpConfigurationExtension.class);
         builder.registerDeviceExtension(StorageDeviceExtension.class);
  
-        config = builder.cache(false).build();
+        config = builder.build();
     }
     
     @Test
     public void test() throws Exception {
 
         Device arrDevice = createARRDevice("dcm4chee-arr", Protocol.SYSLOG_UDP, 514);
-        Connection dicomTLS = new Connection("dicom-tls", "localhost", 6514);
-        dicomTLS.setTlsCipherSuites(
-                Connection.TLS_RSA_WITH_AES_128_CBC_SHA,
-                Connection.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
-        dicomTLS.setProtocol(Protocol.SYSLOG_TLS);
-        arrDevice.addConnection(dicomTLS);
-        addAuditLogger(arrDevice, arrDevice);
-        addCleanUpExtension(arrDevice);
-        addStorageExtension(arrDevice);
+
         config.persist(arrDevice);
         config.sync();
     }
 
-    private void addStorageExtension(Device arrDevice) {
-        StorageSystem arr = new StorageSystem();
-        arr.setStorageSystemID("online");
-        arr.setProviderName("org.dcm4chee.storage.filesystem");
-        arr.setStorageSystemPath("/var/local/dcm4chee-arr/backup");
-        arr.setAvailability(Availability.ONLINE);
-        Map<String,String> exts = new LinkedHashMap<String, String>();
-        exts.put(".archived", "ARCHIVED");
-        arr.setStatusFileExtensions(exts);
-
-
-        Container container = new Container();
-        container.setProviderName("org.dcm4chee.storage.zip");
-
-        StorageSystemGroup online = new StorageSystemGroup();
-        
-        online.setGroupID("DEFAULT");
-        online.addStorageSystem(arr);
-        online.setBaseStorageAccessTime(2000);
-        online.setActiveStorageSystemIDs(arr.getStorageSystemID());
-        online.setContainer(container);
-        StorageDeviceExtension ext = new StorageDeviceExtension();
-        ext.addStorageSystemGroup(online);
-        arrDevice.addDeviceExtension(ext);
-    }
 
 }

@@ -17,6 +17,11 @@
     </dependency>
     <dependency>
       <groupId>org.dcm4che.dcm4chee-arr</groupId>
+      <artifactId>dcm4chee-arr-cdi-cleanup</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-cdi-service</artifactId>
       <version>${parent.version}</version>
     </dependency>

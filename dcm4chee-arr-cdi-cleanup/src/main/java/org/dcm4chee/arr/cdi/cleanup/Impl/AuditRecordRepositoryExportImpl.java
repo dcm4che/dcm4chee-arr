@@ -35,6 +35,7 @@ package org.dcm4chee.arr.cdi.cleanup.Impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
@@ -101,10 +102,13 @@ public class AuditRecordRepositoryExportImpl implements
             
             for(AuditRecord rec : toExport) {
                 String dateTime = getYearMonthDayStructure(true, rec.getEventDateTime());
-                if(recordsMap.containsKey(dateTime))
-                    recordsMap.get(rec.getEventDateTime()).add(rec);
+                if(recordsMap.containsKey(dateTime)) {
+                    ArrayList<AuditRecord> tmpRecs = recordsMap.get(dateTime);
+                    tmpRecs.add(rec);
+                }
                 else {
                     ArrayList<AuditRecord> records = new ArrayList<AuditRecord>();
+                    records.add(rec);
                     recordsMap.put(dateTime, records);
                 }
                 
@@ -135,11 +139,14 @@ public class AuditRecordRepositoryExportImpl implements
                 entriesToRecordsPerFolder = createEntries(recordsMap.get(dateTime));
                 HashMap<String, ArrayList<ContainerEntry>> containersMap = toContainersMap(entriesToRecordsPerFolder);
                 for(String containerName : containersMap.keySet()) {
-                    storageService.storeContainerEntries(ctx, containersMap.get(containerName), containerName);
-                    
+                    String containerKey = containerName;
+                    containerName += "-export at[" + new Date(System.currentTimeMillis()).toString().replace(":", "-") + "]" ;
+                    storageService.storeContainerEntries(ctx, containersMap.get(containerKey), folderRelativePath + "/" + containerName);
+
                 }
                 for(ContainerEntry entry : entriesToRecordsPerFolder.keySet()) {
                     removeTool.deleteRecord(cleanUpConfig, entriesToRecordsPerFolder.get(entry).getPk());
+                    Files.delete(entry.getSourcePath());
                 }
             } catch (Exception e) {
                 log.error("Error performing backup on records for "
@@ -148,7 +155,6 @@ public class AuditRecordRepositoryExportImpl implements
         }
 
     }
-
 
     private HashMap<String, ArrayList<ContainerEntry>> toContainersMap(
             HashMap<ContainerEntry, AuditRecord> entriesToRecordsPerFolder) {
@@ -172,7 +178,7 @@ public class AuditRecordRepositoryExportImpl implements
         DigestOutputStream dout = null;
         HashMap<ContainerEntry, AuditRecord> entriestoRecordsMap = new HashMap<ContainerEntry, AuditRecord>();
         for (int i = 0; i < records.size(); i++) {
-            String entryName = i + "-" + records.get(i).getSourceID();
+            String entryName = i +" - "+ records.get(i).getSourceID()+ "-" + toTimeOnly(records.get(i).getEventDateTime());
             File entryFile = File.createTempFile("tmp-" + entryName, "");
             dout = new DigestOutputStream(new FileOutputStream(entryFile),
                     MessageDigest.getInstance("MD5"));
@@ -187,11 +193,20 @@ public class AuditRecordRepositoryExportImpl implements
         return entriestoRecordsMap;
     }
 
+    private String toTimeOnly(Date eventDateTime) {
+        String str = "";
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(eventDateTime);
+        str += cal.get(Calendar.HOUR_OF_DAY) + "-" + cal.get(Calendar.MINUTE)+ "-" + cal.get(Calendar.SECOND);
+        return str;
+    }
+
+
     private String getYearMonthDayStructure(boolean daily, Date eventDateTime) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(eventDateTime);
 
-        return cal.get(Calendar.YEAR) + "-" + cal.get(Calendar.MONTH)
+        return cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH)+1)
                 + (daily ? "-" + cal.get(Calendar.DATE) : "");
     }
 

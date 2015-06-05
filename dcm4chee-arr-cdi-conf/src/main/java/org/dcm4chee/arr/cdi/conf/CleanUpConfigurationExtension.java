@@ -53,7 +53,7 @@ import org.dcm4che3.net.DeviceExtension;
  * @author Hesham Elbadawi bsdreko@gmail.com
  */
 
-@LDAP(objectClasses = "arrCleanUp")
+@LDAP(objectClasses = "arrCleanUp",noContainerNode=false)
 @ConfigurableClass
 public class CleanUpConfigurationExtension extends DeviceExtension {
 
@@ -61,54 +61,57 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
 
     // checks if retention time is to be used for deletion
     @ConfigurableProperty(name = "arrCleanUpUsesRetention", defaultValue = "false")
-    private boolean arrCleanUpUsesRetention;
+    private boolean arrCleanUpUsesRetention = false;
 
     // checks if max record count is to be used for deletion
     // @ConfigField(name="arrCleanUpUsesMaxRecords" ,def="false")
     @ConfigurableProperty(name = "arrCleanUpUsesMaxRecords", defaultValue = "false")
-    private boolean arrCleanUpUsesMaxRecords;
+    private boolean arrCleanUpUsesMaxRecords = false;
 
     // specify max number of records to keep
-    @ConfigurableProperty(name = "arrCleanUpMaxRecords", defaultValue = "19")
-    private int arrCleanUpMaxRecords;
+    @ConfigurableProperty(name = "arrCleanUpMaxRecords", defaultValue = "10000")
+    private int arrCleanUpMaxRecords = 10000;
 
     // specify poll interval (service starts to delete each poll interval)
     @ConfigurableProperty(name = "arrCleanUpPollInterval", defaultValue = "3600")
-    private int arrCleanUpPollInterval;
+    private int arrCleanUpPollInterval = 3600;
 
     // specify retention time (together with the retention unit are used to
     // compare with every object creation date to delte or not) ie 1MONTH
     @ConfigurableProperty(name = "arrCleanUpRetentionTime", defaultValue = "1")
-    private int arrCleanUpRetentionTime;
+    private int arrCleanUpRetentionTime = 1;
 
     // specify the unit for retention time will use Java TimeUnit enumeration
     @ConfigurableProperty(name = "arrCleanUpRetentionTimeUnit", defaultValue = "DAYS")
-    private String arrCleanUpRetentionTimeUnit;
+    private String arrCleanUpRetentionTimeUnit = "DAYS";
 
     @ConfigurableProperty(name = "arrCleanUpDeletePerTransaction", defaultValue = "2")
-    private int arrCleanUpDeletePerTransaction;
+    private int arrCleanUpDeletePerTransaction = 2;
 
     @ConfigurableProperty(name = "arrDefaultCleanUpPolicy", defaultValue = "all")
-    private String arrDefaultCleanUpPolicy;
+    private String arrDefaultCleanUpPolicy = "all";
 
     @LDAP(distinguishingField = "arrEventIDTypeCode")
     @ConfigurableProperty(name = "AuditEventsCleanUp")
     private Map<String, EventTypeObject> eventTypeFilter = new HashMap<String, EventTypeObject>();
     
     //triggers backup 
-    @ConfigurableProperty(name = "arrsafeClean", defaultValue = "true")
-    private boolean arrSafeClean;
+    @ConfigurableProperty(name = "arrSafeClean", defaultValue = "true")
+    private boolean arrSafeClean = true;
 
     //specify backup interval
     @ConfigurableProperty(name="arrBackUpPollInterval", defaultValue="3600")
-    private int arrBackUpPollInterval;
+    private int arrBackUpPollInterval = 3600;
 
     //specify Backup Stiorage Group ID
     @ConfigurableProperty(name= "arrBackUPStorageGroupID", defaultValue="DEFAULT")
-    private String arrBackUPStorageGroupID;
+    private String arrBackUPStorageGroupID = "DEFAULT";
 
-    @ConfigurableProperty(name = "arrBackUPUseDailyFolder", defaultValue = "TRUE")
-    private boolean arrBackUPUseDailyFolder;
+    @ConfigurableProperty(name = "arrBackUPUseDailyFolder", defaultValue = "true")
+    private boolean arrBackUPUseDailyFolder = true;
+
+    @ConfigurableProperty(name = "arrBackUPStartTimeRangeInHours", defaultValue = "15-17")
+    private String arrBackUPStartTimeRangeInHours = "15-17";
 
     public boolean isArrSafeClean() {
         return arrSafeClean;
@@ -288,19 +291,6 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
         this.eventTypeFilter = eventTypeFilter;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.dcm4che3.net.DeviceExtension#reconfigure(org.dcm4che3.net.DeviceExtension
-     * )
-     */
-    @Override
-    public void reconfigure(DeviceExtension from) {
-        CleanUpConfigurationExtension clUpExt = (CleanUpConfigurationExtension) from;
-        ReconfiguringIterator.reconfigure(clUpExt, this, CleanUpConfigurationExtension.class);
-    }
-
     public String getArrBackUPStorageGroupID() {
         return arrBackUPStorageGroupID;
     }
@@ -315,6 +305,28 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
 
     public void setArrBackUPUseDailyFolder(boolean arrBackUPUseDailyFolder) {
         this.arrBackUPUseDailyFolder = arrBackUPUseDailyFolder;
+    }
+
+    public String getArrBackUPStartTimeRangeInHours() {
+        return arrBackUPStartTimeRangeInHours;
+    }
+
+    public void setArrBackUPStartTimeRangeInHours(
+            String arrBackUPStartTimeRangeInHours) {
+        this.arrBackUPStartTimeRangeInHours = arrBackUPStartTimeRangeInHours;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.dcm4che3.net.DeviceExtension#reconfigure(org.dcm4che3.net.DeviceExtension
+     * )
+     */
+    @Override
+    public void reconfigure(DeviceExtension from) {
+        CleanUpConfigurationExtension clUpExt = (CleanUpConfigurationExtension) from;
+        ReconfiguringIterator.reconfigure(clUpExt, this, CleanUpConfigurationExtension.class);
     }
 
 }

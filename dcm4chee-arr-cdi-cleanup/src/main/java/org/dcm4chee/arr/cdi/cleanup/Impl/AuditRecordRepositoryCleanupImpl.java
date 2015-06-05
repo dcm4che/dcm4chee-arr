@@ -32,23 +32,14 @@
 
 package org.dcm4chee.arr.cdi.cleanup.Impl;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
@@ -57,9 +48,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dcm4che3.data.Attributes;
 import org.dcm4che3.net.Device;
-import org.dcm4che3.util.AttributesFormat;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceReloaded;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
@@ -72,11 +61,6 @@ import org.dcm4chee.arr.cdi.Impl.StartCleanUpEvent;
 import org.dcm4chee.arr.cdi.Impl.StopCleanUpEvent;
 import org.dcm4chee.arr.cdi.cleanup.ejb.AuditRecordDeleteBean;
 import org.dcm4chee.arr.entities.AuditRecord;
-import org.dcm4chee.storage.ContainerEntry;
-import org.dcm4chee.storage.StorageContext;
-import org.dcm4chee.storage.conf.StorageDeviceExtension;
-import org.dcm4chee.storage.conf.StorageSystem;
-import org.dcm4chee.storage.service.StorageService;
 
 /**
  * The Class AuditRecordRepositoryCleanupImpl. implementation of a clean up
@@ -113,9 +97,34 @@ public class AuditRecordRepositoryCleanupImpl implements
 
     public CleanUpConfigurationExtension getCleanUpConfig() {
         return cleanUpConfig;
-    } 
+    }
     
     private Map<String, EventTypeObject> eventFilter  = null;
+
+    private Runnable backUpProcedure = new Runnable() {
+        @Override
+        public void run() {
+            if(isnow(cleanUpConfig.getArrBackUPStartTimeRangeInHours())) { 
+            exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
+            }
+            
+        }
+
+        private boolean isnow(String arrBackUPStartTimeRangeInHours) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(System.currentTimeMillis());
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            if(!arrBackUPStartTimeRangeInHours.contains("-"))
+                log.error("Bad configuration for export time range in hours"
+                        + " (no export possible), [correct format e.g. "
+                        + "starthour-endhour]");
+            if(hour >= Integer.valueOf(arrBackUPStartTimeRangeInHours.split("-")[0])
+                    && hour < Integer.valueOf(arrBackUPStartTimeRangeInHours.split("-")[1]))
+                return true;
+
+            return false;
+        }
+    };
 
     private Runnable cleanProcedure = new Runnable() {
 
@@ -123,7 +132,6 @@ public class AuditRecordRepositoryCleanupImpl implements
         public void run() {
             if (cleanUpConfig.getArrDefaultCleanUpPolicy().compareToIgnoreCase(
                     "all") == 0) {
-                log.info("Default cleanup policy is used");
                 if (cleanUpConfig.isArrCleanUpUsesRetention()) {
                     cleanWithDefaultRetentionPolicy();
                 }
@@ -132,7 +140,6 @@ public class AuditRecordRepositoryCleanupImpl implements
                 }
             } else if (cleanUpConfig.getArrDefaultCleanUpPolicy()
                     .compareToIgnoreCase("custom") == 0) {
-                log.info("Custom cleanup policy is used");
                 for (EventTypeObject obj : toCollection(eventFilter)) {
                     cleanWithCustomRetentionPolicy(obj.getCodeID(),
                             obj.getRetentionTime(), obj.getRetentionTimeUnit(),
@@ -159,7 +166,7 @@ public class AuditRecordRepositoryCleanupImpl implements
                 removeTool.deleteRecord(cleanUpConfig, pk);
                 log.info("pk = {}" , pk);
             }
-            exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
+          
         }
 
     }
@@ -195,7 +202,7 @@ public class AuditRecordRepositoryCleanupImpl implements
                 removeTool.deleteRecord(cleanUpConfig, pk);
                 log.info("pk = {}", pk);
             }
-            exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
+           
         }
 
     }
@@ -219,7 +226,7 @@ public class AuditRecordRepositoryCleanupImpl implements
                 removeTool.deleteRecord(cleanUpConfig, pk);
                 log.info("pk = {}", pk);
             }
-            exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
+            
         }
     }
 
@@ -242,16 +249,16 @@ public class AuditRecordRepositoryCleanupImpl implements
                     cleanProcedure, 0,
                     (long) this.cleanUpConfig.getArrCleanUpPollInterval(),
                     TimeUnit.SECONDS);
-//            if (this.cleanUpConfig.isArrSafeClean()) {
-//                scheduledBackUpProcedure = device.scheduleWithFixedDelay(
-//                        backUpProcedure, 0,
-//                        (long) this.cleanUpConfig.getArrBackUpPollInterval(),
-//                        TimeUnit.SECONDS);
-//
-//                log.info("Initialized BackUp thread with poll interval of "
-//                        + (long) this.cleanUpConfig.getArrBackUpPollInterval()
-//                        + " SECONDS");
-//            }
+            if (this.cleanUpConfig.isArrSafeClean()) {
+                scheduledBackUpProcedure = device.scheduleWithFixedDelay(
+                        backUpProcedure, 0,
+                        (long) this.cleanUpConfig.getArrBackUpPollInterval(),
+                        TimeUnit.SECONDS);
+
+                log.info("Initialized BackUp thread with poll interval of "
+                        + (long) this.cleanUpConfig.getArrBackUpPollInterval()
+                        + " SECONDS");
+            }
             log.info("Initialized cleanup thread with poll interval of {} SECONDS"
                     , (long) this.cleanUpConfig.getArrCleanUpPollInterval());
         }

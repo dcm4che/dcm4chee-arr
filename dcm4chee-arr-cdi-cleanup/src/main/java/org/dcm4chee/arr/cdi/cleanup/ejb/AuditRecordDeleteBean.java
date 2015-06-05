@@ -74,7 +74,7 @@ public class AuditRecordDeleteBean {
   public void deleteRecord(CleanUpConfigurationExtension cleanUpConfig, long pk) {
       AuditRecord recordToDelete = em.find(AuditRecord.class, pk);
       if(recordToDelete.isDueDelete())
-          return;
+          em.remove(recordToDelete);
       if(!cleanUpConfig.isArrSafeClean())
           em.remove(recordToDelete);
       else
@@ -94,7 +94,7 @@ public class AuditRecordDeleteBean {
      */
   public List<Long> getPKsByRetention(int retention, String unit, int deletePerTransaction) {
     String queryStr =
-        "SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r where r.eventDateTime < :retentionUnitsAgo";
+        "SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r where r.eventDateTime < :retentionUnitsAgo and r.isDueDelete = false";
     Date now = new Date();
     Timestamp retentionUnitsAgo;
     switch (TimeUnit.valueOf(unit)) {
@@ -128,12 +128,12 @@ public class AuditRecordDeleteBean {
      * @return the pks by max records
      */
   public List<Long> getPksByMaxRecords(int maxRecordsAllowed, int deletePerTransaction) {
-    String queryStr = "SELECT count(*) FROM org.dcm4chee.arr.entities.AuditRecord r";
+    String queryStr = "SELECT count(*) FROM org.dcm4chee.arr.entities.AuditRecord r where r.isDueDelete = false ";
     long recCount = em.createQuery(queryStr, Long.class).getSingleResult();
     if (recCount > maxRecordsAllowed) {
       int diffCount = (int) recCount - maxRecordsAllowed;
       queryStr =
-          "SELECT r FROM org.dcm4chee.arr.entities.AuditRecord r ORDER BY r.eventDateTime ASC";
+          "SELECT r FROM org.dcm4chee.arr.entities.AuditRecord r where r.isDueDelete = false ORDER BY r.eventDateTime ASC";
       if (diffCount > deletePerTransaction) {
         List<AuditRecord> recObjects =
             em.createQuery(queryStr).setMaxResults(deletePerTransaction).getResultList();
@@ -173,7 +173,7 @@ public class AuditRecordDeleteBean {
      */
   public List<Long> getPKsByEventIDTypeCode(String code,int retention, String unit, int deletePerTransaction) {
       String queryStr =
-"SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r where r.eventID.value =:codeVal AND r.eventID.designator =:designatorVal AND r.eventDateTime < :retentionUnitsAgo";
+"SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r where r.eventID.value =:codeVal AND r.eventID.designator =:designatorVal AND r.eventDateTime < :retentionUnitsAgo AND r.isDueDelete = false";
       Date now = new Date();
       String codeVal = code.split("\\^")[0];
       String designatorVal = code.split("\\^")[1];
