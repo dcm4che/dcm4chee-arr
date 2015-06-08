@@ -171,6 +171,42 @@ m-equality: caseExactMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
 m-singleValue: TRUE
 
+dn: m-oid=1.2.40.0.13.1.15.30.3.15, ou=attributetypes, cn=dcm4chee-arr, ou=schem
+ a
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.2.40.0.13.1.15.30.3.15
+m-name: arrBackUPStorageGroupID
+m-description: back up storage group id, used for backup procedure
+m-equality: caseExactMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singleValue: TRUE
+
+dn: m-oid=1.2.40.0.13.1.15.30.3.16, ou=attributetypes, cn=dcm4chee-arr, ou=schem
+ a
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.2.40.0.13.1.15.30.3.16
+m-name: arrBackUPUseDailyFolder
+m-description: specifies if the back folders will be on daily or monthly basise
+m-equality: booleanMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
+m-singleValue: TRUE
+
+dn: m-oid=1.2.40.0.13.1.15.30.3.17, ou=attributetypes, cn=dcm4chee-arr, ou=schem
+ a
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.2.40.0.13.1.15.30.3.17
+m-name: arrBackUPStartTimeRangeInHours
+m-description: time range in which backup can start
+m-equality: caseExactMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singleValue: TRUE
+
 dn: ou=comparators, cn=dcm4chee-arr, ou=schema
 objectclass: organizationalUnit
 objectclass: top
@@ -231,6 +267,9 @@ m-may: arrCleanUpRetentionTime
 m-may: arrCleanUpRetentionTimeUnit
 m-may: arrCleanUpMaxRecords
 m-may: arrCleanUpDeletePerTransaction
+m-may: arrBackUPStorageGroupID
+m-may: arrBackUPUseDailyFolder
+m-may: arrBackUPStartTimeRangeInHours
 
 dn: m-oid=1.2.40.0.13.1.15.30.4.2, ou=objectclasses, cn=dcm4chee-arr, ou=schema
 objectclass: metaObjectClass

@@ -45,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.dcm4che3.conf.api.ConfigurationNotFoundException;
 import org.dcm4che3.conf.api.DicomConfiguration;
 import org.dcm4che3.conf.dicom.DicomConfigurationBuilder;
 import org.dcm4che3.net.Connection.Protocol;
@@ -175,8 +176,8 @@ public class TestGenerateSampleConfig  {
 
     @Before
     public void setUp() throws Exception {
-        keystore = SSLManagerFactory.loadKeyStore("JKS",
-                ResourceLocator.resourceURL("cacerts.jks"), "secret");
+        //keystore = SSLManagerFactory.loadKeyStore("JKS",
+        //        ResourceLocator.resourceURL("cacerts.jks"), "secret");
 
         DicomConfigurationBuilder builder;
         if (System.getProperty("ldap") != null) {
@@ -199,6 +200,10 @@ public class TestGenerateSampleConfig  {
         builder.registerDeviceExtension(StorageDeviceExtension.class);
  
         config = builder.build();
+        try {
+            config.removeDevice("dcm4chee-arr");
+        } catch (ConfigurationNotFoundException e) {
+        }
     }
     
     @Test

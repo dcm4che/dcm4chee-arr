@@ -119,6 +119,10 @@
                 "arrEventTypeRetentionUnit" : "DAYS"
               }
             },
+            "arrCleanUpMaxRecords" : 19,
+            "arrCleanUpUsesMaxRecords" : false,
+            "arrCleanUpUsesRetention" : true,
+            "arrDefaultCleanUpPolicy" : "all",
             "arrBackUPStorageGroupID" : "DEFAULT",
             "arrBackUPUseDailyFolder" : true
           },

@@ -60,12 +60,12 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
     private static final long serialVersionUID = 7013531480908387184L;
 
     // checks if retention time is to be used for deletion
-    @ConfigurableProperty(name = "arrCleanUpUsesRetention", defaultValue = "false")
+    @ConfigurableProperty(name = "arrCleanUpUsesRetention")
     private boolean arrCleanUpUsesRetention = false;
 
     // checks if max record count is to be used for deletion
     // @ConfigField(name="arrCleanUpUsesMaxRecords" ,def="false")
-    @ConfigurableProperty(name = "arrCleanUpUsesMaxRecords", defaultValue = "false")
+    @ConfigurableProperty(name = "arrCleanUpUsesMaxRecords")
     private boolean arrCleanUpUsesMaxRecords = false;
 
     // specify max number of records to keep
@@ -88,7 +88,7 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
     @ConfigurableProperty(name = "arrCleanUpDeletePerTransaction", defaultValue = "2")
     private int arrCleanUpDeletePerTransaction = 2;
 
-    @ConfigurableProperty(name = "arrDefaultCleanUpPolicy", defaultValue = "all")
+    @ConfigurableProperty(name = "arrDefaultCleanUpPolicy")
     private String arrDefaultCleanUpPolicy = "all";
 
     @LDAP(distinguishingField = "arrEventIDTypeCode")
