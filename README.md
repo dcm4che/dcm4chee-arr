@@ -31,6 +31,10 @@ iv-Supports audit reporting via either TLS or UDP.
 
 7)Supports new dcm4che library version 3.3.5
 
+8)Supports new dcm4che storage framework v2.0.0
+
+9)Back up mechanism supports exporting tar and zip containers using the dcm4che storage framework.
+
 Build
 -----
 After installation of [Maven 3](http://maven.apache.org):
