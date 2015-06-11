@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.dcm4che.dcm4chee-arr</groupId>
     <artifactId>dcm4chee-arr-cdi</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.0</version>
   </parent>
   <artifactId>dcm4chee-arr-cdi-service</artifactId>
   <name>Audit Record Repository CDI Service</name>

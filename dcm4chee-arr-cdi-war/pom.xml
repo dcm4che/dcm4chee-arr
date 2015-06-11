@@ -3,7 +3,7 @@
   <parent>
   	<groupId>org.dcm4che.dcm4chee-arr</groupId>
   	<artifactId>dcm4chee-arr-cdi</artifactId>
-  	<version>4.0.0</version>
+  	<version>4.1.0</version>
   </parent>
   <artifactId>dcm4chee-arr-cdi-war</artifactId>
   <name>Audit Record Repository WAR</name>

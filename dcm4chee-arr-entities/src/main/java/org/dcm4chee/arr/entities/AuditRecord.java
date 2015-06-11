@@ -130,7 +130,7 @@ public class AuditRecord implements Serializable {
     private boolean iheYr4;
 
     @Column(name = "is_due_delete", nullable = false, updatable = true)
-    private boolean isDueDelete;
+    private boolean isDueDelete=false;
 
     @Lob
     @Column(name = "xmldata", length = 262144)
