@@ -13,7 +13,7 @@
     <dcm4che.version>3.3.8-SNAPSHOT</dcm4che.version>
     <querydsl.version>3.2.3</querydsl.version>
     <dcm4chee-storage.version>2.1.0-SNAPSHOT</dcm4chee-storage.version>
-	<skipTests>true</skipTests>
+    <skipTests>true</skipTests>
   </properties>
   <description>Audit Record Repository deployable in CDI container</description>
   <dependencyManagement>
@@ -371,4 +371,25 @@
       <url>scp://www.dcm4che.org:443/var/www/maven2</url>
     </repository>
   </distributionManagement>
+  <profiles>
+    <profile>
+      <id>asb</id>
+      <properties>
+        <ds>java:jboss/datasources/OracleDS</ds>
+        <db>oracle</db>
+      </properties>
+    </profile>
+    <profile>
+      <id>csp</id>
+        <properties>
+          <hap-repository.url/>
+        </properties>
+        <distributionManagement>
+          <repository>
+            <id>hap-repository</id>
+            <url>${hap-repository.url}</url>
+          </repository>
+        </distributionManagement>
+     </profile>
+  </profiles>
 </project>
