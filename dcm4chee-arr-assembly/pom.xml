@@ -33,6 +33,9 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.3</version>
         <configuration>
+          <filters>
+            <filter>${basedir}/../dcm4chee-arr-cdi-conf/src/main/config/jboss-cli/${db}.properties</filter>
+          </filters>
           <descriptors>
             <descriptor>src/main/assembly/bin.xml</descriptor>
           </descriptors>
@@ -73,6 +76,12 @@
       <groupId>org.dcm4che</groupId>
       <artifactId>dcm4che-jboss-modules</artifactId>
       <version>${dcm4che.version}</version>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-conf</groupId>
+      <artifactId>dcm4chee-conf-jboss-modules</artifactId>
+      <version>${dcm4chee-conf.version}</version>
       <type>zip</type>
     </dependency>
     <dependency>

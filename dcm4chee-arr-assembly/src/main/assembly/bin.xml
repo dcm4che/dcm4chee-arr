@@ -3,7 +3,7 @@
   xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-  <id>RC</id>
+  <id>${db}</id>
   <formats>
     <format>zip</format>
   </formats>
@@ -32,7 +32,9 @@
       <includes>
         <include>ldap/**</include>
         <include>json/**</include>
+        <include>jboss-cli/*.cli</include>
       </includes>
+      <filtered>true</filtered>
       <lineEnding>dos</lineEnding>
     </fileSet>
     <fileSet>
@@ -57,6 +59,7 @@
       <outputDirectory>jboss-module</outputDirectory>
       <includes>
         <include>org.dcm4che:dcm4che-jboss-modules</include>
+        <include>org.dcm4che.dcm4chee-conf:dcm4chee-conf-jboss-modules</include>
         <include>org.dcm4che:querydsl-jboss-modules</include>
         <include>org.dcm4che:jdbc-jboss-modules</include>
       </includes>

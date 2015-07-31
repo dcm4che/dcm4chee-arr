@@ -1,0 +1,6 @@
+${arr-data-source-string}
+
+data-source --name=arrDS --enabled=true
+
+jms-queue add --queue-address=ARRIncoming --entries=queue/ARRIncoming
+
