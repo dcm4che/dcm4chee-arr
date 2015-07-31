@@ -39,15 +39,20 @@
 package org.dcm4chee.arr.cdi.conf.producer;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import org.dcm4che3.conf.api.DicomConfiguration;
+import org.dcm4che3.conf.api.internal.DicomConfigurationManagerFactory;
 import org.dcm4che3.conf.core.api.ConfigurationException;
 import org.dcm4che3.conf.dicom.DicomConfigurationBuilder;
 import org.dcm4che3.net.audit.AuditLogger;
 import org.dcm4che3.net.audit.AuditRecordRepository;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 import org.dcm4chee.storage.conf.StorageDeviceExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Gunter Zeilinger <gunterz@gmail.com>
@@ -55,18 +60,29 @@ import org.dcm4chee.storage.conf.StorageDeviceExtension;
  *
  */
 public class DicomConfigurationProducer {
-
+    private static final Logger LOG = LoggerFactory.getLogger(DicomConfigurationProducer.class);
+    
+    @Inject
+    private DicomConfigurationBuilder builder;
+    
+    @Inject
+    private Instance<DicomConfigurationManagerFactory> configFactory;
+    
     @Produces
     @ApplicationScoped
-    public static DicomConfiguration getDicomConfiguration()
-            throws ConfigurationException {
-        DicomConfigurationBuilder builder = DicomConfigurationBuilder
-                .newConfigurationBuilder(System.getProperties());
-        builder.registerDeviceExtension(AuditRecordRepository.class);
-        builder.registerDeviceExtension(AuditLogger.class);
-        builder.registerDeviceExtension(CleanUpConfigurationExtension.class);
-        builder.registerDeviceExtension(StorageDeviceExtension.class);
-        return builder.build();
+    public DicomConfiguration getDicomConfiguration() throws ConfigurationException {
+        if(!configFactory.isUnsatisfied()) {
+            LOG.info("Using shared DICOM Configuration Factory to retrieve / create configuration instance for Audit Record Repository");
+            DicomConfigurationManagerFactory factory = configFactory.get();
+            return factory.createDicomConfigurationManager();
+        } else {
+            LOG.warn("Could not retrieve shared DicomConfigurationFactory: Falling back to building application-scoped configuration");
+            builder.registerDeviceExtension(AuditRecordRepository.class);
+            builder.registerDeviceExtension(AuditLogger.class);
+            builder.registerDeviceExtension(CleanUpConfigurationExtension.class);
+            builder.registerDeviceExtension(StorageDeviceExtension.class);
+            return builder.build();
+        }
     }
 
 }

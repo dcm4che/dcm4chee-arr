@@ -54,7 +54,7 @@ import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStopped;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
 import org.dcm4chee.arr.cdi.Impl.StartStopEvent;
-
+import org.dcm4chee.arr.cdi.conf.ArrDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,17 +225,12 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
     auditRecordRepositoryServiceReloaded.fire(new ReloadEvent(device, running));
   }
 
-  /* (non-Javadoc)
-   * @see org.dcm4chee.arr.cdi.AuditRecordRepositoryService#getDevice()
-   */
-  @Produces
+  @Produces @ArrDevice
   public Device getDevice() {
     return device;
   }
 
-  /* (non-Javadoc)
-   * @see org.dcm4chee.arr.cdi.AuditRecordRepositoryService#isRunning()
-   */
+  @Override
   public boolean isRunning() {
     return running;
   }

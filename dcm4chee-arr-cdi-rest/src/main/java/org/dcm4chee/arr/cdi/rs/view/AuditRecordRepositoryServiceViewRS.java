@@ -54,12 +54,12 @@ import javax.xml.ws.WebServiceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.dcm4che3.net.Device;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceUsed;
 import org.dcm4chee.arr.cdi.Impl.RemoteSource;
 import org.dcm4chee.arr.cdi.Impl.UsedEvent;
+import org.dcm4chee.arr.cdi.conf.ArrDevice;
 import org.dcm4chee.arr.cdi.ejb.AuditRecordAccessLocal;
 import org.dcm4chee.arr.cdi.ejb.AuditRecordQueryLocal;
 import org.dcm4chee.arr.cdi.ejb.XSLTUtils;
@@ -74,7 +74,7 @@ import org.dcm4chee.arr.cdi.ejb.XSLTUtils;
 public class AuditRecordRepositoryServiceViewRS {
 	
 
-	@Inject
+	@Inject @ArrDevice
 	private Device device;
 	
 	@Inject

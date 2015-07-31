@@ -300,6 +300,7 @@
   <modules>
     <module>dcm4chee-arr-cdi-conf</module>
     <module>dcm4chee-arr-cdi-conf-producer</module>
+    <module>dcm4chee-arr-conf-default</module>
     <module>dcm4chee-arr-entities</module>
     <module>dcm4chee-arr-listeners-mdb</module>
     <module>dcm4chee-arr-cdi-service</module>
@@ -307,7 +308,7 @@
     <module>dcm4chee-arr-cdi-cleanup</module>
     <module>dcm4chee-arr-web</module>
     <module>dcm4chee-arr-cdi-war</module>
-	<module>dcm4chee-arr-assembly</module>
+    <module>dcm4chee-arr-assembly</module>
   </modules>
   <build>
     <plugins>
