@@ -12,8 +12,8 @@
       <dependency>
       <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-entities</artifactId>
-      <classifier>${db}</classifier>
-      <!--<classifier>oracle</classifier>-->
+      <!--<classifier>${db}</classifier>-->
+      <classifier>oracle</classifier>
       <version>${parent.version}</version>
     </dependency>
     <dependency>
