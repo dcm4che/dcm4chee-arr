@@ -373,6 +373,9 @@
     </repository>
   </distributionManagement>
   <profiles>
+  <profile>
+  <id>default</id>
+  </profile>
     <profile>
       <id>no-db-specified</id>
       <activation>

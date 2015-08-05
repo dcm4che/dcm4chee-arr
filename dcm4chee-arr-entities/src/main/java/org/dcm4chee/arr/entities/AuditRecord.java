@@ -72,7 +72,7 @@ import org.hibernate.annotations.Index;
  * @author Gunter Zeilinger <gunterze@gmail.com>
  */
 @Entity
-@Table(name = "audit_record")
+@Table(name = "arr_audit_record")
 @Access(AccessType.FIELD)
 public class AuditRecord implements Serializable {
 

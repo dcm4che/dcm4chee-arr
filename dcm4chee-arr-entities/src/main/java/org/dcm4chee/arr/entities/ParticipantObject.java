@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  * @author Gunter Zeilinger <gunterze@gmail.com>
  */
 @Entity
-@Table(name = "part_obj")
+@Table(name = "arr_part_obj")
 @Access(AccessType.FIELD)
 public class ParticipantObject implements Serializable {
 

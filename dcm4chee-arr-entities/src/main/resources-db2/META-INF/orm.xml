@@ -5,7 +5,7 @@
 	version="2.0">
 	<package>org.dcm4chee.arr.entities</package>
 	<entity class="ActiveParticipant">
-		<table name="active_part" />
+		<table name="arr_active_part" />
 		<attributes>
 			<id name="pk">
 				<column name="pk" />
@@ -15,7 +15,7 @@
 	</entity>
 	
 	<entity class="AuditRecord">
-	<table name="audit_record" />
+	<table name="arr_audit_record" />
 	<attributes>
 	<id name="pk">
 	<column name="pk" />
@@ -25,7 +25,7 @@
 	</entity>
 	
 	<entity class="org.dcm4chee.arr.entities.Code">
-	<table name="code" />
+	<table name="arr_code" />
 	<attributes>
 	<id name="pk">
 	<column name="pk" />
@@ -35,7 +35,7 @@
 	</entity>
 
 	<entity class="ParticipantObject">
-	<table name="part_obj" />
+	<table name="arr_part_obj" />
 	<attributes>
 	<id name="pk">
 	<column name="pk" />

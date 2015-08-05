@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * @author Gunter Zeilinger <gunterze@gmail.com>
  */
 @Entity(name = "org.dcm4chee.arr.entities.Code")
-@Table(name = "code", uniqueConstraints = { 
+@Table(name = "arr_code", uniqueConstraints = { 
         @UniqueConstraint(columnNames = { "code_value", "code_designator" }) })
 public class Code implements Serializable {
 

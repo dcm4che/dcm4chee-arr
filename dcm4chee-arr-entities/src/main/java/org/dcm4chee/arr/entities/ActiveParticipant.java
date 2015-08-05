@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  */
 
 @Entity
-@Table(name = "active_part")
+@Table(name = "arr_active_part")
 @Access(AccessType.FIELD)
 public class ActiveParticipant implements Serializable {
 
