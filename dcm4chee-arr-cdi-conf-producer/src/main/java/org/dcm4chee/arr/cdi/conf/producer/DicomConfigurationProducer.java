@@ -43,7 +43,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.dcm4che3.conf.api.DicomConfiguration;
+import org.dcm4che3.conf.api.internal.DicomConfigurationManager;
 import org.dcm4che3.conf.api.internal.DicomConfigurationManagerFactory;
 import org.dcm4che3.conf.core.api.ConfigurationException;
 import org.dcm4che3.conf.dicom.DicomConfigurationBuilder;
@@ -70,7 +70,7 @@ public class DicomConfigurationProducer {
     
     @Produces
     @ApplicationScoped
-    public DicomConfiguration getDicomConfiguration() throws ConfigurationException {
+    public DicomConfigurationManager getDicomConfiguration() throws ConfigurationException {
         if(!configFactory.isUnsatisfied()) {
             LOG.info("Using shared DICOM Configuration Factory to retrieve / create configuration instance for Audit Record Repository");
             DicomConfigurationManagerFactory factory = configFactory.get();

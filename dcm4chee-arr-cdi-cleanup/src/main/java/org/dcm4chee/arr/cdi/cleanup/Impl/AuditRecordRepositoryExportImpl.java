@@ -52,6 +52,7 @@ import javax.inject.Inject;
 import org.dcm4che3.net.Device;
 import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryExport;
 import org.dcm4chee.arr.cdi.cleanup.ejb.AuditRecordDeleteBean;
+import org.dcm4chee.arr.cdi.conf.ArrDevice;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.storage.ContainerEntry;
@@ -79,7 +80,7 @@ public class AuditRecordRepositoryExportImpl implements
     @Inject
     private AuditRecordDeleteBean removeTool;
 
-    @Inject
+    @Inject @ArrDevice
     private Device device;
 
     @Override

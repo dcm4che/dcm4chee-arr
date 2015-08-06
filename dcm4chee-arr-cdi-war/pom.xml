@@ -1,14 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-  	<groupId>org.dcm4che.dcm4chee-arr</groupId>
-  	<artifactId>dcm4chee-arr-cdi</artifactId>
-  	<version>4.2.0-SNAPSOT</version>
+    <groupId>org.dcm4che.dcm4chee-arr</groupId>
+    <artifactId>dcm4chee-arr-cdi</artifactId>
+    <version>4.2.0-SNAPSOT</version>
   </parent>
   <artifactId>dcm4chee-arr-cdi-war</artifactId>
   <name>Audit Record Repository WAR</name>
   <packaging>war</packaging>
   <dependencies>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-conf</groupId>
+      <artifactId>dcm4chee-conf-cdi</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-entities</artifactId>
@@ -20,7 +24,7 @@
       <artifactId>dcm4chee-arr-cdi-conf</artifactId>
       <version>${parent.version}</version>
     </dependency>
-	<dependency>
+    <dependency>
       <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-cdi-conf-producer</artifactId>
       <version>${parent.version}</version>
