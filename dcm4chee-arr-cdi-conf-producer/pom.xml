@@ -46,7 +46,11 @@
     <dependency>
         <groupId>org.dcm4che.dcm4chee-storage</groupId>
         <artifactId>dcm4chee-storage-conf</artifactId>
-      </dependency>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
   </dependencies>
   <build>
   <filters>
