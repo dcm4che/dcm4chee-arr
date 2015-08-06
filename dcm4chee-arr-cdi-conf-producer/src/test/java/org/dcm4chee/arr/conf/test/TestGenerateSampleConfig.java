@@ -112,7 +112,7 @@ public class TestGenerateSampleConfig  {
         arrDevice.addDeviceExtension(auditLogger);
         auditLogger.addConnection(auditUDP);
         auditLogger.setAuditSourceTypeCodes("4");
-        auditLogger.setAuditRecordRepositoryDevice(arrDevice);
+        auditLogger.addAuditRecordRepositoryDevice(arrDevice);
     }
 
     private void addCleanUpExtension(Device arrDevice) {

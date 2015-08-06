@@ -45,7 +45,6 @@ import java.util.Map;
 import org.dcm4che3.net.Connection;
 import org.dcm4che3.net.Connection.Protocol;
 import org.dcm4che3.net.Device;
-import org.dcm4che3.net.DeviceType;
 import org.dcm4che3.net.audit.AuditLogger;
 import org.dcm4che3.net.audit.AuditRecordRepository;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
@@ -145,7 +144,7 @@ public class DefaultAuditRecordRepoConfigurationFactory {
         arrDevice.addDeviceExtension(auditLogger);
         auditLogger.addConnection(auditConn);
         auditLogger.setAuditSourceTypeCodes("4");
-        auditLogger.setAuditRecordRepositoryDevice(arrDevice);
+        auditLogger.addAuditRecordRepositoryDevice(arrDevice);
     }
         
 }
