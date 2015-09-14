@@ -1,16 +1,13 @@
 {
   "dicomConfigurationRoot" : {
-    "hl7UniqueApplicationNamesRegistryRoot" : { },
-    "dicomUniqueAETitlesRegistryRoot" : { },
     "dicomDevicesRoot" : {
       "dcm4chee-arr" : {
         "dcmLimitOpenAssociations" : 0,
         "deviceExtensions" : {
           "AuditLogger" : {
             "dcmAuditIncludeInstanceUID" : false,
-            "dcmAuditRecordRepositoryDeviceReference" : "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']",
+            "dcmAuditRecordRepositoryDeviceReference" : [ "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']" ],
             "dcmAuditSourceTypeCode" : [ "4" ],
-            "dcmAuditSuppressCriteria" : [ ],
             "dicomNetworkConnectionReference" : [ "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']/dicomConnection[cn='audit-udp']" ]
           },
           "AuditRecordRepository" : {
@@ -122,9 +119,7 @@
             "arrCleanUpMaxRecords" : 19,
             "arrCleanUpUsesMaxRecords" : false,
             "arrCleanUpUsesRetention" : true,
-            "arrDefaultCleanUpPolicy" : "all",
-            "arrBackUPStorageGroupID" : "DEFAULT",
-            "arrBackUPUseDailyFolder" : true
+            "arrDefaultCleanUpPolicy" : "all"
           },
           "StorageDeviceExtension" : {
             "Storage System Groups" : {
@@ -142,10 +137,9 @@
                     "dcmStorageSystemPath" : "/var/local/dcm4chee-arr/backup"
                   }
                 },
-                "StorageAccessTimeOffsetMap" : { },
                 "dcmActiveStorageSystemID" : [ "online" ],
                 "dcmBaseStorageAccessTime" : 2000,
-                "dcmRetrieveAET" : [ ],
+                "dcmNextStorageSystemID" : "online",
                 "dcmStorageSystemGroupID" : "DEFAULT"
               }
             }
@@ -153,15 +147,12 @@
         },
         "dicomConnection" : [ {
           "cn" : "audit-udp",
-          "dcmBlacklistedHostname" : [ ],
           "dcmProtocol" : "SYSLOG_UDP",
           "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
           "dicomHostname" : "localhost",
-          "dicomPort" : 514,
-          "dicomTLSCipherSuite" : [ ]
+          "dicomPort" : 514
         }, {
           "cn" : "dicom-tls",
-          "dcmBlacklistedHostname" : [ ],
           "dcmProtocol" : "SYSLOG_TLS",
           "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
           "dicomHostname" : "localhost",
@@ -169,23 +160,12 @@
           "dicomTLSCipherSuite" : [ "TLS_RSA_WITH_AES_128_CBC_SHA", "SSL_RSA_WITH_3DES_EDE_CBC_SHA" ]
         }, {
           "cn" : "audit-udp",
-          "dcmBlacklistedHostname" : [ ],
           "dcmProtocol" : "SYSLOG_UDP",
           "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
-          "dicomHostname" : "localhost",
-          "dicomTLSCipherSuite" : [ ]
+          "dicomHostname" : "localhost"
         } ],
         "dicomDeviceName" : "dcm4chee-arr",
-        "dicomInstalled" : true,
-        "dicomInstitutionAddress" : [ ],
-        "dicomInstitutionCode" : [ ],
-        "dicomInstitutionDepartmentName" : [ ],
-        "dicomInstitutionName" : [ ],
-        "dicomNetworkAE" : { },
-        "dicomPrimaryDeviceType" : [ ],
-        "dicomRelatedDeviceReference" : [ ],
-        "dicomSoftwareVersion" : [ ],
-        "dicomVendorData" : [ ]
+        "dicomInstalled" : true
       }
     }
   }
