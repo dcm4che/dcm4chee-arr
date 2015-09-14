@@ -38,12 +38,16 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import org.dcm4che3.conf.core.api.ConfigurationException;
 import org.dcm4che3.conf.api.DicomConfiguration;
+import org.dcm4che3.conf.core.api.ConfigChangeEvent;
+import org.dcm4che3.conf.core.api.ConfigurationException;
 import org.dcm4che3.net.Connection;
 import org.dcm4che3.net.Device;
 import org.dcm4che3.net.audit.AuditRecordRepository;
@@ -53,19 +57,15 @@ import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStarted;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStopped;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
-import org.dcm4chee.arr.cdi.Impl.StartStopEvent;
 import org.dcm4chee.arr.cdi.conf.ArrDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.Startup;
-import javax.ejb.Singleton;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Class AuditRecordRepositoryServiceImpl.
  * This is the audit record repository service responsible for configuring, starting, stopping and reloading the device
+ * <p>
  * This is a singelton as a workaround for initializing the cdi instance in jboss 7
+ *
  * @author Hesham Elbadawi bsdreko@gmail.com
  */
 @Startup
@@ -73,192 +73,206 @@ import javax.ejb.Singleton;
 public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositoryService {
 
     private static final Logger log = LoggerFactory.getLogger(AuditRecordRepositoryServiceImpl.class);
-  private static final String DEVICE_NAME_PROPERTY = "org.dcm4chee.arr.deviceName";
-  private static final String DEF_DEVICE_NAME = "dcm4chee-arr";
-  private static String[] JBOSS_PROPERITIES = {"jboss.home", "jboss.modules", "jboss.server.base",
-      "jboss.server.config", "jboss.server.data", "jboss.server.deploy", "jboss.server.log",
-      "jboss.server.temp",};
 
-  private ExecutorService executor = Executors.newCachedThreadPool();
+    private static final String DEVICE_NAME_PROPERTY = "org.dcm4chee.arr.deviceName";
+    private static final String DEF_DEVICE_NAME = "dcm4chee-arr";
+    private static String[] JBOSS_PROPERITIES = {"jboss.home", "jboss.modules", "jboss.server.base",
+            "jboss.server.config", "jboss.server.data", "jboss.server.deploy", "jboss.server.log",
+            "jboss.server.temp",};
 
-  private ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+    private final ExecutorService executor = Executors.newCachedThreadPool();
+
+    private final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
 
-  @Inject
-  private AuditRecordRepositoryHandlerImpl auditRecordRepositoryHandlerImpl;
+    @Inject
+    private AuditRecordRepositoryHandlerImpl auditRecordRepositoryHandlerImpl;
 
-  @Inject
-  @AuditRecordRepositoryServiceStarted
-  private Event<StartStopEvent> auditRecordRepositoryServiceStarted;
+    @Inject
+    @AuditRecordRepositoryServiceStarted
+    private Event<StartStopEvent> auditRecordRepositoryServiceStarted;
 
-  @Inject
-  @AuditRecordRepositoryServiceStopped
-  private Event<StartStopEvent> auditRecordRepositoryServiceStopped;
+    @Inject
+    @AuditRecordRepositoryServiceStopped
+    private Event<StartStopEvent> auditRecordRepositoryServiceStopped;
 
-  @Inject
-  @AuditRecordRepositoryServiceReloaded
-  private Event<ReloadEvent> auditRecordRepositoryServiceReloaded;
+    @Inject
+    @AuditRecordRepositoryServiceReloaded
+    private Event<ReloadEvent> auditRecordRepositoryServiceReloaded;
 
-  @Inject
-  @AuditRecordRepositoryServiceStartedCleanUp
-  private Event<StartCleanUpEvent> auditRecordRepositoryServiceStartedCleanUp;
+    @Inject
+    @AuditRecordRepositoryServiceStartedCleanUp
+    private Event<StartCleanUpEvent> auditRecordRepositoryServiceStartedCleanUp;
 
-  @Inject
-  @AuditRecordRepositoryServiceStoppedCleanUp
-  private Event<StopCleanUpEvent> auditRecordRepositoryServiceStoppedCleanUp;
+    @Inject
+    @AuditRecordRepositoryServiceStoppedCleanUp
+    private Event<StopCleanUpEvent> auditRecordRepositoryServiceStoppedCleanUp;
 
-  @Inject
-  private DicomConfiguration conf;
+    @Inject
+    private DicomConfiguration conf;
 
-  private Device device;
+    private Device device;
 
-  private boolean running;
+    private boolean running;
 
-  /**
+    /**
      * Adds the jboss system properties.
      */
-  private static void addJBossDirURLSystemProperties() {
-    for (String key : JBOSS_PROPERITIES) {
-      String url = new File(System.getProperty(key + ".dir")).toURI().toString();
-      System.setProperty(key + ".url", url.substring(0, url.length() - 1));
+    private static void addJBossDirURLSystemProperties() {
+        for (String key : JBOSS_PROPERITIES) {
+            String url = new File(System.getProperty(key + ".dir")).toURI().toString();
+            System.setProperty(key + ".url", url.substring(0, url.length() - 1));
+        }
     }
-  }
 
-  /**
+    /**
      * Find device.
      * Loads appropriate configuration for a device using it's name fom either ldap or prefs.
+     *
      * @return the device
-     * @throws ConfigurationException
-     *             the configuration exception
+     * @throws ConfigurationException the configuration exception
      */
-  public Device findDevice() throws ConfigurationException {
-      conf.sync();
-    return conf.findDevice(
-	    System.getProperty(
-	    DEVICE_NAME_PROPERTY, 
-	    DEF_DEVICE_NAME));
-  }
+    public Device findDevice() throws ConfigurationException {
+        conf.sync();
+        return conf.findDevice(
+                System.getProperty(
+                        DEVICE_NAME_PROPERTY,
+                        DEF_DEVICE_NAME));
+    }
 
-  /**
+    /**
      * init() runs pre-start. initializies the device, set the scheduled
      * executor to be used (used by the listeners in the AuditRecordRepository
      * extension) finally sets the handler implementation to handle the incoming
      * messages on the registered connections
-     * 
      */
-  @PostConstruct
-  public void init() {
+    @Override
+    @PostConstruct
+    public void init() {
 
-    addJBossDirURLSystemProperties();
-    try {
-      device = findDevice();
-      device.setExecutor(executor);
-      device.setScheduledExecutor(scheduledExecutor);
-      device.getDeviceExtension(AuditRecordRepository.class).setAuditRecordHandler(
-          auditRecordRepositoryHandlerImpl);
+        addJBossDirURLSystemProperties();
+        try {
+            device = findDevice();
+            device.setExecutor(executor);
+            device.setScheduledExecutor(scheduledExecutor);
+            device.getDeviceExtension(AuditRecordRepository.class).setAuditRecordHandler(
+                    auditRecordRepositoryHandlerImpl);
 
-      start();
-    } catch (RuntimeException re) {
-      log.error(re.getMessage());
-      throw re;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+            start();
+        } catch (RuntimeException re) {
+            log.error(re.getMessage());
+            throw re;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-  }
 
-  /**
+    /**
      * Destroy takes care of closing the jms connection used by the handler.
      */
-  @PreDestroy
-  public void destroy() {
-    auditRecordRepositoryHandlerImpl.closeJMS();
-    stop();
-  }
+    @PreDestroy
+    public void destroy() {
+        auditRecordRepositoryHandlerImpl.closeJMS();
+        stop();
+    }
 
-  /**
+    /**
      * Start binds the connections registered in the AuditRecordRepository
      * device extension sends the start event for the cleanup and if not using
      * singleton will need the startstop event with an observer the observer
      * specified will have to listen to the inizialization of the application
      * scope.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
-  public void start() throws Exception {
+    @Override
+    public void start() throws Exception {
 
-    device.bindConnections();
-    running = true;
-    log.info("started service");
-    auditRecordRepositoryServiceStartedCleanUp.fire(new StartCleanUpEvent(device));
-    auditRecordRepositoryServiceStarted.fire(new StartStopEvent(true, device, new LocalSource()));
+        device.bindConnections();
+        running = true;
+        log.info("started service");
+        auditRecordRepositoryServiceStartedCleanUp.fire(new StartCleanUpEvent(device));
+        auditRecordRepositoryServiceStarted.fire(new StartStopEvent(true, device, new LocalSource()));
 
-  }
+    }
 
-  /**
+    /**
      * Stop unbinds the connections registered in the AuditRecordRepository
      * device extension sends the stop event for the cleanup and if not using
      * singleton will need the startstop event with an observer the observer
      * specified will have to listen to the inizialization of the application
      * scope.
      */
-  public void stop() {
+    @Override
+    public void stop() {
 
-    device.unbindConnections();
-    running = false;
-    log.info("stopped service");
-    auditRecordRepositoryServiceStoppedCleanUp.fire(new StopCleanUpEvent(device));
-    auditRecordRepositoryServiceStopped.fire(new StartStopEvent(false, device, new LocalSource()));
-  }
+        device.unbindConnections();
+        running = false;
+        log.info("stopped service");
+        auditRecordRepositoryServiceStoppedCleanUp.fire(new StopCleanUpEvent(device));
+        auditRecordRepositoryServiceStopped.fire(new StartStopEvent(false, device, new LocalSource()));
+    }
 
-  /**
+    @Override
+    public void onConfigChange(@Observes ConfigChangeEvent configChange) {
+        try {
+            reload();
+        } catch (Exception e) {
+            log.error("Error while reloading configuration", e);
+        }
+    }
+
+    /**
      * Reload calls the reconfigure, rebinds connections with the new
      * configuration and calls the reload event used by the cleanup.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
-  public void reload() throws Exception {
-    device.reconfigure(findDevice());
-    device.rebindConnections();
-    log.info("reloading service configuration");
-    auditRecordRepositoryServiceReloaded.fire(new ReloadEvent(device, running));
-  }
+    @Override
+    public void reload() throws Exception {
+        device.reconfigure(findDevice());
+        device.rebindConnections();
+        log.info("reloading service configuration");
+        auditRecordRepositoryServiceReloaded.fire(new ReloadEvent(device, running));
+    }
 
-  @Produces @ArrDevice
-  public Device getDevice() {
-    return device;
-  }
+    @Override
+    @Produces @ArrDevice
+    public Device getDevice() {
+        return device;
+    }
 
-  @Override
-  public boolean isRunning() {
-    return running;
-  }
+    @Override
+    public boolean isRunning() {
+        return running;
+    }
 
-  /**
+    /**
      * getListenerInfo.
      * creates a response to the start event fired using the restful interface
+     *
      * @return the listeners info
      */
-  public String getListenersInfo() {
-    String info = "Device Connections Information:\n";
-    if (device.getDeviceExtension(AuditRecordRepository.class).getConnections().isEmpty()) {
-      return "no Info available";
-    } else {
-      for (Connection c : device.getDeviceExtension(AuditRecordRepository.class).getConnections()) {
-        if (c.isTls()) {
-          info +=
-              "<br>Listener> [Trusted] at Address: " + c.getHostname() + " on port: " + c.getPort()
-                  + " using protocol: " + c.getProtocol() + " with set timeout: "
-                  + c.getConnectTimeout() + "<br>" + " Using TLS using <br>";
+    @Override
+    public String getListenersInfo() {
+        String info = "Device Connections Information:\n";
+        if (device.getDeviceExtension(AuditRecordRepository.class).getConnections().isEmpty()) {
+            return "no Info available";
         } else {
-          info +=
-              "<br>Listener> at Address: " + c.getHostname() + " on port: " + c.getPort()
-                  + " using protocol: " + c.getProtocol() + " with set timeout: "
-                  + c.getConnectTimeout() + "<br>";
+            for (Connection c : device.getDeviceExtension(AuditRecordRepository.class).getConnections()) {
+                if (c.isTls()) {
+                    info +=
+                            "<br>Listener> [Trusted] at Address: " + c.getHostname() + " on port: " + c.getPort()
+                                    + " using protocol: " + c.getProtocol() + " with set timeout: "
+                                    + c.getConnectTimeout() + "<br>" + " Using TLS using <br>";
+                } else {
+                    info +=
+                            "<br>Listener> at Address: " + c.getHostname() + " on port: " + c.getPort()
+                                    + " using protocol: " + c.getProtocol() + " with set timeout: "
+                                    + c.getConnectTimeout() + "<br>";
+                }
+            }
         }
-      }
+        return info;
     }
-    return info;
-  }
 }

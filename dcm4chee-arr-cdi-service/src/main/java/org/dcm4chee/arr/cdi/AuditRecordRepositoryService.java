@@ -37,12 +37,14 @@
  * ***** END LICENSE BLOCK ***** */
 package org.dcm4chee.arr.cdi;
 
+import org.dcm4che3.conf.core.api.ConfigChangeEvent;
 import org.dcm4che3.net.Device;
-/**
- * @author Hesham Elbadawi bsdreko@gmail.com
- * 
- **/
 
+/**
+ * Audit Record Repository Service responsible for configuring, starting, stopping and reloading the Device.
+ *
+ * @author Hesham Elbadawi bsdreko@gmail.com
+ **/
 public interface AuditRecordRepositoryService {
  
 	void reload() throws Exception;
@@ -52,5 +54,6 @@ public interface AuditRecordRepositoryService {
 	Device getDevice();
 	boolean isRunning(); 
 	String getListenersInfo();
+	void onConfigChange(ConfigChangeEvent configChange);
 	     
 }
