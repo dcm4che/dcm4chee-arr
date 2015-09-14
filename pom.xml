@@ -409,6 +409,7 @@
     <profile>
       <id>csp</id>
         <properties>
+          <ds>java:/PacsDS</ds>
           <hap-repository.url/>
         </properties>
         <distributionManagement>
