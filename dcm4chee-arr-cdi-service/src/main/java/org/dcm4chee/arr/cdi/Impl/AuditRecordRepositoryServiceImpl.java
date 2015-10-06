@@ -31,23 +31,9 @@
  */
 package org.dcm4chee.arr.cdi.Impl;
 
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-
 import org.dcm4che3.conf.api.DicomConfiguration;
-import org.dcm4che3.conf.core.api.ConfigChangeEvent;
 import org.dcm4che3.conf.core.api.ConfigurationException;
+import org.dcm4che3.conf.core.api.InternalConfigChangeEvent;
 import org.dcm4che3.net.Connection;
 import org.dcm4che3.net.Device;
 import org.dcm4che3.net.audit.AuditRecordRepository;
@@ -60,6 +46,19 @@ import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
 import org.dcm4chee.arr.cdi.conf.ArrDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * This is the audit record repository service responsible for configuring, starting, stopping and reloading the device
@@ -214,7 +213,7 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
     }
 
     @Override
-    public void onConfigChange(@Observes ConfigChangeEvent configChange) {
+    public void onConfigChange(@Observes InternalConfigChangeEvent configChange) {
         try {
             reload();
         } catch (Exception e) {

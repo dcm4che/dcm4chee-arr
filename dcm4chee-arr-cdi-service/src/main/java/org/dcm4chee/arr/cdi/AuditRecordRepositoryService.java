@@ -37,7 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.dcm4chee.arr.cdi;
 
-import org.dcm4che3.conf.core.api.ConfigChangeEvent;
+import org.dcm4che3.conf.core.api.InternalConfigChangeEvent;
 import org.dcm4che3.net.Device;
 
 /**
@@ -54,6 +54,7 @@ public interface AuditRecordRepositoryService {
 	Device getDevice();
 	boolean isRunning(); 
 	String getListenersInfo();
-	void onConfigChange(ConfigChangeEvent configChange);
-	     
+
+	void onConfigChange(InternalConfigChangeEvent configChange);
+
 }
