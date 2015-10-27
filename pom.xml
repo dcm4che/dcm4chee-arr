@@ -400,7 +400,13 @@
       </activation>
     </profile>
     <profile>
-      <id>asb</id>
+      <id>arr-csp</id>
+      <properties>
+        <ds>java:/PacsDS</ds>
+      </properties>
+    </profile>
+    <profile>
+      <id>arr-asb</id>
       <properties>
         <ds>java:jboss/datasources/OracleDS</ds>
         <db>oracle</db>
@@ -409,7 +415,6 @@
     <profile>
       <id>csp</id>
         <properties>
-          <ds>java:/PacsDS</ds>
           <hap-repository.url/>
         </properties>
         <distributionManagement>
