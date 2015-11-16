@@ -44,6 +44,7 @@ import javax.persistence.EntityManager;
 
 import org.dcm4chee.arr.entities.ActiveParticipant;
 import org.dcm4chee.arr.entities.AuditRecord;
+import org.dcm4chee.arr.entities.AuditRecord.AuditFormat;
 import org.dcm4chee.arr.entities.Code;
 import org.dcm4chee.arr.entities.ParticipantObject;
 import org.slf4j.Logger;
@@ -63,7 +64,11 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class AuditRecordHandler extends DefaultHandler {
 
-    private static final Logger log = LoggerFactory
+    private static final String ATTR_NAME_CODE = "code";
+
+	private static final String ATTR_NAME_CSD_CODE = "csd-code";
+
+	private static final Logger log = LoggerFactory
             .getLogger(AuditRecordHandler.class);
 
     private final EntityManager em;
@@ -122,6 +127,9 @@ public class AuditRecordHandler extends DefaultHandler {
             rec.setEventDateTime(parseISO8601DateTime(attrs
                     .getValue("EventDateTime")));
         } else if ("EventID".equals(qName)) {
+        	if (rec.getAuditFormat() == AuditFormat.UNKNOWN) {
+        		rec.setAuditFormat(attrs.getValue(ATTR_NAME_CSD_CODE) != null ? AuditFormat.DICOM : AuditFormat.SUP95);
+        	}
             rec.setEventID(toCode(attrs));
         } else if ("EventTypeCode".equals(qName)) {
             if (rec.getEventType() == null) {
@@ -156,16 +164,19 @@ public class AuditRecordHandler extends DefaultHandler {
                 rec.setSourceID(toUpper(attrs.getValue("AuditSourceID")));
                 rec.setEnterpriseSiteID(toUpper(attrs
                         .getValue("AuditEnterpriseSiteID")));
+                if (attrs.getValue(ATTR_NAME_CODE) != null) {
+                	rec.setSourceType(getInt(attrs, ATTR_NAME_CODE, "AuditSourceIdentification"));
+                }
                 expectAuditSourceTypeCode = true;
             } else {
                 log.info("Received Audit Record with multiple Audit Source "
                         + "Identifications. Only matching against first value "
                         + "supported!");
             }
-        } else if ("AuditSourceTypeCode".equals(qName)) {
+        } else if ("AuditSourceTypeCode".equals(qName)) { //Supplement 95
             if (expectAuditSourceTypeCode) {
                 if (rec.getSourceType() == 0) {
-                    rec.setSourceType(getInt(attrs, "code",
+                    rec.setSourceType(getInt(attrs, ATTR_NAME_CODE,
                             "AuditSourceTypeCode"));
                 } else {
                     log.info("Received Audit Record with multiple Audit Source "
@@ -192,7 +203,7 @@ public class AuditRecordHandler extends DefaultHandler {
             if (code != null) {
                 po.setObjectIDType(code);
             } else {
-                po.setObjectIDTypeRFC(getInt(attrs, "code",
+                po.setObjectIDTypeRFC(getInt(attrs, ATTR_NAME_CODE,
                         "ParticipantObjectIDTypeCode"));
             }
         } else if ("ParticipantObjectName".equals(qName)) {
@@ -254,12 +265,19 @@ public class AuditRecordHandler extends DefaultHandler {
      * @return the code object created
      */
     private Code toCode(Attributes attrs) {
-        String value = attrs.getValue("code");
+        String value = attrs.getValue(ATTR_NAME_CODE);
+        String meaning;
+        if (value == null) {
+        	value = attrs.getValue(ATTR_NAME_CSD_CODE);
+        	meaning = attrs.getValue("originalText");
+        } else {
+        	meaning = attrs.getValue("displayName");
+        }
         String designator = attrs.getValue("codeSystemName");
         if (value == null || designator == null) {
             return null;
         }
-        String meaning = attrs.getValue("displayName");
+        
         Code code = findCode(value, designator);
         if (code != null)
             return code;

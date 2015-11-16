@@ -71,6 +71,9 @@ public class ReceiverHelperBean implements ReceiverHelperBeanLocal {
             boolean iheyr4 = isIHEYr4(xmldata);
             XMLReader reader = iheyr4 ? xmlFilter() : xmlReader();
             AuditRecord rec = new AuditRecord();
+            if (iheyr4)
+            	rec.setAuditFormat(AuditRecord.AuditFormat.IHEYR4);
+
             DefaultHandler dh = new AuditRecordHandler(em, rec);
             reader.setContentHandler(dh);
             reader.setEntityResolver(dh);
@@ -78,7 +81,6 @@ public class ReceiverHelperBean implements ReceiverHelperBeanLocal {
             reader.setDTDHandler(dh);
             reader.parse(new InputSource(new ByteArrayInputStream(xmldata)));
             rec.setReceiveDateTime(receiveDate);
-            rec.setIHEYr4(iheyr4);
             rec.setXmldata(xmldata);
             rec.setDueDelete(false);
             em.persist(rec);

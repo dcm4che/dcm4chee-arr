@@ -216,8 +216,7 @@ public class ActivityLogger {
                             .getIdentity(), null, null, event.getSource()
                             .getHost(), RoleIDCode.ApplicationLauncher));
 
-            msg.getAuditSourceIdentification().add(
-                    logger.createAuditSourceIdentification());
+            msg.setAuditSourceIdentification(logger.createAuditSourceIdentification());
 
             return msg;
         } else if (event instanceof UsedEvent) {
@@ -241,8 +240,7 @@ public class ActivityLogger {
                     .getRemoteHost());
             ap.setNetworkAccessPointTypeCode("2");
             msg.getActiveParticipant().add(ap);
-            msg.getAuditSourceIdentification().add(
-                    logger.createAuditSourceIdentification());
+            msg.setAuditSourceIdentification(logger.createAuditSourceIdentification());
             ParticipantObjectIdentification po = new ParticipantObjectIdentification();
             po.setParticipantObjectID(((RemoteSource) event.getSource())
                     .getURI());

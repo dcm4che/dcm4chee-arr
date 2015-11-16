@@ -199,13 +199,6 @@
       <xsl:call-template name="RemoteNodeType"/>
     </div>
   </xsl:template>
-  <xsl:template match="InstanceActionDescription">
-    <b>InstanceActionDescription:</b>
-    <br/>
-    <div class="level">
-      <xsl:call-template name="InstancesActionType"/>
-    </div>
-  </xsl:template>
   <!-- InstancesSent -->
   <xsl:template match="InstancesSent">
     <span class="event">InstancesSent</span>

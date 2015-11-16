@@ -80,6 +80,10 @@ public class AuditRecord implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(AuditRecord.class);
     
+    public enum AuditFormat {
+    	UNKNOWN, IHEYR4, SUP95, DICOM
+    }
+    
     @Id
     @GeneratedValue
     @Column(name = "pk")
@@ -126,8 +130,8 @@ public class AuditRecord implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord")
     private Collection<ParticipantObject> participantObjects;
 
-    @Column(name = "iheyr4")
-    private boolean iheYr4;
+    @Column(name = "audit_format")
+    private AuditFormat auditFormat = AuditFormat.UNKNOWN;
 
     @Column(name = "is_due_delete", nullable = false, updatable = true)
     private boolean isDueDelete=false;
@@ -410,8 +414,8 @@ public class AuditRecord implements Serializable {
      * 
      * @return true, if is IHE yr4
      */
-    public boolean isIHEYr4() {
-        return iheYr4;
+    public AuditFormat getAuditFormat() {
+        return auditFormat;
     }
 
     /**
@@ -420,8 +424,8 @@ public class AuditRecord implements Serializable {
      * @param iheYr4
      *            the new IHE yr4
      */
-    public void setIHEYr4(boolean iheYr4) {
-        this.iheYr4 = iheYr4;
+    public void setAuditFormat(AuditFormat format) {
+        this.auditFormat = format;
     }
 
 
