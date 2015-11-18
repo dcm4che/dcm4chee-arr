@@ -8,32 +8,32 @@ IHE ATNA-Based audit repository implementation running on JBoss 7 application se
 
 Features
 -----
-1)Provides standard repository as defined by IHE Audit Trail
+1. Provides standard repository as defined by IHE Audit Trail
 see [ATNA](http://wiki.ihe.net/index.php?title=Audit_Trail_and_Node_Authentication)
 
-i-Audit messages following the DICOM XML schema for audit messages.
+  1. Audit messages following the DICOM XML schema for audit messages.
 
-ii-Provides application activity and audit record used message generation.
+  2. Provides application activity and audit record used message generation.
 
-iii-Uses dcm4che implementation for SYSLOG protocol.
+  3. Uses dcm4che implementation for SYSLOG protocol.
 
-iv-Supports audit reporting via either TLS or UDP.
+ 4. Supports audit reporting via either TLS or UDP.
 
-2)Provides support for LDAP and JSON file configuration
+2. Provides support for LDAP and JSON file configuration
 
-3)Provides a configurable and customizable clean up mechanism for the audit record repository.
+3. Provides a configurable and customizable clean up mechanism for the audit record repository.
 
-4)Provides a configurable and customizable Back up mechanism for the audit record repository.
+4. Provides a configurable and customizable Back up mechanism for the audit record repository.
 
-5)provides a restful service for controlling the service as well as querying the repository.
+5. Provides a restful service for controlling the service as well as querying the repository.
 
-6)Provides a simple web interface for filtering queries.
+6. Provides a simple web interface for filtering queries.
 
-7)Supports new dcm4che library version 3.3.5
+7. Supports new dcm4che library version 3.3.5
 
-8)Supports new dcm4che storage framework v2.0.0
+8. Supports new dcm4che storage framework v2.0.0
 
-9)Back up mechanism supports exporting tar and zip containers using the dcm4che storage framework.
+9. Back up mechanism supports exporting tar and zip containers using the dcm4che storage framework.
 
 Build
 -----
