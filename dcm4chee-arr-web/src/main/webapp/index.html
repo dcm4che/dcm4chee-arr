@@ -375,20 +375,22 @@ $(function() {$(".dateTime_style").datepicker();});
 $(function() {$("#event_filter").dialog({position:[0,100]});});
 $(function() {$("#ap_filter").dialog({position:[400,100]});});
 $(function() {$("#as_filter").dialog({position:[800,100]});});
+$(function() {$("#po_filter").dialog({position:[800,100]});});
 
 </script>
 </head>
 <body>
-<div id="output"></div>
-<div  style="background-color: #ffd700;width: 100%" id="Search">
+  <div id="output"></div>
+  <div  style="background-color: #ffd700;width: 100%" id="Search">
     <button class="button_style" id="showAstFilter" onclick="showXml();">Show Source</button>
     <button class="button_style" id="showAstFilter" onclick="$('#as_filter').dialog('open');">Audit Source Filter</button>
     <button class="button_style" id="showEventFilter" onclick="$('#event_filter').dialog('open');">Events Filter</button>
     <button class="button_style" id="showApFilter" onclick="$('#ap_filter').dialog('open');">Active Participant Filter</button>
+    <button class="button_style" id="showPoFilter" onclick="$('#po_filter').dialog('open');">Participant Identification Filter</button>
     <button class="button_style" id="search" onclick="getRecords(getParams());">search</button>
     <button class="button_style" id="click_for_show_all" onclick="click_for_show_all()">Expand/Fold all</button>
-    </div>
-    <div  id="event_filter"  title="Event Filter"><br>
+  </div>
+  <div  id="event_filter"  title="Event Filter"><br>
     <span style=" float:left; color: white">Event ID:</span><br>
     <select id="eventID">
         <option value="" >Any</option>
@@ -468,8 +470,8 @@ $(function() {$("#as_filter").dialog({position:[800,100]});});
             <option value="E" >Execute</option>
         </select>
 
-    </div>
-<div  id="ap_filter" title="Active Participants Filter   "><br>
+  </div>
+  <div  id="ap_filter" title="Active Participants Filter   "><br>
     <span style=";color: white">User ID:</span><br>
     <input type="text" id="userID" value=""/>
     <br><hr>
@@ -500,17 +502,17 @@ $(function() {$("#as_filter").dialog({position:[800,100]});});
     <span style=";color: white">Network AP ID:</span><br>
     <input type="text" id="networkAccessPointID" value=""/>
     <br><hr>
-    </div>
+  </div>
 
-    <div  id="as_filter" title="Audit Source Filter"><br>
-        <span style=";color: white">Source ID:</span><br>
-        <input type="text" id="auditSourceID" value=""/>
-        <br><hr>
-        <span style=";color: white">Enterprise Site ID:</span><br>
-        <input type="text" id="auditEnterpriseSiteID" value=""/>
-        <br><hr>
-        <span style=";color: white">Type Code:</span><br>
-        <select id="auditSourceTypeCode">
+  <div  id="as_filter" title="Audit Source Filter"><br>
+    <span style=";color: white">Source ID:</span><br>
+    <input type="text" id="auditSourceID" value=""/>
+    <br><hr>
+    <span style=";color: white">Enterprise Site ID:</span><br>
+    <input type="text" id="auditEnterpriseSiteID" value=""/>
+    <br><hr>
+    <span style=";color: white">Type Code:</span><br>
+    <select id="auditSourceTypeCode">
         <option value="" >Any</option>
         <option value="1" >End-user display</option>
         <option value="2" >Data acquisition</option>
@@ -521,9 +523,80 @@ $(function() {$("#as_filter").dialog({position:[800,100]});});
         <option value="7" >Network component</option>
         <option value="8" >Operating software</option>
         <option value="9" >External source</option>
-        </select>
-        </div>
+    </select>
+  </div>
 
+  <div  id="po_filter" title="Participant Object Identification Filter"><br>
+    <span style=";color: white">Participant Object ID:</span><br>
+    <input type="text" id="participantObjectID" value=""/>
+    <br><hr>
+    <span style=";color: white">Participant Object Name:</span><br>
+    <input type="text" id="participantObjectName" value=""/>
+    <br><hr>
+    <span style=";color: white">Participant Object ID Type Code:</span><br>
+    <input type="text" id="participantObjectIDTypeCode" value=""/>
+    <br><hr>
+    <span style=";color: white">Type Code:</span><br>
+    <select id="participantObjectTypeCode">
+        <option value="" >Any</option>
+        <option value="1" >Person</option>
+        <option value="2" >System object</option>
+        <option value="3" >Organization</option>
+        <option value="4" >Other</option>
+    </select>
+    <br><hr>
+    <span style=";color: white">Type Code Role:</span><br>
+    <select id="participantObjectTypeCodeRole">
+        <option value="" >Any</option>
+        <option value="1" >Patient</option>
+        <option value="2" >Location</option>
+        <option value="3" >Report</option>
+        <option value="4" >Resource</option>
+        <option value="5" >Master File</option>
+        <option value="6" >User</option>
+        <option value="7" >List</option>
+        <option value="8" >Doctor</option>
+        <option value="9" >Subscriber</option>
+        <option value="10" >guarantor</option>
+        <option value="11" >Security User Ent</option>
+        <option value="12" >Security User Group</option>
+        <option value="13" >Security Resource</option>
+        <option value="14" >Security Granulatiry Definition</option>
+        <option value="15" >Provider</option>
+        <option value="16" >Report Destination</option>
+        <option value="17" >Report Library</option>
+        <option value="18" >Schedule</option>
+        <option value="19" >Customer</option>
+        <option value="20" >Job</option>
+        <option value="21" >Job Stream</option>
+        <option value="22" >Table</option>
+        <option value="23" >Routing Criteria</option>
+        <option value="24" >Query</option>
+    </select>
+    <br><hr>
+    <span style=";color: white">Data Life Cycle:</span><br>
+    <select id="participantObjectDataLifeCycle">
+        <option value="" >Any</option>
+        <option value="1" >Origination, Creation</option>
+        <option value="2" >Import/ Copy</option>
+        <option value="3" >Amendment</option>
+        <option value="4" >Verification</option>
+        <option value="5" >Translation</option>
+        <option value="6" >Access/Use</option>
+        <option value="7" >De-identification</option>
+        <option value="8" >Aggregation, summarization, derivation</option>
+        <option value="9" >Report</option>
+        <option value="10" >Export</option>
+        <option value="11" >Disclosure</option>
+        <option value="12" >Receipt of Disclosure</option>
+        <option value="13" >Archiving</option>
+        <option value="14" >Logical deletion</option>
+        <option value="15" >Permanent erasure, physical destruction</option>
+    </select>
+    <br><hr>
+    <span style=";color: white">Sensistity:</span><br>
+    <input type="text" id="participantObjectSensistity" value=""/>
+  </div>
 
 <table id="xmltable" style="padding-right:10px;font-size: 7pt" class="gridtable" ></table>
 </body>

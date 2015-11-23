@@ -236,7 +236,7 @@ public class AuditRecordQueryBean implements AuditRecordQueryLocal {
             HttpServletRequest rq) {
 
         String objectID = rq.getParameter("participantObjectID");
-        String[] objectIDTypes =  rq.getParameterValues("participantObjectTypeCode");
+        String[] objectIDTypes =  rq.getParameterValues("participantObjectIDTypeCode");
         String objectName = rq.getParameter("participantObjectName");
         Integer[] objectTypes = getIntegers(rq, "participantObjectTypeCode");
         Integer[] objectRoles = getIntegers(rq, "participantObjectTypeCodeRole");

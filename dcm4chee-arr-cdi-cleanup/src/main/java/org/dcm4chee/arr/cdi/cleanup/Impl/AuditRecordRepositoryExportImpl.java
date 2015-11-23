@@ -98,35 +98,14 @@ public class AuditRecordRepositoryExportImpl implements
         }
         StorageContext ctx = storageService.createStorageContext(storageSystem);
         HashMap<String, ArrayList<AuditRecord>> recordsMap = new HashMap<String, ArrayList<AuditRecord>>();
-        if(cleanUpConfig.isArrBackUPUseDailyFolder()) {
-            //export per day
-            
-            for(AuditRecord rec : toExport) {
-                String dateTime = getYearMonthDayStructure(true, rec.getEventDateTime());
-                if(recordsMap.containsKey(dateTime)) {
-                    ArrayList<AuditRecord> tmpRecs = recordsMap.get(dateTime);
-                    tmpRecs.add(rec);
-                }
-                else {
-                    ArrayList<AuditRecord> records = new ArrayList<AuditRecord>();
-                    records.add(rec);
-                    recordsMap.put(dateTime, records);
-                }
-                
+        for(AuditRecord rec : toExport) {
+            String dateTime = getYearMonthDayStructure(cleanUpConfig.isArrBackUPUseDailyFolder(), rec.getEventDateTime());
+            ArrayList<AuditRecord> records = recordsMap.get(dateTime);
+            if (records == null) {
+                records = new ArrayList<AuditRecord>();
+                recordsMap.put(dateTime, records);
             }
-        }
-        else {
-            
-            for(AuditRecord rec : toExport) {
-                String dateTime = getYearMonthDayStructure(false, rec.getEventDateTime());
-                if(recordsMap.containsKey(dateTime))
-                    recordsMap.get(rec.getEventDateTime()).add(rec);
-                else {
-                    ArrayList<AuditRecord> records = new ArrayList<AuditRecord>();
-                    recordsMap.put(dateTime, records);
-                }
-                
-            }
+            records.add(rec);
         }
 
         HashMap<ContainerEntry, AuditRecord> entriesToRecordsPerFolder = null;
