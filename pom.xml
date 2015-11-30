@@ -315,6 +315,7 @@
     <module>dcm4chee-arr-cdi-cleanup</module>
     <module>dcm4chee-arr-web</module>
     <module>dcm4chee-arr-cdi-war</module>
+    <module>dcm4chee-arr-cdi-war-skinny</module>
     <module>dcm4chee-arr-assembly</module>
   </modules>
   <build>

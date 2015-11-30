@@ -53,8 +53,10 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -78,11 +80,6 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
     private static String[] JBOSS_PROPERITIES = {"jboss.home", "jboss.modules", "jboss.server.base",
             "jboss.server.config", "jboss.server.data", "jboss.server.deploy", "jboss.server.log",
             "jboss.server.temp",};
-
-    private final ExecutorService executor = Executors.newCachedThreadPool();
-
-    private final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-
 
     @Inject
     private AuditRecordRepositoryHandlerImpl auditRecordRepositoryHandlerImpl;
@@ -110,7 +107,12 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
     @Inject
     private DicomConfiguration conf;
 
+    @Inject 
+    private Instance<Device> devices;
+    
     private Device device;
+
+    boolean deviceMaintainedByOtherService = false;
 
     private boolean running;
 
@@ -151,13 +153,33 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
 
         addJBossDirURLSystemProperties();
         try {
-            device = findDevice();
-            device.setExecutor(executor);
-            device.setScheduledExecutor(scheduledExecutor);
-            device.getDeviceExtension(AuditRecordRepository.class).setAuditRecordHandler(
+            String devName = System.getProperty(DEVICE_NAME_PROPERTY, DEF_DEVICE_NAME);
+            for (Device d : devices) {
+                if (d.getDeviceName().equals(devName)) {
+                    device = d;
+                    deviceMaintainedByOtherService = true;
+                    break;
+                }
+                
+            }
+            if (device == null)
+                device = findDevice();
+            if (device.getExecutor() == null)
+                device.setExecutor(Executors.newCachedThreadPool());
+            if (device.getScheduledExecutor() == null)
+                device.setScheduledExecutor(Executors.newSingleThreadScheduledExecutor());
+            AuditRecordRepository arrCfg = device.getDeviceExtension(AuditRecordRepository.class);
+            if (arrCfg != null) {
+                arrCfg.setAuditRecordHandler(
                     auditRecordRepositoryHandlerImpl);
-
-            start();
+            } else {
+                log.warn("Audit Record Handler not set! Missing AuditRecordRepository device extension!");
+            }
+            if (deviceMaintainedByOtherService) {
+                afterStart();
+            } else {
+                start();
+            }
         } catch (RuntimeException re) {
             log.error(re.getMessage());
             throw re;
@@ -186,13 +208,14 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
      */
     @Override
     public void start() throws Exception {
-
         device.bindConnections();
+        afterStart();
+    }
+    private void afterStart() {
         running = true;
         log.info("started service");
         auditRecordRepositoryServiceStartedCleanUp.fire(new StartCleanUpEvent(device));
         auditRecordRepositoryServiceStarted.fire(new StartStopEvent(true, device, new LocalSource()));
-
     }
 
     /**
@@ -255,10 +278,11 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
     @Override
     public String getListenersInfo() {
         String info = "Device Connections Information:\n";
-        if (device.getDeviceExtension(AuditRecordRepository.class).getConnections().isEmpty()) {
+        AuditRecordRepository arrCfg = device.getDeviceExtension(AuditRecordRepository.class);
+        if (arrCfg == null || arrCfg.getConnections().isEmpty()) {
             return "no Info available";
         } else {
-            for (Connection c : device.getDeviceExtension(AuditRecordRepository.class).getConnections()) {
+            for (Connection c : arrCfg.getConnections()) {
                 if (c.isTls()) {
                     info +=
                             "<br>Listener> [Trusted] at Address: " + c.getHostname() + " on port: " + c.getPort()

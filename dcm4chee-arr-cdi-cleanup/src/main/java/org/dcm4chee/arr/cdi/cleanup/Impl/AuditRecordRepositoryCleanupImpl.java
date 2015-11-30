@@ -243,7 +243,7 @@ public class AuditRecordRepositoryCleanupImpl implements
      * Initialize procedure.
      */
     public void initializeProcedure() {
-        if (this.cleanUpConfig.getArrCleanUpPollInterval() > 0) {
+        if (cleanUpConfig != null && cleanUpConfig.getArrCleanUpPollInterval() > 0) {
             log.info("Initializing cleanup thread");
             scheduledCleanProcedure = device.scheduleWithFixedDelay(
                     cleanProcedure, 0,
@@ -275,19 +275,22 @@ public class AuditRecordRepositoryCleanupImpl implements
         this.device = start.getDevice();
         this.cleanUpConfig = device
                 .getDeviceExtension(CleanUpConfigurationExtension.class);
-        this.eventFilter = cleanUpConfig.getEventTypeFilter();
-        if (scheduledCleanProcedure == null
-                && (this.cleanUpConfig.isArrCleanUpUsesMaxRecords() || this.cleanUpConfig
-                        .isArrCleanUpUsesRetention())) {
-            initializeProcedure();
-            running = true;
-            log.info("Started cleanup service");
-            if (this.cleanUpConfig.isArrSafeClean()) {
-                backup = true;
-                log.info("Started backup service");
+        if (cleanUpConfig != null) {
+            this.eventFilter = cleanUpConfig.getEventTypeFilter();
+            if (scheduledCleanProcedure == null
+                    && (this.cleanUpConfig.isArrCleanUpUsesMaxRecords() || this.cleanUpConfig
+                            .isArrCleanUpUsesRetention())) {
+                initializeProcedure();
+                running = true;
+                log.info("Started cleanup service");
+                if (this.cleanUpConfig.isArrSafeClean()) {
+                    backup = true;
+                    log.info("Started backup service");
+                }
             }
+        } else {
+            log.warn("Audit Record Repository: CleanUp Configuration missing! Cleanup service not started!");
         }
-
     }
 
     /**
@@ -324,7 +327,8 @@ public class AuditRecordRepositoryCleanupImpl implements
         this.device = reload.getDevice();
         this.cleanUpConfig = device
                 .getDeviceExtension(CleanUpConfigurationExtension.class);
-        this.eventFilter = cleanUpConfig.getEventTypeFilter();
+        if (cleanUpConfig != null)
+            this.eventFilter = cleanUpConfig.getEventTypeFilter();
         if (reload.isState()) {
             log.info("Reloaded cleanup service configuration");
             if (running)

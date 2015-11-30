@@ -13,7 +13,7 @@
       <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-entities</artifactId>
       <classifier>${db}</classifier>
-      <version>${parent.version}</version>
+      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.ejb</groupId>
