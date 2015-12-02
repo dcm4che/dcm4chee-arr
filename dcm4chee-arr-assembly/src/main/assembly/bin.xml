@@ -34,6 +34,9 @@
         <include>json/**</include>
         <include>jboss-cli/*.cli</include>
       </includes>
+      <excludes>
+        <exclude>jboss-cli/*foreign*.cli</exclude>
+      </excludes>
       <filtered>true</filtered>
       <lineEnding>dos</lineEnding>
     </fileSet>

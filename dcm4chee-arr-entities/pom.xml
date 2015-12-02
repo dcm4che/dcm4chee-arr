@@ -8,7 +8,7 @@
   </parent>
   <name>Audit Record Repository Entities</name>
   <artifactId>dcm4chee-arr-entities</artifactId>
-  <packaging>ejb</packaging>
+  <packaging>jar</packaging>
   <dependencies>
     <dependency>
       <groupId>javax.persistence</groupId>
@@ -85,7 +85,7 @@
       <id>jboss7</id>
       <build>
         <plugins>
-          <plugin>
+           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
             <version>1.1.1</version>
@@ -159,6 +159,71 @@
       </activation>
       <build>
         <plugins>
+           <plugin>
+               <artifactId>maven-compiler-plugin</artifactId>
+               <version>3.1</version>
+               <executions>
+                 <execution >
+                   <id>default-target</id>
+                   <phase>compile</phase>
+                   <goals>
+                     <goal>compile</goal>
+                   </goals>
+                   <configuration>
+                     <source>1.7</source>
+                     <target>1.7</target>
+                     <encoding>UTF-8</encoding>
+                     <fork>true</fork>
+                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                   </configuration>
+                 </execution>
+                 <execution>
+                   <id>pacsDS-target</id>
+                   <goals>
+                     <goal>compile</goal>
+                   </goals>
+                   <configuration>
+                     <source>1.7</source>
+                     <target>1.7</target>
+                     <encoding>UTF-8</encoding>
+                     <fork>true</fork>
+                     <outputDirectory>${project.build.directory}/pacsDS/classes</outputDirectory>
+                   </configuration>
+                 </execution>
+               </executions>
+           </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-resources-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>default-resources</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                    <filters>
+                      <filter>${basedir}/src/main/filters/arrDS.properties</filter>
+                    </filters>
+                  </configuration>
+                </execution>
+                <execution>
+                  <id>prod</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                    <goal>resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${project.build.directory}/pacsDS/classes</outputDirectory>
+                    <filters>
+                      <filter>${basedir}/src/main/filters/pacsDS.properties</filter>
+                    </filters>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -192,13 +257,39 @@
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-ejb-plugin</artifactId>
-            <version>2.3</version>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.6</version>
             <configuration>
               <classifier>${db}</classifier>
               <ejbVersion>3.0</ejbVersion>
             </configuration>
-          </plugin>
+
+            <executions>
+              <execution>
+                <id>default-jar</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classifier>${db}</classifier>
+                  <ejbVersion>3.0</ejbVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>pacsDS-jar</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classifier>${db}-pacsDS</classifier>
+                  <ejbVersion>3.0</ejbVersion>
+                  <classesDirectory>${project.build.directory}/pacsDS/classes</classesDirectory>
+                </configuration>
+              </execution>
+            </executions>
+            </plugin>
         </plugins>
         <resources>
           <resource>

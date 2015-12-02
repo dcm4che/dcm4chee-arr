@@ -7,7 +7,6 @@
   <name>Audit Record Repository</name>
   <version>4.2.0-SNAPSOT</version>
   <properties>
-    <ds>java:/arrDS</ds>
     <show_sql>false</show_sql>
     <hbm2ddl.auto>update</hbm2ddl.auto>
     <dcm4che.version>3.3.8-SNAPSHOT</dcm4che.version>
@@ -399,12 +398,6 @@
           <name>db</name>
         </property>
       </activation>
-    </profile>
-    <profile>
-      <id>arr-csp</id>
-      <properties>
-        <ds>java:/PacsDS</ds>
-      </properties>
     </profile>
     <profile>
       <id>arr-asb</id>
