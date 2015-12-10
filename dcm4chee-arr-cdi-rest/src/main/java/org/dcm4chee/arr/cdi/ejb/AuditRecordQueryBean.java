@@ -171,14 +171,14 @@ public class AuditRecordQueryBean implements AuditRecordQueryLocal {
             Conjunction criterion = Restrictions.conjunction();
 
             if (userID != null)
-                criterion.add(Restrictions.like("ap1.userID", userID.toUpperCase()));
+                criterion.add(Restrictions.like("ap1.userID", toLikeString(userID)));
 
             if (altUserID != null)
                 criterion.add(Restrictions.like("ap1.alternativeUserID",
                         altUserID.toUpperCase()));
 
             if (userName != null)
-                criterion.add(Restrictions.like("ap1.userName", userName.toUpperCase()));
+                criterion.add(Restrictions.like("ap1.userName", toLikeString(userName)));
 
             if (userIsRequestor != null)
                 criterion.add(Restrictions.eq("ap1.userIsRequestor",
@@ -191,7 +191,7 @@ public class AuditRecordQueryBean implements AuditRecordQueryLocal {
 
             if (napID != null)
                 criterion.add(Restrictions.like("ap1.networkAccessPointID",
-                        napID.toUpperCase()));
+                        toLikeString(napID)));
 
             if (napTypes != null)
                 criterion.add(Restrictions.in("ap1.networkAccessPointType",
@@ -213,11 +213,11 @@ public class AuditRecordQueryBean implements AuditRecordQueryLocal {
             HttpServletRequest rq) {
         String sourceID = rq.getParameter("auditSourceID");
         if (sourceID != null)
-            criteria.add(Restrictions.like("sourceID", sourceID.toUpperCase()));
+            criteria.add(Restrictions.like("sourceID", toLikeString(sourceID)));
         
         String siteID = rq.getParameter("auditEnterpriseSiteID");
         if (siteID != null)
-            criteria.add(Restrictions.like("enterpriseSiteID", siteID.toUpperCase()));
+            criteria.add(Restrictions.like("enterpriseSiteID", toLikeString(siteID)));
 
         Integer[] sourceTypes = getIntegers(rq, "auditSourceTypeCode");
         if (sourceTypes != null)
@@ -241,13 +241,14 @@ public class AuditRecordQueryBean implements AuditRecordQueryLocal {
         Integer[] objectTypes = getIntegers(rq, "participantObjectTypeCode");
         Integer[] objectRoles = getIntegers(rq, "participantObjectTypeCodeRole");
         Integer[] lifeCycles = getIntegers(rq, "participantObjectDataLifeCycle");
+        String sensitivity = rq.getParameter("participantObjectSensitivity");
 
         if (objectID != null || objectIDTypes != null
                 || objectName != null || objectTypes != null
-                || objectRoles != null || lifeCycles != null) {
+                || objectRoles != null || lifeCycles != null || sensitivity != null) {
             criteria.createAlias("participantObjects", "po");
             if (objectID != null)
-                criteria.add(Restrictions.like("po.objectID", objectID.toUpperCase()));
+                criteria.add(Restrictions.like("po.objectID", toLikeString(objectID)));
 
              if (objectIDTypes != null) {
                 // Split the IDTypes into two sets, one for code, which is String;
@@ -286,7 +287,7 @@ public class AuditRecordQueryBean implements AuditRecordQueryLocal {
             }
 
             if (objectName != null)
-                criteria.add(Restrictions.like("po.objectName", objectName.toUpperCase()));
+                criteria.add(Restrictions.like("po.objectName", toLikeString(objectName)));
 
             if (objectTypes != null)
                 criteria.add(Restrictions.in("po.objectType", objectTypes));
@@ -296,7 +297,14 @@ public class AuditRecordQueryBean implements AuditRecordQueryLocal {
 
             if (lifeCycles != null)
                 criteria.add(Restrictions.in("po.dataLifeCycle", lifeCycles));
+
+            if (sensitivity != null)
+                criteria.add(Restrictions.like("po.objectSensitivity", toLikeString(sensitivity)));
         }
+    }
+    
+    private static String toLikeString(String s) {
+       return s.replace('*', '%').replace('?', '_').toUpperCase();
     }
 
     /**

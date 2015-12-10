@@ -329,15 +329,15 @@ function getParams()
     //Active Participants filter
     if($("#userID").val()!="")
     {
-        params+="userID="+$("#userID").val()+"&";
+        params+="userID="+encodeURIComponent($("#userID")).val()+"&";
     }
     if($("#alternativeUserID").val()!="")
     {
-        params+="alternativeUserID="+$("#alternativeUserID").val()+"&";
+        params+="alternativeUserID="+encodeURIComponent($("#alternativeUserID").val())+"&";
     }
     if($("#userName").val()!="")
     {
-        params+="userName="+$("#userName").val()+"&";
+        params+="userName="+encodeURIComponent($("#userName").val())+"&";
     }
     if($("#userIsRequestor").val()!="")
     {
@@ -354,20 +354,49 @@ function getParams()
     //Audit Source Filter
     if($("#auditSourceID").val()!="")
     {
-        params+="auditSourceID="+$("#auditSourceID").val()+"&";
+        params+="auditSourceID="+encodeURIComponent($("#auditSourceID").val())+"&";
     }
     if($("#auditEnterpriseSiteID").val()!="")
     {
-        params+="auditEnterpriseSiteID="+$("#auditEnterpriseSiteID").val()+"&";
+        params+="auditEnterpriseSiteID="+encodeURIComponent($("#auditEnterpriseSiteID").val())+"&";
     }
     if($("#auditSourceTypeCode").val()!="")
     {
         params+="auditSourceTypeCode="+$("#auditSourceTypeCode").val()+"&";
     }
 
+    if($("#participantObjectID").val()!="")
+    {
+        params+="participantObjectID="+encodeURIComponent($("#participantObjectID").val())+"&";
+    }
+    if($("#participantObjectIDTypeCode").val()!="")
+    {
+        params+="participantObjectIDTypeCode="+encodeURIComponent($("#participantObjectIDTypeCode").val())+"&";
+    }
+    if($("#participantObjectName").val()!="")
+    {
+        params+="participantObjectName="+encodeURIComponent($("#participantObjectName").val())+"&";
+    }
+    if($("#participantObjectTypeCode").val()!="")
+    {
+        params+="participantObjectTypeCode="+$("#participantObjectTypeCode").val()+"&";
+    }
+    if($("#participantObjectTypeCodeRole").val()!="")
+    {
+        params+="participantObjectTypeCodeRole="+$("#participantObjectTypeCodeRole").val()+"&";
+    }
+    if($("#participantObjectDataLifeCycle").val()!="")
+    {
+        params+="participantObjectDataLifeCycle="+$("#participantObjectDataLifeCycle").val()+"&";
+    }
+    if($("#participantObjectSensitivity").val()!="")
+    {
+        params+="participantObjectSensitivity="+encodeURIComponent($("#participantObjectSensitivity").val())+"&";
+    }
+
     if(params.charAt(params.length-1)=='&')
     params=params.substring(0,params.length-1);
-   return params;
+    return params;
 
 }
 $(function() {$(".button_style").button();});
@@ -375,7 +404,7 @@ $(function() {$(".dateTime_style").datepicker();});
 $(function() {$("#event_filter").dialog({position:[0,100]});});
 $(function() {$("#ap_filter").dialog({position:[400,100]});});
 $(function() {$("#as_filter").dialog({position:[800,100]});});
-$(function() {$("#po_filter").dialog({position:[800,100]});});
+$(function() {$("#po_filter").dialog({position:[800,350]});});
 
 </script>
 </head>
@@ -594,8 +623,8 @@ $(function() {$("#po_filter").dialog({position:[800,100]});});
         <option value="15" >Permanent erasure, physical destruction</option>
     </select>
     <br><hr>
-    <span style=";color: white">Sensistity:</span><br>
-    <input type="text" id="participantObjectSensistity" value=""/>
+    <span style=";color: white">Sensitivity:</span><br>
+    <input type="text" id="participantObjectSensitivity" value=""/>
   </div>
 
 <table id="xmltable" style="padding-right:10px;font-size: 7pt" class="gridtable" ></table>
