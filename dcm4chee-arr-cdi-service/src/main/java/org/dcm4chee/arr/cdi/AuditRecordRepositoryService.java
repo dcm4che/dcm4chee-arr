@@ -46,15 +46,15 @@ import org.dcm4che3.net.Device;
  * @author Hesham Elbadawi bsdreko@gmail.com
  **/
 public interface AuditRecordRepositoryService {
- 
-	void reload() throws Exception;
-	void start() throws Exception;
-	void stop();
-	void init();
-	Device getDevice();
-	boolean isRunning(); 
-	String getListenersInfo();
 
-	void onConfigChange(InternalConfigChangeEvent configChange);
+    void reload() throws Exception;
+    void start() throws Exception;
+    void stop();
+    void init();
+    Device getDevice();
+    boolean isRunning(); 
+    String getListenersInfo();
+
+    void onConfigChange(InternalConfigChangeEvent configChange);
 
 }

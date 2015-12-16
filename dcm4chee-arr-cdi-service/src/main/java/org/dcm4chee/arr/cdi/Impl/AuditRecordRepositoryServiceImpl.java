@@ -44,6 +44,7 @@ import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStopped;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
 import org.dcm4chee.arr.cdi.conf.ArrDevice;
+import org.dcm4chee.storage.conf.StorageDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,6 +15,10 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.dcm4che.dcm4chee-storage</groupId>
+      <artifactId>dcm4chee-storage-conf</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.1_spec</artifactId>
     </dependency>
