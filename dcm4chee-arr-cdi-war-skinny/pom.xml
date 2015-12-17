@@ -29,6 +29,12 @@
     </dependency>
     <dependency>
       <groupId>org.dcm4che.dcm4chee-arr</groupId>
+      <artifactId>dcm4chee-arr-cdi-conf</artifactId>
+      <version>${parent.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-listeners-mdb</artifactId>
       <type>ejb</type>
       <version>${parent.version}</version>
