@@ -38,6 +38,7 @@
 
 package org.dcm4chee.arr.conf.defaults;
 
+import org.dcm4che3.conf.api.ConfigurationNotFoundException;
 import org.dcm4che3.conf.api.upgrade.UpgradeScript;
 import org.dcm4che3.conf.core.api.ConfigurationException;
 import org.dcm4che3.net.Device;
@@ -52,8 +53,15 @@ public class DefaultAuditRecordRepoConfigInitScript implements UpgradeScript {
     public void upgrade(UpgradeContext upgradeContext) throws ConfigurationException {
         // run only if no version is specified
         if (upgradeContext.getFromVersion().equals(NO_VERSION)) {
+            String deviceName = System.getProperty("org.dcm4chee.arr.deviceName", "dcm4chee-arr");
             try {
-                Device arrDevice = new DefaultAuditRecordRepoConfigurationFactory().createArrDevice("dcm4chee-arr");
+                Device arrDevice;
+                try {
+                    arrDevice = upgradeContext.getDicomConfiguration().findDevice(deviceName);
+                    new DefaultAuditRecordRepoConfigurationFactory().configureDeviceAsARR(arrDevice);
+                } catch (ConfigurationNotFoundException x) {
+                    arrDevice = new DefaultAuditRecordRepoConfigurationFactory().createArrDevice(deviceName);
+                }
                 upgradeContext.getDicomConfiguration().merge(arrDevice);
             } catch (Exception e) {
                 throw new ConfigurationException(

@@ -1,1 +1,4 @@
 jms-queue add --queue-address=ARRIncoming --entries=queue/ARRIncoming
+
+/system-property=org.dcm4chee.arr.deviceName:add(value=dcm4chee-arc)
+
