@@ -38,6 +38,7 @@
 
 package org.dcm4chee.arr.cdi.rs.view;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 import javax.enterprise.event.Event;
@@ -52,10 +53,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.xml.ws.WebServiceException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.dcm4che3.net.Device;
-import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceUsed;
 import org.dcm4chee.arr.cdi.Impl.RemoteSource;
 import org.dcm4chee.arr.cdi.Impl.UsedEvent;
@@ -63,6 +61,9 @@ import org.dcm4chee.arr.cdi.conf.ArrDevice;
 import org.dcm4chee.arr.cdi.ejb.AuditRecordAccessLocal;
 import org.dcm4chee.arr.cdi.ejb.AuditRecordQueryLocal;
 import org.dcm4chee.arr.cdi.ejb.XSLTUtils;
+import org.dcm4chee.arr.entities.AuditRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -125,7 +126,7 @@ public class AuditRecordRepositoryServiceViewRS {
      * @return the ip
      */
     @GET
-    @Produces("application/xlm")
+    @Produces("application/xml")
     public String getIP(@Context HttpServletRequest request){
        String ip = request.getRemoteAddr();
        return ip;
@@ -148,9 +149,7 @@ public class AuditRecordRepositoryServiceViewRS {
         } catch (Exception e) {
             log.error("error retreiving results via restful"+e.getCause());
         }
-       String xmlResponse ="";
-       
-       xmlResponse+="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><AuditMessages>";
+       String xmlResponse = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><AuditMessages>";
        if(list!=null)
        for (byte[] xmldata : list) {
     	   String str = new String(xmldata);
@@ -160,6 +159,11 @@ public class AuditRecordRepositoryServiceViewRS {
       
        }
        xmlResponse+="</AuditMessages>";
+       String format = req.getParameter("format");
+       if (!"orig".equals(format)) {
+           String xslFormat = "rfc".equalsIgnoreCase(format) ? XSLTUtils.NORMALIZE_TO_RFC : XSLTUtils.NORMALIZE_TO_DICOM;
+           xmlResponse = XSLTUtils.render(xslFormat, xmlResponse.getBytes(Charset.forName("UTF-8")));
+       }
        Response.ResponseBuilder rsp = Response.ok(xmlResponse,"text/xml; charset=UTF-8");
        
        auditRecordRepositoryServiceUsedEvent.fire(new UsedEvent(true,device,new RemoteSource(req.getRemoteHost(),req.getRemoteUser(),req.getRequestURI())));

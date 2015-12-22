@@ -96,7 +96,7 @@ function successAjax(xml)
             //EventID
             var xmlPrimaryElement = auditMessage.find("EventIdentification").find("EventID");
             xmlPrimaryElement.each(function() {
-                eventID_code=$(this).attr('code');
+                eventID_code=$(this).attr('csd-code');
                 eventID_displayName=$(this).attr('displayName');
                 eventID_codeSystemName=$(this).attr('codeSystemName');
                 eventID_originalText=$(this).attr('originalText');
@@ -109,7 +109,7 @@ function successAjax(xml)
             //EventTypeCode
             var xmlPrimaryElement = auditMessage.find("EventIdentification").find("EventTypeCode");
             xmlPrimaryElement.each(function() {
-                eventTypeCode_code=$(this).attr('code');
+                eventTypeCode_code=$(this).attr('csd-code');
                 eventTypeCode_displayName=$(this).attr('displayName');
                 eventTypeCode_codeSystemName=$(this).attr('codeSystemName');
                 eventTypeCode_originalText=$(this).attr('originalText');
@@ -148,7 +148,7 @@ function successAjax(xml)
 
                 var xmlSecondaryElement = $(this).find("RoleIDCode");
                 xmlSecondaryElement.each(function() {
-                    roleIDCode_code=$(this).attr('code');
+                    roleIDCode_code=$(this).attr('csd-code');
                     roleIDCode_displayName=$(this).attr('displayName');
                     roleIDCode_codeSystemName=$(this).attr('codeSystemName');
                     roleIDCode_originalText=$(this).attr('originalText');
@@ -166,7 +166,16 @@ function successAjax(xml)
             xmlPrimaryElement.each(function() {
                 auditSourceID=$(this).attr('AuditSourceID');
                 auditEnterpriseSiteID=$(this).attr('AuditEnterpriseSiteID');
-                auditSourceTypeCode=$(this).find('AuditSourceTypeCode').attr('code');
+                auditSourceTypeCode = "";
+                var xmlAuditSourceTypeCodeElements = $(this).find('AuditSourceTypeCode');
+                xmlAuditSourceTypeCodeElements.each(function() {
+                    auditSourceTypeCode += $(this).text().trim() + ", ";
+                });
+                if (auditSourceTypeCode == "") {
+                    auditSourceTypeCode = "undefined";	
+                } else {
+                    auditSourceTypeCode=auditSourceTypeCode.substring(0, auditSourceTypeCode.length-2);
+                }
             });
 
             $("<tr class='main' ><th colspan='6' style='color: brown;font-size: 10pt'>AuditSourceIdentification</th></tr>").appendTo("#xmltable").click(function(){
@@ -206,7 +215,7 @@ function successAjax(xml)
                 //ParticipantObjectIDTypeCode
                 var xmlSecondaryElement = $(this).find("ParticipantObjectIDTypeCode");
                 xmlSecondaryElement.each(function() {
-                    participantObjectIDTypeCode_code=$(this).attr('code');
+                    participantObjectIDTypeCode_code=$(this).attr('csd-code');
                     participantObjectIDTypeCode_displayName=$(this).attr('displayName');
                     participantObjectIDTypeCode_codeSystemName=$(this).attr('codeSystemName');
                     participantObjectIDTypeCode_originalText=$(this).attr('originalText');
@@ -401,10 +410,10 @@ function getParams()
 }
 $(function() {$(".button_style").button();});
 $(function() {$(".dateTime_style").datepicker();});
-$(function() {$("#event_filter").dialog({position:[0,100]});});
-$(function() {$("#ap_filter").dialog({position:[400,100]});});
-$(function() {$("#as_filter").dialog({position:[800,100]});});
-$(function() {$("#po_filter").dialog({position:[800,350]});});
+$(function() {$("#event_filter").dialog({autoOpen: true, position:[0,100]});});
+$(function() {$("#ap_filter").dialog({autoOpen: false, position:[400,100]});});
+$(function() {$("#as_filter").dialog({autoOpen: false, position:[800,100]});});
+$(function() {$("#po_filter").dialog({autoOpen: false, position:[800,350]});});
 
 </script>
 </head>
@@ -412,10 +421,10 @@ $(function() {$("#po_filter").dialog({position:[800,350]});});
   <div id="output"></div>
   <div  style="background-color: #ffd700;width: 100%" id="Search">
     <button class="button_style" id="showAstFilter" onclick="showXml();">Show Source</button>
-    <button class="button_style" id="showAstFilter" onclick="$('#as_filter').dialog('open');">Audit Source Filter</button>
-    <button class="button_style" id="showEventFilter" onclick="$('#event_filter').dialog('open');">Events Filter</button>
-    <button class="button_style" id="showApFilter" onclick="$('#ap_filter').dialog('open');">Active Participant Filter</button>
-    <button class="button_style" id="showPoFilter" onclick="$('#po_filter').dialog('open');">Participant Identification Filter</button>
+    <button class="button_style" id="showAstFilter" onclick="if ($('#as_filter').dialog('isOpen')) { $('#as_filter').dialog('close'); } else { $('#as_filter').dialog('open'); }">Audit Source Filter</button>
+    <button class="button_style" id="showEventFilter" onclick="if ($('#event_filter').dialog('isOpen')) { $('#event_filter').dialog('close'); } else { $('#event_filter').dialog('open'); }">Events Filter</button>
+    <button class="button_style" id="showApFilter" onclick="if ($('#ap_filter').dialog('isOpen')) { $('#ap_filter').dialog('close'); } else { $('#ap_filter').dialog('open'); }">Active Participant Filter</button>
+    <button class="button_style" id="showPoFilter" onclick="if ($('#po_filter').dialog('isOpen')) { $('#po_filter').dialog('close'); } else { $('#po_filter').dialog('open'); }">Participant Identification Filter</button>
     <button class="button_style" id="search" onclick="getRecords(getParams());">search</button>
     <button class="button_style" id="click_for_show_all" onclick="click_for_show_all()">Expand/Fold all</button>
   </div>
