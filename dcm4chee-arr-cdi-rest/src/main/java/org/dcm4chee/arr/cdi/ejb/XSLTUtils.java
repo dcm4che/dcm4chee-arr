@@ -62,7 +62,7 @@ public class XSLTUtils {
     public static final String OBJECT = "arr-object.xsl";
     public static final String DETAILS = "arr-details.xsl";
     public static final String NORMALIZE_TO_DICOM = "normalize2dicom.xsl";
-    public static final String NORMALIZE_TO_RFC = "normalize2rfc.xsl";
+    public static final String NORMALIZE_TO_SUP95 = "normalize2sup95.xsl";
     
     private static HashMap<String,Templates> templates =
             new HashMap<String,Templates>(4);

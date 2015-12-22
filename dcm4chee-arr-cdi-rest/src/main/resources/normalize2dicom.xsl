@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+    <xsl:param name="code_attr_name">csd-code</xsl:param>
+    <xsl:param name="displayname_attr_name">originalText</xsl:param>
+    <xsl:include href="iheyr4.xsl"/>
     <xsl:template match="/AuditMessages">
         <AuditMessages>
             <xsl:apply-templates select="@*|node()"/>

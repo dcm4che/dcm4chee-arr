@@ -161,7 +161,7 @@ public class AuditRecordRepositoryServiceViewRS {
        xmlResponse+="</AuditMessages>";
        String format = req.getParameter("format");
        if (!"orig".equals(format)) {
-           String xslFormat = "rfc".equalsIgnoreCase(format) ? XSLTUtils.NORMALIZE_TO_RFC : XSLTUtils.NORMALIZE_TO_DICOM;
+           String xslFormat = "sup95".equalsIgnoreCase(format) ? XSLTUtils.NORMALIZE_TO_SUP95 : XSLTUtils.NORMALIZE_TO_DICOM;
            xmlResponse = XSLTUtils.render(xslFormat, xmlResponse.getBytes(Charset.forName("UTF-8")));
        }
        Response.ResponseBuilder rsp = Response.ok(xmlResponse,"text/xml; charset=UTF-8");
