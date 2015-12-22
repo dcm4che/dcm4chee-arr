@@ -46,21 +46,20 @@ import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.dcm4che3.net.Device;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceReloaded;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
-import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryCleanup;
-import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryExport;
-import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
-import org.dcm4chee.arr.cdi.conf.EventTypeObject;
 import org.dcm4chee.arr.cdi.Impl.ReloadEvent;
 import org.dcm4chee.arr.cdi.Impl.StartCleanUpEvent;
 import org.dcm4chee.arr.cdi.Impl.StopCleanUpEvent;
+import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryCleanup;
+import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryExport;
 import org.dcm4chee.arr.cdi.cleanup.ejb.AuditRecordDeleteBean;
-import org.dcm4chee.arr.entities.AuditRecord;
+import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
+import org.dcm4chee.arr.cdi.conf.EventTypeObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class AuditRecordRepositoryCleanupImpl. implementation of a clean up

@@ -118,14 +118,14 @@ public class ActivityLogger {
         auditLogger = start.getDevice().getDeviceExtension(AuditLogger.class);
         msg = initialize(start, auditLogger);
         if (!auditLogger.isAuditMessageSuppressed(msg)) {
-            sendToJMS(msg);
+            sendToJMS(msg, auditLogger.isSupplement95());
             log.info("Observed start event and sent auditrecordrepository started to jms queue");
         } else {
             log.info("Observed start event and suppressed auditrecordrepository started");
         }
     }
 
-    private void sendToJMS(AuditMessage msg) throws NamingException,
+    private void sendToJMS(AuditMessage msg, boolean isSup95) throws NamingException,
             JMSException, IOException {
         InitialContext jndiCtx = new InitialContext();
         connFactory = (QueueConnectionFactory) jndiCtx.lookup(QUEUE_FACTORY);
@@ -135,7 +135,11 @@ public class ActivityLogger {
         sender = session.createSender(queue);
         BytesMessage Bmsg = session.createBytesMessage();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        AuditMessages.toXML(msg, bos, formatXML, encoding, schemaURI);
+        if (isSup95) {
+            AuditMessages.toSupplement95XML(msg, bos, formatXML, encoding, schemaURI);
+        } else {
+            AuditMessages.toXML(msg, bos, formatXML, encoding, schemaURI);
+        }
         byte[] msginbytes = bos.toByteArray();
         Bmsg.writeBytes(msginbytes);
         sender.send(Bmsg);
@@ -161,7 +165,7 @@ public class ActivityLogger {
         auditLogger = stop.getDevice().getDeviceExtension(AuditLogger.class);
         msg = initialize(stop, auditLogger);
         if (!auditLogger.isAuditMessageSuppressed(msg)) {
-            sendToJMS(msg);
+            sendToJMS(msg, auditLogger.isSupplement95());
             log.info("Observed stop event and sent auditrecordrepository stopped to jms queue");
         } else {
             log.info("Observed stop event and suppressed auditrecordrepository stopped");
@@ -186,7 +190,7 @@ public class ActivityLogger {
         auditLogger = used.getDevice().getDeviceExtension(AuditLogger.class);
         msg = initialize(used, auditLogger);
         if (!auditLogger.isAuditMessageSuppressed(msg)) {
-            sendToJMS(msg);
+            sendToJMS(msg, auditLogger.isSupplement95());
             log.info("Observed used event and sent auditrecordrepository used to jms queue");
         } else {
             log.info("Observed Used event and suppressed auditrecordrepository used");
