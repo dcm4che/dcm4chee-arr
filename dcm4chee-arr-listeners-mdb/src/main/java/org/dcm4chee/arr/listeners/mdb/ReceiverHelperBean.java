@@ -2,6 +2,7 @@ package org.dcm4chee.arr.listeners.mdb;
 
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Date;
 
 import javax.ejb.LocalBean;
@@ -15,6 +16,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
 import org.dcm4chee.arr.entities.AuditRecord;
+import org.dcm4chee.arr.entities.AuditRecord.AuditFormat;
 import org.dcm4chee.arr.listeners.mdb.AuditRecordHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,10 @@ public class ReceiverHelperBean implements ReceiverHelperBeanLocal {
     private static final int MSG_PROMPT_LEN = 200;
     
     private static final String IHEYR4_TO_ATNA_XSL = "arr-iheyr4-to-atna.xsl";
+    
+    private static final byte[] UNKNOWN_FORMAT_PREFIX = "<UnknownFormat><![CDATA[".getBytes(Charset.forName("UTF-8"));
+    private static final byte[] UNKNOWN_FORMAT_SUFFIX = "]]></UnknownFormat>".getBytes(Charset.forName("UTF-8"));
+
 
     private static Templates iheYr4toATNATpl;
     @PersistenceContext(unitName="dcm4chee-arr")
@@ -79,7 +85,17 @@ public class ReceiverHelperBean implements ReceiverHelperBeanLocal {
             reader.setEntityResolver(dh);
             reader.setErrorHandler(dh);
             reader.setDTDHandler(dh);
-            reader.parse(new InputSource(new ByteArrayInputStream(xmldata)));
+            try {
+                reader.parse(new InputSource(new ByteArrayInputStream(xmldata)));
+            } catch (Exception x) {
+                log.warn("Parsing XML Audit message failed!", x);
+                rec.setAuditFormat(AuditFormat.UNKNOWN);
+                byte[] msg = new byte[xmldata.length+UNKNOWN_FORMAT_PREFIX.length+UNKNOWN_FORMAT_SUFFIX.length];
+                System.arraycopy(UNKNOWN_FORMAT_PREFIX, 0, msg, 0, UNKNOWN_FORMAT_PREFIX.length);
+                System.arraycopy(xmldata, 0, msg, UNKNOWN_FORMAT_PREFIX.length, xmldata.length);
+                System.arraycopy(UNKNOWN_FORMAT_SUFFIX, 0, msg, UNKNOWN_FORMAT_PREFIX.length+xmldata.length, UNKNOWN_FORMAT_SUFFIX.length);
+                xmldata = msg;
+            }
             rec.setReceiveDateTime(receiveDate);
             rec.setXmldata(xmldata);
             rec.setDueDelete(false);
