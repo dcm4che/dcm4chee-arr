@@ -274,7 +274,7 @@ public class AuditRecordHandler extends DefaultHandler {
         	meaning = attrs.getValue("displayName");
         }
         String designator = attrs.getValue("codeSystemName");
-        if (value == null || designator == null) {
+        if (value == null || designator == null || designator.length() == 0) {
             return null;
         }
         
