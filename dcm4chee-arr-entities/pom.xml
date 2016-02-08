@@ -161,7 +161,7 @@
         <plugins>
            <plugin>
                <artifactId>maven-compiler-plugin</artifactId>
-               <version>3.1</version>
+               <version>3.5</version>
                <executions>
                  <execution >
                    <id>default-target</id>
@@ -170,8 +170,8 @@
                      <goal>compile</goal>
                    </goals>
                    <configuration>
-                     <source>1.7</source>
-                     <target>1.7</target>
+                     <source>1.8</source>
+                     <target>1.8</target>
                      <encoding>UTF-8</encoding>
                      <fork>true</fork>
                      <outputDirectory>${project.build.outputDirectory}</outputDirectory>
@@ -183,8 +183,8 @@
                      <goal>compile</goal>
                    </goals>
                    <configuration>
-                     <source>1.7</source>
-                     <target>1.7</target>
+                     <source>1.8</source>
+                     <target>1.8</target>
                      <encoding>UTF-8</encoding>
                      <fork>true</fork>
                      <outputDirectory>${project.build.directory}/pacsDS/classes</outputDirectory>
