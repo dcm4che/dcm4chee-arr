@@ -32,6 +32,21 @@
 
 package org.dcm4chee.arr.cdi.cleanup.Impl;
 
+import org.dcm4che3.net.Device;
+import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryExport;
+import org.dcm4chee.arr.cdi.cleanup.ejb.AuditRecordDeleteBean;
+import org.dcm4chee.arr.cdi.conf.ArrDevice;
+import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
+import org.dcm4chee.arr.entities.AuditRecord;
+import org.dcm4chee.storage.ContainerEntry;
+import org.dcm4chee.storage.StorageContext;
+import org.dcm4chee.storage.conf.StorageSystem;
+import org.dcm4chee.storage.service.StorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,26 +61,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.dcm4che3.net.Device;
-import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryExport;
-import org.dcm4chee.arr.cdi.cleanup.ejb.AuditRecordDeleteBean;
-import org.dcm4chee.arr.cdi.conf.ArrDevice;
-import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
-import org.dcm4chee.arr.entities.AuditRecord;
-import org.dcm4chee.storage.ContainerEntry;
-import org.dcm4chee.storage.StorageContext;
-import org.dcm4chee.storage.conf.StorageSystem;
-import org.dcm4chee.storage.service.StorageService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * The Class AuditRecordRepositoryExportImpl. implementation of
  * the export service utilized by the arr to export containers
- * 
+ *
  * @author Hesham Elbadawi bsdreko@gmail.com
  */
 @ApplicationScoped
@@ -80,7 +79,8 @@ public class AuditRecordRepositoryExportImpl implements
     @Inject
     private AuditRecordDeleteBean removeTool;
 
-    @Inject @ArrDevice
+    @Inject
+    @ArrDevice
     private Device device;
 
     @Override
@@ -89,16 +89,15 @@ public class AuditRecordRepositoryExportImpl implements
                 .getDeviceExtension(CleanUpConfigurationExtension.class);
         log.info("Started back up procedure ...");
         StorageSystem storageSystem = null;
-        try{
-        storageSystem = storageService.selectStorageSystem(
-                cleanUpConfig.getArrBackUPStorageGroupID(), 0);
-        }
-        catch(Exception e) {
+        try {
+            storageSystem = storageService.selectStorageSystem(
+                    cleanUpConfig.getArrBackUPStorageGroupID(), 0);
+        } catch (Exception e) {
             log.error("Error selecting storage system from group {}", cleanUpConfig.getArrBackUPStorageGroupID());
         }
         StorageContext ctx = storageService.createStorageContext(storageSystem);
         HashMap<String, ArrayList<AuditRecord>> recordsMap = new HashMap<String, ArrayList<AuditRecord>>();
-        for(AuditRecord rec : toExport) {
+        for (AuditRecord rec : toExport) {
             String dateTime = getYearMonthDayStructure(cleanUpConfig.isArrBackUPUseDailyFolder(), rec.getEventDateTime());
             ArrayList<AuditRecord> records = recordsMap.get(dateTime);
             if (records == null) {
@@ -110,21 +109,21 @@ public class AuditRecordRepositoryExportImpl implements
 
         HashMap<ContainerEntry, AuditRecord> entriesToRecordsPerFolder = null;
 
-        for(String dateTime : recordsMap.keySet()) {
+        for (String dateTime : recordsMap.keySet()) {
             String folderRelativePath = dateTime.replace("-", "/");
             Path folderPath = storageService.getBaseDirectory(storageSystem).resolve(folderRelativePath);
-            if(!folderPath.toFile().exists())
+            if (!folderPath.toFile().exists())
                 folderPath.toFile().mkdirs();
             try {
                 entriesToRecordsPerFolder = createEntries(recordsMap.get(dateTime));
                 HashMap<String, ArrayList<ContainerEntry>> containersMap = toContainersMap(entriesToRecordsPerFolder);
-                for(String containerName : containersMap.keySet()) {
+                for (String containerName : containersMap.keySet()) {
                     String containerKey = containerName;
-                    containerName += "-export at[" + new Date(System.currentTimeMillis()).toString().replace(":", "-") + "]" ;
+                    containerName += "-export at[" + new Date(System.currentTimeMillis()).toString().replace(":", "-") + "]";
                     storageService.storeContainerEntries(ctx, containersMap.get(containerKey), folderRelativePath + "/" + containerName);
 
                 }
-                for(ContainerEntry entry : entriesToRecordsPerFolder.keySet()) {
+                for (ContainerEntry entry : entriesToRecordsPerFolder.keySet()) {
                     removeTool.deleteRecord(cleanUpConfig, entriesToRecordsPerFolder.get(entry).getPk());
                     Files.delete(entry.getSourcePath());
                 }
@@ -139,9 +138,9 @@ public class AuditRecordRepositoryExportImpl implements
     private HashMap<String, ArrayList<ContainerEntry>> toContainersMap(
             HashMap<ContainerEntry, AuditRecord> entriesToRecordsPerFolder) {
         HashMap<String, ArrayList<ContainerEntry>> result = new HashMap<String, ArrayList<ContainerEntry>>();
-        for(ContainerEntry entry : entriesToRecordsPerFolder.keySet()) {
-            String containerName = entriesToRecordsPerFolder.get(entry).getEventType() .getMeaning();
-            if(result.containsKey(containerName))
+        for (ContainerEntry entry : entriesToRecordsPerFolder.keySet()) {
+            String containerName = entriesToRecordsPerFolder.get(entry).getEventType().getMeaning();
+            if (result.containsKey(containerName))
                 result.get(containerName).add(entry);
             else {
                 ArrayList<ContainerEntry> tmpEntries = new ArrayList<ContainerEntry>();
@@ -158,7 +157,7 @@ public class AuditRecordRepositoryExportImpl implements
         DigestOutputStream dout = null;
         HashMap<ContainerEntry, AuditRecord> entriestoRecordsMap = new HashMap<ContainerEntry, AuditRecord>();
         for (int i = 0; i < records.size(); i++) {
-            String entryName = i +" - "+ records.get(i).getSourceID()+ "-" + toTimeOnly(records.get(i).getEventDateTime());
+            String entryName = i + " - " + records.get(i).getSourceID() + "-" + toTimeOnly(records.get(i).getEventDateTime());
             File entryFile = File.createTempFile("tmp-" + entryName, "");
             dout = new DigestOutputStream(new FileOutputStream(entryFile),
                     MessageDigest.getInstance("MD5"));
@@ -166,9 +165,10 @@ public class AuditRecordRepositoryExportImpl implements
             dout.write(records.get(i).getXmldata());
             dout.flush();
             dout.close();
-            entriestoRecordsMap.put(new ContainerEntry.Builder(entryName, dout
+            ContainerEntry entry = new ContainerEntry.Builder(entryName, dout
                     .getMessageDigest().toString()).setSourcePath(
-                    entryFile.toPath()).build(), records.get(i));
+                    entryFile.toPath()).build();
+            entriestoRecordsMap.put(entry, records.get(i));
         }
         return entriestoRecordsMap;
     }
@@ -177,7 +177,7 @@ public class AuditRecordRepositoryExportImpl implements
         String str = "";
         Calendar cal = Calendar.getInstance();
         cal.setTime(eventDateTime);
-        str += cal.get(Calendar.HOUR_OF_DAY) + "-" + cal.get(Calendar.MINUTE)+ "-" + cal.get(Calendar.SECOND);
+        str += cal.get(Calendar.HOUR_OF_DAY) + "-" + cal.get(Calendar.MINUTE) + "-" + cal.get(Calendar.SECOND);
         return str;
     }
 
@@ -186,7 +186,7 @@ public class AuditRecordRepositoryExportImpl implements
         Calendar cal = Calendar.getInstance();
         cal.setTime(eventDateTime);
 
-        return cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH)+1)
+        return cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1)
                 + (daily ? "-" + cal.get(Calendar.DATE) : "");
     }
 

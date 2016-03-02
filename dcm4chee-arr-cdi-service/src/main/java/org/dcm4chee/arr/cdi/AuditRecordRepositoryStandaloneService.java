@@ -37,7 +37,6 @@
  * ***** END LICENSE BLOCK ***** */
 package org.dcm4chee.arr.cdi;
 
-import org.dcm4che3.conf.core.api.InternalConfigChangeEvent;
 import org.dcm4che3.net.Device;
 
 /**
@@ -45,16 +44,7 @@ import org.dcm4che3.net.Device;
  *
  * @author Hesham Elbadawi bsdreko@gmail.com
  **/
-public interface AuditRecordRepositoryService {
+public interface AuditRecordRepositoryStandaloneService extends AuditRecordRepositoryService{
 
-    void reload() throws Exception;
-    void start() throws Exception;
-    void stop();
-    void init();
-    Device getDevice();
-    boolean isRunning();
-    String getListenersInfo();
-
-    void onConfigChange(InternalConfigChangeEvent configChange);
-
+    Device getStorageDevice();
 }
