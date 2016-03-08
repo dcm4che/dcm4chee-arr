@@ -14,6 +14,7 @@
     <dcm4chee-storage.version>2.1.0-SNAPSHOT</dcm4chee-storage.version>
     <dcm4chee-conf.version>1.1.0-SNAPSHOT</dcm4chee-conf.version>
     <skipTests>true</skipTests>
+    <ds>java:/PacsDS</ds>
   </properties>
   <description>Audit Record Repository deployable in CDI container</description>
   <dependencyManagement>
@@ -400,7 +401,7 @@
       </activation>
     </profile>
     <profile>
-      <id>arr-asb</id>
+      <id>asb</id>
       <properties>
         <ds>java:jboss/datasources/OracleDS</ds>
         <db>oracle</db>
