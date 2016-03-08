@@ -139,8 +139,8 @@ public class AuditRecordRepositoryExportImpl implements
             HashMap<ContainerEntry, AuditRecord> entriesToRecordsPerFolder) {
         HashMap<String, ArrayList<ContainerEntry>> result = new HashMap<String, ArrayList<ContainerEntry>>();
         for (ContainerEntry entry : entriesToRecordsPerFolder.keySet()) {
-            String containerName = entriesToRecordsPerFolder.get(entry).getEventType() != null?
-                    entriesToRecordsPerFolder.get(entry).getEventType().getMeaning() : "Unknown Event Type";
+            String containerName = entriesToRecordsPerFolder.get(entry).getEventID() != null?
+                    entriesToRecordsPerFolder.get(entry).getEventID().getMeaning() : "Unknown Event ID";
             if (result.containsKey(containerName))
                 result.get(containerName).add(entry);
             else {
