@@ -68,7 +68,7 @@ public class DefaultAuditRecordRepoConfigurationFactory {
     }
     
     public Device configureDeviceAsARR(Device arrDevice) {
-        Connection auditUDP = new Connection("audit-udp", "localhost", 514);
+        Connection auditUDP = new Connection("audit-udp", "localhost", 4000);
         auditUDP.setProtocol(Protocol.SYSLOG_UDP);
         arrDevice.addConnection(auditUDP);
         
