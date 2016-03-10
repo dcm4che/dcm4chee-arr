@@ -9,8 +9,13 @@
     <dependency>
       <groupId>org.dcm4che.dcm4chee-arr</groupId>
       <artifactId>dcm4chee-arr-entities</artifactId>
-      <classifier>${db}</classifier>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
+      <artifactId>dcm4chee-arr-persistence-unit</artifactId>
+      <version>${project.version}</version>
+      <classifier>${db}</classifier>
     </dependency>
   </dependencies>
 </project>

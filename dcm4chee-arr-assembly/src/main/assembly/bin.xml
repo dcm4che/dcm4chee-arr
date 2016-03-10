@@ -41,7 +41,7 @@
       <lineEnding>dos</lineEnding>
     </fileSet>
     <fileSet>
-      <directory>../dcm4chee-arr-entities/target</directory>
+      <directory>../dcm4chee-arr-persistence-unit/target</directory>
       <includes>
         <include>create-table-${db}.ddl</include>
       </includes>
