@@ -37,14 +37,14 @@
  * ***** END LICENSE BLOCK ***** */
 package org.dcm4chee.arr.cdi.conf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.dcm4che3.conf.api.extensions.ReconfiguringIterator;
 import org.dcm4che3.conf.core.api.ConfigurableClass;
 import org.dcm4che3.conf.core.api.ConfigurableProperty;
 import org.dcm4che3.conf.core.api.LDAP;
 import org.dcm4che3.net.DeviceExtension;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Class CleanUpConfigurationExtension. a generic device extension for
@@ -77,33 +77,33 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
     private int arrCleanUpPollInterval = 3600;
 
     // specify retention time (together with the retention unit are used to
-    // compare with every object creation date to delte or not) ie 1MONTH
+    // compare with every object creation date to delete or not) ie 1MONTH
     @ConfigurableProperty(name = "arrCleanUpRetentionTime", defaultValue = "1")
     private int arrCleanUpRetentionTime = 1;
 
     // specify the unit for retention time will use Java TimeUnit enumeration
-    @ConfigurableProperty(name = "arrCleanUpRetentionTimeUnit", defaultValue = "DAYS")
+    @ConfigurableProperty(name = "arrCleanUpRetentionTimeUnit", defaultValue = "DAYS", description = "Supported values: DAYS, HOURS, MINUTES and SECONDS")
     private String arrCleanUpRetentionTimeUnit = "DAYS";
 
     @ConfigurableProperty(name = "arrCleanUpDeletePerTransaction", defaultValue = "2")
     private int arrCleanUpDeletePerTransaction = 2;
 
-    @ConfigurableProperty(name = "arrDefaultCleanUpPolicy")
+    @ConfigurableProperty(name = "arrDefaultCleanUpPolicy", description = "Select \"all\" to cleanUp everything or \"custom\" to delete only audit records defined by the AuditEventsCleanUP")
     private String arrDefaultCleanUpPolicy = "all";
 
     @LDAP(distinguishingField = "arrEventIDTypeCode")
     @ConfigurableProperty(name = "AuditEventsCleanUp")
-    private Map<String, EventTypeObject> eventTypeFilter = new HashMap<String, EventTypeObject>();
+    private Map<String, EventTypeObject> eventTypeFilter = new HashMap<>();
     
     //triggers backup 
-    @ConfigurableProperty(name = "arrSafeClean", defaultValue = "true")
+    @ConfigurableProperty(name = "arrSafeClean", defaultValue = "true", description = "Triggers backup mechanism if true")
     private boolean arrSafeClean = true;
 
     //specify backup interval
     @ConfigurableProperty(name="arrBackUpPollInterval", defaultValue="3600")
     private int arrBackUpPollInterval = 3600;
 
-    //specify Backup Stiorage Group ID
+    //specify Backup Storage Group ID
     @ConfigurableProperty(name= "arrBackUPStorageGroupID", defaultValue="DEFAULT")
     private String arrBackUPStorageGroupID = "DEFAULT";
 

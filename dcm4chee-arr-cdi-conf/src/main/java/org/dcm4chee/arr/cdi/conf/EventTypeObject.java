@@ -51,10 +51,10 @@ import org.dcm4che3.conf.core.api.LDAP;
 @ConfigurableClass
 public class EventTypeObject {
 
-    @ConfigurableProperty(name = "arrEventIDTypeCode")
+    @ConfigurableProperty(name = "arrEventIDTypeCode", description = "codeID: codeValue^designatorValue")
     String codeID;
-    
-    @ConfigurableProperty(name = "arrEventTypeRetentionUnit")
+
+    @ConfigurableProperty(name = "arrEventTypeRetentionUnit", description = "Supported values: DAYS, HOURS, MINUTES and SECONDS")
     String retentionTimeUnit;
     
     @ConfigurableProperty(name = "arrEventTypeRetention")
