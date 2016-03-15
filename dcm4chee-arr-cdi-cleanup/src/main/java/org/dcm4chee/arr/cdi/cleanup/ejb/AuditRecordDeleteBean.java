@@ -32,24 +32,19 @@
 
 package org.dcm4chee.arr.cdi.cleanup.ejb;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
+import org.dcm4chee.arr.entities.AuditRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
-import org.dcm4chee.arr.entities.AuditRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class AuditRecordDeleteBean.
@@ -72,6 +67,7 @@ public class AuditRecordDeleteBean {
      *            the pk
      */
   public void deleteRecord(CleanUpConfigurationExtension cleanUpConfig, long pk) {
+      log.debug("DeleteRecord safe? " + cleanUpConfig.isArrSafeClean());
       AuditRecord recordToDelete = em.find(AuditRecord.class, pk);
       if(recordToDelete.isDueDelete())
           em.remove(recordToDelete);
@@ -92,31 +88,34 @@ public class AuditRecordDeleteBean {
      *            the delete per transaction
      * @return the p ks by retention
      */
-  public List<Long> getPKsByRetention(int retention, String unit, int deletePerTransaction) {
+public List<Long> getPKsByRetention(int retention, String unit, int deletePerTransaction) {
     String queryStr =
-        "SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r where r.eventDateTime < :retentionUnitsAgo and r.isDueDelete = false";
+            "SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r where r.eventDateTime < :retentionUnitsAgo and r.isDueDelete = false";
     Date now = new Date();
     Timestamp retentionUnitsAgo;
     switch (TimeUnit.valueOf(unit)) {
-      case DAYS:
-        retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
-        break;
-      case HOURS:
-        retentionUnitsAgo = new Timestamp(now.getTime() - 3600000 * retention);
-        break;
-      case MINUTES:
-        retentionUnitsAgo = new Timestamp(now.getTime() - 60000 * retention);
-        break;
-      default:
-        retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
-        break;
+        case DAYS:
+            retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
+            break;
+        case HOURS:
+            retentionUnitsAgo = new Timestamp(now.getTime() - 3600000 * retention);
+            break;
+        case MINUTES:
+            retentionUnitsAgo = new Timestamp(now.getTime() - 60000 * retention);
+            break;
+        case SECONDS:
+            retentionUnitsAgo = new Timestamp(now.getTime() - 1000 * retention);
+            break;
+        default:
+            retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
+            break;
     }
     List<Long> l =
-        em.createQuery(queryStr).setParameter("retentionUnitsAgo", retentionUnitsAgo)
-            .setMaxResults(deletePerTransaction).getResultList();
-    log.debug("Executed the following JPQL statement: \n"+queryStr);
+            em.createQuery(queryStr).setParameter("retentionUnitsAgo", retentionUnitsAgo)
+                    .setMaxResults(deletePerTransaction).getResultList();
+    log.debug("Executed the following JPQL statement: \n" + queryStr);
     return l;
-  }
+}
 
   /**
      * Gets the pks by max records.
@@ -128,34 +127,34 @@ public class AuditRecordDeleteBean {
      * @return the pks by max records
      */
   public List<Long> getPksByMaxRecords(int maxRecordsAllowed, int deletePerTransaction) {
-    String queryStr = "SELECT count(*) FROM org.dcm4chee.arr.entities.AuditRecord r where r.isDueDelete = false ";
-    long recCount = em.createQuery(queryStr, Long.class).getSingleResult();
-    if (recCount > maxRecordsAllowed) {
-      int diffCount = (int) recCount - maxRecordsAllowed;
-      queryStr =
-          "SELECT r FROM org.dcm4chee.arr.entities.AuditRecord r where r.isDueDelete = false ORDER BY r.eventDateTime ASC";
-      if (diffCount > deletePerTransaction) {
-        List<AuditRecord> recObjects =
-            em.createQuery(queryStr).setMaxResults(deletePerTransaction).getResultList();
-        log.debug("Executed the following JPQL statement: \n"+queryStr);
-        List<Long> l = new ArrayList<Long>();
-        for (AuditRecord rec : recObjects) {
-          l.add(rec.getPk());
-        }
-        return l;
+      String queryStr = "SELECT count(*) FROM org.dcm4chee.arr.entities.AuditRecord r where r.isDueDelete = false ";
+      long recCount = em.createQuery(queryStr, Long.class).getSingleResult();
+      if (recCount > maxRecordsAllowed) {
+          int diffCount = (int) recCount - maxRecordsAllowed;
+          queryStr =
+                  "SELECT r FROM org.dcm4chee.arr.entities.AuditRecord r where r.isDueDelete = false ORDER BY r.eventDateTime ASC";
+          if (diffCount > deletePerTransaction) {
+              List<AuditRecord> recObjects =
+                      em.createQuery(queryStr).setMaxResults(deletePerTransaction).getResultList();
+              log.debug("Executed the following JPQL statement: \n" + queryStr);
+              List<Long> l = new ArrayList<Long>();
+              for (AuditRecord rec : recObjects) {
+                  l.add(rec.getPk());
+              }
+              return l;
+          } else {
+              List<AuditRecord> recObjects =
+                      em.createQuery(queryStr).setMaxResults(diffCount).getResultList();
+              log.debug("Executed the following JPQL statement: \n" + queryStr);
+              List<Long> l = new ArrayList<Long>();
+              for (AuditRecord rec : recObjects) {
+                  l.add(rec.getPk());
+              }
+              return l;
+          }
       } else {
-        List<AuditRecord> recObjects =
-            em.createQuery(queryStr).setMaxResults(diffCount).getResultList();
-        log.debug("Executed the following JPQL statement: \n"+queryStr);
-        List<Long> l = new ArrayList<Long>();
-        for (AuditRecord rec : recObjects) {
-          l.add(rec.getPk());
-        }
-        return l;
+          return null;
       }
-    } else {
-      return null;
-    }
   }
   
   /**
@@ -180,18 +179,21 @@ public class AuditRecordDeleteBean {
       log.debug("Processing the following code " + codeVal + " with designator "+ designatorVal);
       Timestamp retentionUnitsAgo;
       switch (TimeUnit.valueOf(unit)) {
-        case DAYS:
-          retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
-          break;
-        case HOURS:
-          retentionUnitsAgo = new Timestamp(now.getTime() - 3600000 * retention);
-          break;
-        case MINUTES:
-          retentionUnitsAgo = new Timestamp(now.getTime() - 60000 * retention);
-          break;
-        default:
-          retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
-          break;
+          case DAYS:
+              retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
+              break;
+          case HOURS:
+              retentionUnitsAgo = new Timestamp(now.getTime() - 3600000 * retention);
+              break;
+          case MINUTES:
+              retentionUnitsAgo = new Timestamp(now.getTime() - 60000 * retention);
+              break;
+          case SECONDS:
+              retentionUnitsAgo = new Timestamp(now.getTime() - 1000 * retention);
+              break;
+          default:
+              retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
+              break;
       }
       @SuppressWarnings("unchecked")
     List<Long> l =
@@ -210,6 +212,7 @@ public class AuditRecordDeleteBean {
         @SuppressWarnings("unchecked")
         List<AuditRecord> records = em.createQuery(queryStr).getResultList();
         log.debug("Executed the following JPQL statement: \n" + queryStr);
+        log.debug("Found " + records.size() + " records");
         return records;
     }
 }
