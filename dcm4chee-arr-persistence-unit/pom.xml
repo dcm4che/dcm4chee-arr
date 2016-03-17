@@ -182,19 +182,6 @@
                      <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                    </configuration>
                  </execution>
-                 <execution>
-                   <id>pacsDS-target</id>
-                   <goals>
-                     <goal>compile</goal>
-                   </goals>
-                   <configuration>
-                     <source>1.8</source>
-                     <target>1.8</target>
-                     <encoding>UTF-8</encoding>
-                     <fork>true</fork>
-                     <outputDirectory>${project.build.directory}/pacsDS/classes</outputDirectory>
-                   </configuration>
-                 </execution>
                </executions>
            </plugin>
             <plugin>
@@ -209,19 +196,6 @@
                   </goals>
                   <configuration>
                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                    <filters>
-                      <filter>${basedir}/src/main/filters/arrDS.properties</filter>
-                    </filters>
-                  </configuration>
-                </execution>
-                <execution>
-                  <id>prod</id>
-                  <phase>process-resources</phase>
-                  <goals>
-                    <goal>resources</goal>
-                  </goals>
-                  <configuration>
-                    <outputDirectory>${project.build.directory}/pacsDS/classes</outputDirectory>
                     <filters>
                       <filter>${basedir}/src/main/filters/pacsDS.properties</filter>
                     </filters>
@@ -296,18 +270,6 @@
                 <configuration>
                   <classifier>${db}</classifier>
                   <ejbVersion>3.0</ejbVersion>
-                </configuration>
-              </execution>
-              <execution>
-                <id>pacsDS-jar</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <classifier>${db}-pacsDS</classifier>
-                  <ejbVersion>3.0</ejbVersion>
-                  <classesDirectory>${project.build.directory}/pacsDS/classes</classesDirectory>
                 </configuration>
               </execution>
             </executions>
