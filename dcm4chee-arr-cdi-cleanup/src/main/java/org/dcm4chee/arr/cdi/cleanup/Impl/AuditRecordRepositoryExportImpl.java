@@ -85,6 +85,10 @@ public class AuditRecordRepositoryExportImpl implements
 
     @Override
     public void exportNow(List<AuditRecord> toExport) {
+        if (toExport.isEmpty()) {
+            log.debug("Nothing to export!");
+            return;
+        }
         CleanUpConfigurationExtension cleanUpConfig = device
                 .getDeviceExtension(CleanUpConfigurationExtension.class);
         log.info("Started back up procedure ...");
