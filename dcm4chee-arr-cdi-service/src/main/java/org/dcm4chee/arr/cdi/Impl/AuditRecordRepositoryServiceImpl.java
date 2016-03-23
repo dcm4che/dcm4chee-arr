@@ -135,7 +135,6 @@ public class AuditRecordRepositoryServiceImpl implements AuditRecordRepositorySe
      * @throws ConfigurationException the configuration exception
      */
     public Device findDevice() throws ConfigurationException {
-        conf.sync();
         return conf.findDevice(
                 System.getProperty(
                         DEVICE_NAME_PROPERTY,
