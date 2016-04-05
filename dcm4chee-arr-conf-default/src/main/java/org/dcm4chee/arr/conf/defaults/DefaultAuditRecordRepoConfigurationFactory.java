@@ -56,25 +56,28 @@ import org.dcm4chee.storage.conf.StorageSystemGroup;
 
 /**
  * @author Alexander Hoermandinger <alexander.hoermandinger@agfa.com>
- *
+ * 
  */
 public class DefaultAuditRecordRepoConfigurationFactory {
-    
+
     private static final String BACKUP_STORAGE_GROUP = "ARR_BACKUP";
 
     public Device createArrDevice(String name) throws Exception {
         Device arrDevice = new Device(name);
         return configureDeviceAsARR(arrDevice);
     }
-    
+
     public Device configureDeviceAsARR(Device arrDevice) {
         Connection auditUDP = new Connection("audit-udp", "localhost", 4000);
         auditUDP.setProtocol(Protocol.SYSLOG_UDP);
+        auditUDP.setBindAddress("0.0.0.0");
         arrDevice.addConnection(auditUDP);
         
         Connection auditTls = new Connection("audit-tls", "localhost", 6514);
         auditTls.setProtocol(Protocol.SYSLOG_TLS);
         auditTls.setTlsCipherSuites(Connection.TLS_RSA_WITH_AES_128_CBC_SHA, Connection.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
+        auditTls.setBindAddress("0.0.0.0");
+        auditTls.setTlsNeedClientAuth(false);
         arrDevice.addConnection(auditTls);
         
         AuditRecordRepository arr = new AuditRecordRepository();
@@ -89,9 +92,11 @@ public class DefaultAuditRecordRepoConfigurationFactory {
         
         return arrDevice;
     }
-    
-    private static void configureAuditLogger(Device arrDevice, Connection auditConn) {
-        AuditLogger auditLogger = arrDevice.getDeviceExtension(AuditLogger.class);
+
+    private static void configureAuditLogger(Device arrDevice,
+            Connection auditConn) {
+        AuditLogger auditLogger = arrDevice
+                .getDeviceExtension(AuditLogger.class);
         if (auditLogger == null) {
             auditLogger = new AuditLogger();
             arrDevice.addDeviceExtension(auditLogger);
@@ -107,8 +112,8 @@ public class DefaultAuditRecordRepoConfigurationFactory {
         CleanUpConfigurationExtension cleanUpCfg = new CleanUpConfigurationExtension();
         cleanUpCfg.setArrCleanUpMaxRecords(19);
         cleanUpCfg.setArrCleanUpUsesRetention(true);
-        
-        Map<String,EventTypeObject> eventTypeFilterMap = new HashMap<String,EventTypeObject>();
+
+        Map<String, EventTypeObject> eventTypeFilterMap = new HashMap<String, EventTypeObject>();
         addEventTypeFiler("110100^DCM", 1, "DAYS", eventTypeFilterMap);
         addEventTypeFiler("110101^DCM", 1, "DAYS", eventTypeFilterMap);
         addEventTypeFiler("110102^DCM", 1, "DAYS", eventTypeFilterMap);
@@ -130,13 +135,15 @@ public class DefaultAuditRecordRepoConfigurationFactory {
         addEventTypeFiler("IHE0004^IHE", 1, "DAYS", eventTypeFilterMap);
         addEventTypeFiler("IHE0005^IHE", 1, "DAYS", eventTypeFilterMap);
         cleanUpCfg.setEventTypeFilter(eventTypeFilterMap);
-        
+
         cleanUpCfg.setArrBackUPStorageGroupID(BACKUP_STORAGE_GROUP);
         cleanUpCfg.setArrSafeClean(true);
         arrDevice.addDeviceExtension(cleanUpCfg);
     }
 
-    private static void addEventTypeFiler(String codeId, int retentionTime, String retentionUnit, Map<String,EventTypeObject> eventTypeFilterMap) {
+    private static void addEventTypeFiler(String codeId, int retentionTime,
+            String retentionUnit,
+            Map<String, EventTypeObject> eventTypeFilterMap) {
         EventTypeObject eventType = new EventTypeObject();
         eventType.setCodeID(codeId);
         eventType.setRetentionTime(retentionTime);
@@ -147,22 +154,24 @@ public class DefaultAuditRecordRepoConfigurationFactory {
     public void addARRBackupStorageGroup(Device arrDevice) {
         StorageSystem onlineStorageSystem = new StorageSystem();
         onlineStorageSystem.setStorageSystemID("online");
-        Map<String,String> statusFileExtensionMap = new HashMap<String,String>();
+        Map<String, String> statusFileExtensionMap = new HashMap<String, String>();
         statusFileExtensionMap.put(".archived", "ARCHIVED");
         onlineStorageSystem.setStatusFileExtensions(statusFileExtensionMap);
         onlineStorageSystem.setProviderName("org.dcm4chee.storage.filesystem");
-        onlineStorageSystem.setStorageSystemPath("/var/local/dcm4chee-arr/backup");
-        
+        onlineStorageSystem
+                .setStorageSystemPath("/var/local/dcm4chee-arr/backup");
+
         StorageSystemGroup storageGroup = new StorageSystemGroup();
         storageGroup.setGroupID(BACKUP_STORAGE_GROUP);
         storageGroup.setBaseStorageAccessTime(2000);
-        
+
         Container zipContainer = new Container();
         zipContainer.setProviderName("org.dcm4chee.storage.zip");
         storageGroup.setContainer(zipContainer);
         storageGroup.addStorageSystem(onlineStorageSystem);
-        
-        StorageDeviceExtension storageExtension = arrDevice.getDeviceExtension(StorageDeviceExtension.class);
+
+        StorageDeviceExtension storageExtension = arrDevice
+                .getDeviceExtension(StorageDeviceExtension.class);
         if (storageExtension == null) {
             storageExtension = new StorageDeviceExtension();
             arrDevice.addDeviceExtension(storageExtension);
