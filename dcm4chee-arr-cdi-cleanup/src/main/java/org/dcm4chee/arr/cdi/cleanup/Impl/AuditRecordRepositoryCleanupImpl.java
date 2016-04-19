@@ -32,20 +32,6 @@
 
 package org.dcm4chee.arr.cdi.cleanup.Impl;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import org.dcm4che3.net.Device;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceReloaded;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
@@ -61,11 +47,24 @@ import org.dcm4chee.arr.cdi.conf.EventTypeObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 /**
  * The Class AuditRecordRepositoryCleanupImpl. implementation of a clean up
  * service initialization is provided by the singleton bean running the audit
  * record repository service
- * 
+ *
  * @author Hesham Elbadawi bsdreko@gmail.com
  */
 @ApplicationScoped
@@ -97,16 +96,16 @@ public class AuditRecordRepositoryCleanupImpl implements
     public CleanUpConfigurationExtension getCleanUpConfig() {
         return cleanUpConfig;
     }
-    
+
     private Map<String, EventTypeObject> eventFilter  = null;
 
     private Runnable backUpProcedure = new Runnable() {
         @Override
         public void run() {
-            if(isnow(cleanUpConfig.getArrBackUPStartTimeRangeInHours())) { 
+            if(isnow(cleanUpConfig.getArrBackUPStartTimeRangeInHours())) {
             exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
             }
-            
+
         }
 
         private boolean isnow(String arrBackUPStartTimeRangeInHours) {
@@ -145,7 +144,9 @@ public class AuditRecordRepositoryCleanupImpl implements
                             cleanUpConfig.getArrCleanUpDeletePerTransaction());
                 }
             }
-
+            else {
+                log.warn("No supported \"DefaultCleanUpPolicy\" specified.");
+            }
         }
     };
 
@@ -165,7 +166,7 @@ public class AuditRecordRepositoryCleanupImpl implements
                 removeTool.deleteRecord(cleanUpConfig, pk);
                 log.info("pk = {}" , pk);
             }
-          
+
         }
 
     }
@@ -181,7 +182,7 @@ public class AuditRecordRepositoryCleanupImpl implements
      * Clean with custom retention policy. checks for each event id type code in
      * the configuration and according to retention time and unit deletes them
      * from the DB
-     * 
+     *
      * @param code
      *            the code
      * @param retention
@@ -201,7 +202,7 @@ public class AuditRecordRepositoryCleanupImpl implements
                 removeTool.deleteRecord(cleanUpConfig, pk);
                 log.info("pk = {}", pk);
             }
-           
+
         }
 
     }
@@ -225,13 +226,13 @@ public class AuditRecordRepositoryCleanupImpl implements
                 removeTool.deleteRecord(cleanUpConfig, pk);
                 log.info("pk = {}", pk);
             }
-            
+
         }
     }
 
     /**
      * Startup.
-     * 
+     *
      * @param o
      *            the o
      */
@@ -265,7 +266,7 @@ public class AuditRecordRepositoryCleanupImpl implements
 
     /**
      * Start clean up.
-     * 
+     *
      * @param start
      *            the start
      */
@@ -294,7 +295,7 @@ public class AuditRecordRepositoryCleanupImpl implements
 
     /**
      * Stop clean up.
-     * 
+     *
      * @param stop
      *            the stop
      */
@@ -317,7 +318,7 @@ public class AuditRecordRepositoryCleanupImpl implements
 
     /**
      * Reconfigure clean up.
-     * 
+     *
      * @param reload
      *            the reload
      */
