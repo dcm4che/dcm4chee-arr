@@ -41,6 +41,8 @@ import org.dcm4che3.conf.core.api.ConfigurableClass;
 import org.dcm4che3.conf.core.api.ConfigurableProperty;
 import org.dcm4che3.conf.core.api.LDAP;
 
+import java.io.Serializable;
+
 /**
  * The Class EventTypeObject. Object for ldap or prefs configuration bound to a
  * code
@@ -49,7 +51,7 @@ import org.dcm4che3.conf.core.api.LDAP;
  */
 @LDAP(objectClasses = "arrEventType", distinguishingField = "arrEventIDTypeCode")
 @ConfigurableClass
-public class EventTypeObject {
+public class EventTypeObject implements Serializable {
 
     @ConfigurableProperty(name = "arrEventIDTypeCode", description = "codeID: codeValue^designatorValue")
     String codeID;
