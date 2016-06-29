@@ -53,7 +53,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.dcm4che3.audit.ActiveParticipant;
-import org.dcm4che3.audit.AuditMessage;
 import org.dcm4che3.audit.AuditMessages;
 import org.dcm4che3.audit.EventIdentification;
 import org.dcm4che3.audit.ParticipantObjectIdentification;
@@ -63,6 +62,7 @@ import org.dcm4che3.audit.AuditMessages.EventOutcomeIndicator;
 import org.dcm4che3.audit.AuditMessages.EventTypeCode;
 import org.dcm4che3.audit.AuditMessages.ParticipantObjectIDTypeCode;
 import org.dcm4che3.audit.AuditMessages.RoleIDCode;
+import org.dcm4che3.audit.AuditMessage;
 import org.dcm4che3.net.audit.AuditLogger;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStarted;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStopped;
@@ -220,7 +220,7 @@ public class ActivityLogger {
                             .getIdentity(), null, null, event.getSource()
                             .getHost(), RoleIDCode.ApplicationLauncher));
 
-            msg.setAuditSourceIdentification(logger.createAuditSourceIdentification());
+            msg.getAuditSourceIdentification().add(logger.createAuditSourceIdentification());
 
             return msg;
         } else if (event instanceof UsedEvent) {
@@ -244,7 +244,7 @@ public class ActivityLogger {
                     .getRemoteHost());
             ap.setNetworkAccessPointTypeCode("2");
             msg.getActiveParticipant().add(ap);
-            msg.setAuditSourceIdentification(logger.createAuditSourceIdentification());
+            msg.getAuditSourceIdentification().add(logger.createAuditSourceIdentification());
             ParticipantObjectIdentification po = new ParticipantObjectIdentification();
             po.setParticipantObjectID(((RemoteSource) event.getSource())
                     .getURI());
