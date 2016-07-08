@@ -338,7 +338,7 @@ function getParams()
     //Active Participants filter
     if($("#userID").val()!="")
     {
-        params+="userID="+encodeURIComponent($("#userID")).val()+"&";
+        params+="userID="+encodeURIComponent($("#userID").val())+"&";
     }
     if($("#alternativeUserID").val()!="")
     {
