@@ -11,7 +11,7 @@
     <hbm2ddl.auto>update</hbm2ddl.auto>
     <dcm4che.version>3.3.8-SNAPSHOT</dcm4che.version>
     <querydsl.version>3.2.3</querydsl.version>
-    <dcm4chee-storage.version>2.1.0-SNAPSHOT</dcm4chee-storage.version>
+    <dcm4chee-storage.version>8.1.0-SNAPSHOT</dcm4chee-storage.version>
     <dcm4chee-conf.version>1.1.0-SNAPSHOT</dcm4chee-conf.version>
     <skipTests>true</skipTests>
     <ds>java:/PacsDS</ds>
