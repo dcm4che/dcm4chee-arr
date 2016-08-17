@@ -69,19 +69,12 @@ import org.slf4j.LoggerFactory;
                 propertyName = "maxSession",
                 propertyValue = "1") })
 public class ReceiverMDB implements MessageListener {
-
-private static final Logger log = LoggerFactory.getLogger(ReceiverMDB.class);
-
- 
+    private static final Logger log = LoggerFactory.getLogger(ReceiverMDB.class);
     
     @Inject
     private ReceiverHelperBean helper;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
-     */
+    
     public void onMessage(Message msg) {
         if (!(msg instanceof BytesMessage)) {
             log.warn("Ignore unsupported " + msg.getClass().getName());

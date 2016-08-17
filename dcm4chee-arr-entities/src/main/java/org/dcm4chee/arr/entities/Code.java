@@ -81,6 +81,10 @@ public class Code implements Serializable {
     @Column(name = "code_meaning")
     private String meaning;
     
+    
+    public Code() {
+        // empty
+    }
 
     /**
      * Gets the pk.

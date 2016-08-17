@@ -140,6 +140,10 @@ public class AuditRecord implements Serializable {
     @Column(name = "xmldata", length = 262144)
     private byte[] xmldata;
 
+    
+    public AuditRecord() {
+        // empty
+    }
 
     /**
      * Gets the pk.

@@ -35,12 +35,7 @@ package org.dcm4chee.arr.listeners.mdb;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
-
-import javax.ejb.EJBException;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityManager;
 
 import org.dcm4chee.arr.entities.ActiveParticipant;
 import org.dcm4chee.arr.entities.AuditRecord;
@@ -66,12 +61,11 @@ public class AuditRecordHandler extends DefaultHandler {
 
     private static final String ATTR_NAME_CODE = "code";
 
-	private static final String ATTR_NAME_CSD_CODE = "csd-code";
+    private static final String ATTR_NAME_CSD_CODE = "csd-code";
 
-	private static final Logger log = LoggerFactory
-            .getLogger(AuditRecordHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(AuditRecordHandler.class);
 
-    private final EntityManager em;
+    private final AuditRecordCodeServiceEJB codeService;
 
     private final AuditRecord rec;
 
@@ -85,24 +79,12 @@ public class AuditRecordHandler extends DefaultHandler {
 
     private boolean append;
 
-    /**
-     * Instantiates a new audit record handler.
-     * 
-     * @param em
-     *            the entity manager to use for querying
-     * @param rec
-     *            the audit record
-     */
-    public AuditRecordHandler(EntityManager em, AuditRecord rec) {
-        this.em = em;
+
+    public AuditRecordHandler(AuditRecordCodeServiceEJB codeService, AuditRecord rec) {
+        this.codeService = codeService;
         this.rec = rec;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
-     */
     @Override
     public void characters(char[] ch, int start, int length)
             throws SAXException {
@@ -111,12 +93,6 @@ public class AuditRecordHandler extends DefaultHandler {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
-     * java.lang.String, java.lang.String, org.xml.sax.Attributes)
-     */
     @Override
     public void startElement(String uri, String localName, String qName,
             Attributes attrs) throws SAXException {
@@ -127,9 +103,9 @@ public class AuditRecordHandler extends DefaultHandler {
             rec.setEventDateTime(parseISO8601DateTime(attrs
                     .getValue("EventDateTime")));
         } else if ("EventID".equals(qName)) {
-        	if (rec.getAuditFormat() == AuditFormat.UNKNOWN) {
-        		rec.setAuditFormat(attrs.getValue(ATTR_NAME_CSD_CODE) != null ? AuditFormat.DICOM : AuditFormat.SUP95);
-        	}
+            if (rec.getAuditFormat() == AuditFormat.UNKNOWN) {
+                rec.setAuditFormat(attrs.getValue(ATTR_NAME_CSD_CODE) != null ? AuditFormat.DICOM : AuditFormat.SUP95);
+            }
             rec.setEventID(toCode(attrs));
         } else if ("EventTypeCode".equals(qName)) {
             if (rec.getEventType() == null) {
@@ -211,12 +187,6 @@ public class AuditRecordHandler extends DefaultHandler {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String,
-     * java.lang.String, java.lang.String)
-     */
     @Override
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
@@ -245,7 +215,7 @@ public class AuditRecordHandler extends DefaultHandler {
      *            the element name
      * @return the int key to return
      */
-    private int getInt(Attributes attrs, String attrName, String elName) {
+    private static int getInt(Attributes attrs, String attrName, String elName) {
         String val = attrs.getValue(attrName);
         if (val != null && val.trim().length() > 0)
             try {
@@ -278,54 +248,9 @@ public class AuditRecordHandler extends DefaultHandler {
             return null;
         }
         
-        Code code = findCode(value, designator);
-        if (code != null)
-            return code;
-
-        code = new Code();
-        code.setValue(value);
-        code.setDesignator(designator);
-        code.setMeaning(meaning);
-        try {
-            em.persist(code);
-            return code;
-        } catch (EJBException ex) {
-            if (ex.getCause() instanceof EntityExistsException) {
-                // A Code with the same values must be inserted by a concurrent
-                // operation
-                // so we just retrieve it
-                return findCode(value, designator);
-            }
-            throw ex;
-        }
+        return codeService.findOrCreateCode(value, designator, meaning);
     }
-
-    /**
-     * Queries a code object from the DB using JPQL with a certain value and
-     * designator.
-     * 
-     * @param value
-     *            the code value
-     * @param designator
-     *            the designator is the system name here (ie. DCM)
-     * @return the code object retreived by the query
-     */
-    @SuppressWarnings("unchecked")
-    private Code findCode(String value, String designator) {
-        List<Code> queryResult = em
-                .createQuery(
-                        "FROM org.dcm4chee.arr.entities.Code c WHERE "
-                                + "c.value = :value AND c.designator = :designator")
-                .setParameter("value", value)
-                .setParameter("designator", designator)
-                .setHint("org.hibernate.readOnly", Boolean.TRUE)
-                .getResultList();
-        if (!queryResult.isEmpty()) {
-            return queryResult.get(0);
-        }
-        return null;
-    }
-
+    
     /**
      * Returns a string to upper case.
      * 
@@ -454,4 +379,5 @@ public class AuditRecordHandler extends DefaultHandler {
     private static boolean isDigit(char c) {
         return c >= '0' && c <= '9';
     }
+    
 }

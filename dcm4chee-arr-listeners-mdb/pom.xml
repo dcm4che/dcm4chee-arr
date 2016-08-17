@@ -15,6 +15,23 @@
       <version>${project.parent.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.dcm4che.dcm4chee-arr</groupId>
+      <artifactId>dcm4chee-arr-cdi-service</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che</groupId>
+      <artifactId>dcm4che-conf-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che</groupId>
+      <artifactId>dcm4che-net</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dcm4che</groupId>
+      <artifactId>dcm4che-net-audit</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.ejb</groupId>
       <artifactId>ejb-api</artifactId>
     </dependency>
@@ -95,7 +112,21 @@
       <artifactId>cdi-api</artifactId>
     </dependency>
   </dependencies>
-  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Dependencies>org.dcm4che.net, org.dcm4che.net-audit, org.dcm4che.conf.api</Dependencies>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <profiles>
     <profile>
       <id>jboss7</id>
