@@ -88,7 +88,7 @@ public class AuditRecordCodeCache {
     }
     
     private void init(Device device) {
-        cache.clear();
+        clear();
         try {
             AuditRecordRepository arrExtension = device.getDeviceExtension(AuditRecordRepository.class);
             enabled = arrExtension.isAuditRecordCodeCachingEnabled();
@@ -96,6 +96,11 @@ public class AuditRecordCodeCache {
             LOG.error("Error while initializing ARR Code caching", e);
         }
         LOG.info("Initialized ARR code caching, enabled: " + enabled);
+    }
+    
+    public void clear() {
+        LOG.info("Cleared ARR code cache");
+        cache.clear();
     }
     
     public void onAuditRecordRepositoryReload(@Observes @AuditRecordRepositoryServiceReloaded ReloadEvent reloadEvent) {

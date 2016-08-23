@@ -82,7 +82,7 @@ public class ReceiverHelperBean implements ReceiverHelperBeanLocal {
     private EntityManager em;
     
     @EJB
-    private AuditRecordCodeServiceEJB codeService;
+    private AuditRecordCodeService codeService;
     
     private XMLReader xmlReader;
     

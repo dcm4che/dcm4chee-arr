@@ -41,6 +41,7 @@ package org.dcm4chee.arr.listeners.mdb;
 
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -55,9 +56,9 @@ import org.dcm4chee.arr.entities.Code;
  * 
  * @author Alexander Hoermandinger <alexander.hoermandinger@agfa.com>
  */
-
+@EJB(name = AuditRecordCodeService.JNDI_NAME, beanInterface = AuditRecordCodeService.class)
 @Stateless
-public class AuditRecordCodeServiceEJB {
+public class AuditRecordCodeServiceEJB implements AuditRecordCodeService {
     
     @PersistenceContext(unitName="dcm4chee-arr")
     private EntityManager em;
@@ -65,6 +66,12 @@ public class AuditRecordCodeServiceEJB {
     @Inject
     private AuditRecordCodeCache codeCache;
     
+    @Override
+    public void clearCache() {
+        codeCache.clear();
+    }
+    
+    @Override
     public Code findOrCreateCode(String codeValue, String codeDesignator, String codeMeaning) {
         Code code = codeCache.getCode(codeValue, codeDesignator);
         if(code != null) {

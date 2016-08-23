@@ -65,7 +65,7 @@ public class AuditRecordHandler extends DefaultHandler {
 
     private static final Logger log = LoggerFactory.getLogger(AuditRecordHandler.class);
 
-    private final AuditRecordCodeServiceEJB codeService;
+    private final AuditRecordCodeService codeService;
 
     private final AuditRecord rec;
 
@@ -80,7 +80,7 @@ public class AuditRecordHandler extends DefaultHandler {
     private boolean append;
 
 
-    public AuditRecordHandler(AuditRecordCodeServiceEJB codeService, AuditRecord rec) {
+    public AuditRecordHandler(AuditRecordCodeService codeService, AuditRecord rec) {
         this.codeService = codeService;
         this.rec = rec;
     }
