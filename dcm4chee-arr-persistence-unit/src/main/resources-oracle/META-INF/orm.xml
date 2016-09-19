@@ -7,7 +7,7 @@
 	<entity class="ActiveParticipant">
 	<table name="arr_active_part" />
 		<sequence-generator name="seq" sequence-name="arr_active_part_pks"
-			allocation-size="1" />
+			allocation-size="100" />
 		<attributes>
 			<id name="pk">
 				<column name="pk" />
@@ -19,7 +19,7 @@
 	<entity class="AuditRecord">
 	<table name="arr_audit_record" />
 	<sequence-generator name="seq" sequence-name="arr_audit_record_pks"
-		allocation-size="1" />
+		allocation-size="100" />
 	<attributes>
 	<id name="pk">
 	<column name="pk" />
@@ -31,7 +31,7 @@
 	<entity class="org.dcm4chee.arr.entities.Code">
 	<table name="arr_code" />
 	<sequence-generator name="seq" sequence-name="arr_code_pks"
-		allocation-size="1" />
+		allocation-size="100" />
 	<attributes>
 	<id name="pk">
 	<column name="pk" />
@@ -43,7 +43,7 @@
 	<entity class="ParticipantObject">
 	<table name="arr_part_obj" />
 	<sequence-generator name="seq" sequence-name="arr_part_obj_pks"
-		allocation-size="1" />
+		allocation-size="100" />
 	<attributes>
 	<id name="pk">
 	<column name="pk" />
