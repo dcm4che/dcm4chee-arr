@@ -419,6 +419,12 @@
             <url>${hap-repository.url}</url>
           </repository>
         </distributionManagement>
-     </profile>
+    </profile>
+    <profile>
+      <id>standalone-arr</id>
+      <properties>
+        <ds>java:/arrDS</ds>
+      </properties>
+    </profile>
   </profiles>
 </project>
