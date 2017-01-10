@@ -2,16 +2,23 @@
   "dicomConfigurationRoot" : {
     "dicomDevicesRoot" : {
       "dcm4chee-arr" : {
+        "_.uuid" : "Device-arr",
         "dcmLimitOpenAssociations" : 0,
         "deviceExtensions" : {
           "AuditLogger" : {
             "dcmAuditIncludeInstanceUID" : false,
-            "dcmAuditRecordRepositoryDeviceReference" : [ "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']" ],
+            "dcmAuditRecordRepositoryDeviceReference" : [ {
+              "_.ref" : "//*[_.uuid='Device-arr']"
+            } ],
             "dcmAuditSourceTypeCode" : [ "4" ],
-            "dicomNetworkConnectionReference" : [ "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']/dicomConnection[cn='audit-udp']" ]
+            "dicomNetworkConnectionReference" : [ {
+              "_.ref" : "//*[_.uuid='a8d2d78b-1200-4e03-b234-d52e03522bed']"
+            } ]
           },
           "AuditRecordRepository" : {
-            "dicomNetworkConnectionReference" : [ "/dicomConfigurationRoot/dicomDevicesRoot/*[dicomDeviceName='dcm4chee-arr']/dicomConnection[cn='audit-udp']" ]
+            "dicomNetworkConnectionReference" : [ {
+              "_.ref" : "//*[_.uuid='a8d2d78b-1200-4e03-b234-d52e03522bed']"
+            } ]
           },
           "CleanUpConfigurationExtension" : {
             "AuditEventsCleanUp" : {
@@ -147,6 +154,7 @@
         },
         "dicomConnection" : [ {
           "cn" : "audit-udp",
+          "_.uuid" : "a8d2d78b-1200-4e03-b234-d52e03522bed",
           "dcmProtocol" : "SYSLOG_UDP",
           "dcmTLSProtocol" : [ "TLSv1", "SSLv3" ],
           "dicomHostname" : "localhost",
