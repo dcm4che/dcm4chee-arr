@@ -4,3 +4,20 @@ data-source --name=arrDS --enabled=true
 
 jms-queue add --queue-address=ARRIncoming --entries=queue/ARRIncoming
 
+# Infinispan dcm4chee cache container
+
+/subsystem=infinispan/cache-container=dcm4chee:add
+${dcm4chee.infinispan.transport}
+
+# Conf cache
+/subsystem=infinispan/cache-container=dcm4chee/${dcm4chee.infinispan.default-cache-type}=configuration:add(batching=false,start=EAGER ${dcm4chee.infinispan.sync-mode})
+/subsystem=infinispan/cache-container=dcm4chee/${dcm4chee.infinispan.default-cache-type}=configuration/locking=LOCKING:add(acquire-timeout=15000,concurrency-level=500,isolation=READ_COMMITTED,striping=false)
+/subsystem=infinispan/cache-container=dcm4chee/${dcm4chee.infinispan.default-cache-type}=configuration/transaction=TRANSACTION:add(mode=NON_DURABLE_XA, locking=PESSIMISTIC)
+
+# Referables index
+/subsystem=infinispan/cache-container=dcm4chee/${dcm4chee.infinispan.default-cache-type}=configuration-uuid-index:add(batching=false,start=EAGER ${dcm4chee.infinispan.sync-mode})
+/subsystem=infinispan/cache-container=dcm4chee/${dcm4chee.infinispan.default-cache-type}=configuration-uuid-index/locking=LOCKING:add(acquire-timeout=15000,concurrency-level=500,isolation=READ_COMMITTED,striping=false)
+/subsystem=infinispan/cache-container=dcm4chee/${dcm4chee.infinispan.default-cache-type}=configuration-uuid-index/transaction=TRANSACTION:add(mode=NON_DURABLE_XA, locking=PESSIMISTIC)
+
+/system-property=org.dcm4che.conf.filename:add(value=${jboss.server.config.dir}/dcm4chee-arr/config.json)
+
