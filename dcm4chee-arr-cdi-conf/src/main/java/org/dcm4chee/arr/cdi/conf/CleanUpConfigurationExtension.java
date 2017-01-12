@@ -96,8 +96,8 @@ public class CleanUpConfigurationExtension extends DeviceExtension {
     private Map<String, EventTypeObject> eventTypeFilter = new HashMap<>();
     
     //triggers backup 
-    @ConfigurableProperty(name = "arrSafeClean", defaultValue = "true", description = "Triggers backup mechanism if true")
-    private boolean arrSafeClean = true;
+    @ConfigurableProperty(name = "arrSafeClean", defaultValue = "false", description = "Triggers backup mechanism if true")
+    private boolean arrSafeClean = false;
 
     //specify backup interval
     @ConfigurableProperty(name="arrBackUpPollInterval", defaultValue="3600")
