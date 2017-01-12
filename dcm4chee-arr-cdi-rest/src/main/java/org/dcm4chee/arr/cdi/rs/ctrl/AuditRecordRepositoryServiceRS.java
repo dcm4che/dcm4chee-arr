@@ -39,6 +39,7 @@
 package org.dcm4chee.arr.cdi.rs.ctrl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -162,11 +163,10 @@ public class AuditRecordRepositoryServiceRS {
     public String export() throws Exception {
         String exportInfo = "";
         exportInfo+="Exporting Records <br><br>";
-        ArrayList<AuditRecord> records = null;
+        List<AuditRecord> records = null;
         try{
-            records = (ArrayList<AuditRecord>) 
-                    removeTool.getRecordsDueOrderByEventType(); 
-        exportService.exportNow(records);
+            records = removeTool.getRecordsDueToDelete();
+            exportService.exportNow(records);
         }
         catch(Exception e) {
             return "Failed to export records <br>"+ printRecordsPKs(records) + " exception "+e.getMessage();
@@ -174,7 +174,7 @@ public class AuditRecordRepositoryServiceRS {
         return exportInfo + printRecordsPKs(records) + " successfull";
     }
 
-    private String printRecordsPKs(ArrayList<AuditRecord> records) {
+    private String printRecordsPKs(List<AuditRecord> records) {
         String str = "";
         for(AuditRecord rec : records) {
             str += rec.getPk() + " <br>";

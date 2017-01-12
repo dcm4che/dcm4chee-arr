@@ -103,7 +103,7 @@ public class AuditRecordRepositoryCleanupImpl implements
         @Override
         public void run() {
             if(isnow(cleanUpConfig.getArrBackUPStartTimeRangeInHours())) {
-            exportService.exportNow(removeTool.getRecordsDueOrderByEventType());
+                exportService.exportNow(removeTool.getRecordsDueToDelete());
             }
 
         }
