@@ -90,7 +90,8 @@ public class AuditRecordDeleteBean {
      */
 public List<Long> getPKsByRetention(int retention, String unit, int deletePerTransaction) {
     String queryStr =
-            "SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r where r.eventDateTime < :retentionUnitsAgo and r.isDueDelete = false";
+            "SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r " +
+                    "where r.eventDateTime < :retentionUnitsAgo and r.isDueDelete = false";
     Date now = new Date();
     Timestamp retentionUnitsAgo;
     switch (TimeUnit.valueOf(unit)) {
@@ -132,7 +133,9 @@ public List<Long> getPKsByRetention(int retention, String unit, int deletePerTra
       if (recCount > maxRecordsAllowed) {
           int diffCount = (int) recCount - maxRecordsAllowed;
           queryStr =
-                  "SELECT r FROM org.dcm4chee.arr.entities.AuditRecord r where r.isDueDelete = false ORDER BY r.eventDateTime ASC";
+                  "SELECT r FROM org.dcm4chee.arr.entities.AuditRecord r " +
+                          "where r.isDueDelete = false " +
+                          "ORDER BY r.eventDateTime ASC";
           if (diffCount > deletePerTransaction) {
               List<AuditRecord> recObjects =
                       em.createQuery(queryStr).setMaxResults(deletePerTransaction).getResultList();
@@ -172,7 +175,9 @@ public List<Long> getPKsByRetention(int retention, String unit, int deletePerTra
      */
   public List<Long> getPKsByEventIDTypeCode(String code,int retention, String unit, int deletePerTransaction) {
       String queryStr =
-"SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r where r.eventID.value =:codeVal AND r.eventID.designator =:designatorVal AND r.eventDateTime < :retentionUnitsAgo AND r.isDueDelete = false";
+                "SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r " +
+                        "where r.eventID.value =:codeVal AND r.eventID.designator =:designatorVal " +
+                        "AND r.eventDateTime < :retentionUnitsAgo AND r.isDueDelete = false";
       Date now = new Date();
       String codeVal = code.split("\\^")[0];
       String designatorVal = code.split("\\^")[1];
@@ -206,9 +211,9 @@ public List<Long> getPKsByRetention(int retention, String unit, int deletePerTra
       return l;
     }
 
-    public List<AuditRecord> getRecordsDueOrderByEventType() {
+    public List<AuditRecord> getRecordsDueToDelete() {
         String queryStr = "SELECT r FROM org.dcm4chee.arr.entities.AuditRecord"
-                + " r where r.isDueDelete = true order by r.eventID";
+                + " r where r.isDueDelete = true";
         @SuppressWarnings("unchecked")
         List<AuditRecord> records = em.createQuery(queryStr).getResultList();
         log.debug("Executed the following JPQL statement: \n" + queryStr);
