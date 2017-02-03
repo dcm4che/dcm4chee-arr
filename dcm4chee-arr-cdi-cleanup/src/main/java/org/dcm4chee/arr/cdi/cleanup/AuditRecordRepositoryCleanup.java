@@ -82,22 +82,16 @@ public interface AuditRecordRepositoryCleanup {
      */
     void initializeProcedure() ;
 
+
     /**
-     * Start clean up.
-     * 
-     * @param start
-     *            the start
+     * Enables this service.
      */
-    public void startCleanUp(
-	    @Observes @AuditRecordRepositoryServiceStartedCleanUp StartCleanUpEvent start) ;
+    void enable();
+
     /**
-     * Stop clean up.
-     * 
-     * @param stop
-     *            the stop
+     * Disables this service.
      */
-    public void stopCleanUp(
-	    @Observes @AuditRecordRepositoryServiceStoppedCleanUp StopCleanUpEvent stop);
+    void disable();
 
     /**
      * Reconfigure clean up.
