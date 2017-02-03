@@ -33,6 +33,7 @@
 package org.dcm4chee.arr.cdi.cleanup.Impl;
 
 import org.dcm4che3.net.Device;
+import org.dcm4che3.net.audit.AuditRecordRepository;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceReloaded;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
@@ -87,6 +88,11 @@ public class AuditRecordRepositoryCleanupImpl implements
     private boolean running;
 
     private boolean backup;
+
+    private boolean enabled = false;
+
+    private boolean arrRunning = false;
+
     private Device device = null;
 
     File backUpDir = null;
@@ -264,43 +270,64 @@ public class AuditRecordRepositoryCleanupImpl implements
         }
     }
 
-    /**
-     * Start clean up.
-     *
-     * @param start
-     *            the start
-     */
-    public void startCleanUp(
+    public void arrStarted(
             @Observes @AuditRecordRepositoryServiceStartedCleanUp StartCleanUpEvent start) {
+        this.arrRunning = true;
         this.device = start.getDevice();
-        this.cleanUpConfig = device
-                .getDeviceExtension(CleanUpConfigurationExtension.class);
-        if (cleanUpConfig != null) {
-            this.eventFilter = cleanUpConfig.getEventTypeFilter();
-            if (scheduledCleanProcedure == null
-                    && (this.cleanUpConfig.isArrCleanUpUsesMaxRecords() || this.cleanUpConfig
-                            .isArrCleanUpUsesRetention())) {
-                initializeProcedure();
-                running = true;
-                log.info("Started cleanup service");
-                if (this.cleanUpConfig.isArrSafeClean()) {
-                    backup = true;
-                    log.info("Started backup service");
+        tryToStart();
+    }
+
+    public void arrStopped(
+            @Observes @AuditRecordRepositoryServiceStoppedCleanUp StopCleanUpEvent stop) {
+        this.arrRunning = false;
+        stopCleanUp();
+    }
+
+    @Override
+    public void enable() {
+        this.enabled = true;
+        tryToStart();
+    }
+
+    @Override
+    public void disable() {
+        this.enabled = false;
+        stopCleanUp();
+   }
+
+    /**
+     * Starts clean up.
+     * BOTH methods enable() and arrStarted() must have been called, in any order
+     */
+    private void tryToStart() {
+        if (this.enabled && this.arrRunning) {
+            AuditRecordRepository arrConfig =
+                    device.getDeviceExtension(AuditRecordRepository.class);
+            this.cleanUpConfig = device
+                    .getDeviceExtension(CleanUpConfigurationExtension.class);
+            if (arrConfig != null && cleanUpConfig != null) {
+                this.eventFilter = cleanUpConfig.getEventTypeFilter();
+                if (scheduledCleanProcedure == null
+                        && (this.cleanUpConfig.isArrCleanUpUsesMaxRecords() || this.cleanUpConfig
+                        .isArrCleanUpUsesRetention())) {
+                    initializeProcedure();
+                    running = true;
+                    log.info("Started cleanup service");
+                    if (this.cleanUpConfig.isArrSafeClean()) {
+                        backup = true;
+                        log.info("Started backup service");
+                    }
                 }
+            } else {
+                log.warn("Audit Record Repository: CleanUp Configuration missing! Cleanup service not started!");
             }
-        } else {
-            log.warn("Audit Record Repository: CleanUp Configuration missing! Cleanup service not started!");
         }
     }
 
     /**
      * Stop clean up.
-     *
-     * @param stop
-     *            the stop
      */
-    public void stopCleanUp(
-            @Observes @AuditRecordRepositoryServiceStoppedCleanUp StopCleanUpEvent stop) {
+    public void stopCleanUp() {
         if (scheduledCleanProcedure != null) {
             scheduledCleanProcedure.cancel(false);
             scheduledCleanProcedure = null;
@@ -325,9 +352,11 @@ public class AuditRecordRepositoryCleanupImpl implements
     public void reconfigureCleanUp(
             @Observes @AuditRecordRepositoryServiceReloaded ReloadEvent reload) {
         this.device = reload.getDevice();
+        AuditRecordRepository arrConfig =
+                device.getDeviceExtension(AuditRecordRepository.class);
         this.cleanUpConfig = device
                 .getDeviceExtension(CleanUpConfigurationExtension.class);
-        if (cleanUpConfig != null)
+        if (arrConfig!= null && cleanUpConfig != null)
             this.eventFilter = cleanUpConfig.getEventTypeFilter();
         if (reload.isState()) {
             log.info("Reloaded cleanup service configuration");
@@ -338,5 +367,4 @@ public class AuditRecordRepositoryCleanupImpl implements
             initializeProcedure();
         }
     }
-
 }
