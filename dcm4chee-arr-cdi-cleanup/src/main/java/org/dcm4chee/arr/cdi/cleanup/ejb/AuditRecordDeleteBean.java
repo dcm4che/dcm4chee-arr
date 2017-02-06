@@ -69,12 +69,17 @@ public class AuditRecordDeleteBean {
   public void deleteRecord(CleanUpConfigurationExtension cleanUpConfig, long pk) {
       log.debug("DeleteRecord safe? " + cleanUpConfig.isArrSafeClean());
       AuditRecord recordToDelete = em.find(AuditRecord.class, pk);
-      if(recordToDelete.isDueDelete())
-          em.remove(recordToDelete);
-      if(!cleanUpConfig.isArrSafeClean())
-          em.remove(recordToDelete);
-      else
-          recordToDelete.setDueDelete(true);
+      if (recordToDelete!=null) {
+          if (recordToDelete.isDueDelete())
+              em.remove(recordToDelete);
+          if (!cleanUpConfig.isArrSafeClean())
+              em.remove(recordToDelete);
+          else
+              recordToDelete.setDueDelete(true);
+      }
+      else {
+          log.debug("AuditRecordDeleteBean.deleteRecord failed, audit doesn't exists. [pk:"+pk+"]");
+      }
   }
 
 /**
