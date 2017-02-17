@@ -32,15 +32,11 @@
 
 package org.dcm4chee.arr.cdi.cleanup;
 
-import javax.enterprise.event.Observes;
-
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceReloaded;
-import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStartedCleanUp;
-import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceStoppedCleanUp;
 import org.dcm4chee.arr.cdi.Impl.ReloadEvent;
-import org.dcm4chee.arr.cdi.Impl.StartCleanUpEvent;
-import org.dcm4chee.arr.cdi.Impl.StopCleanUpEvent;
 import org.dcm4chee.arr.cdi.conf.CleanUpConfigurationExtension;
+
+import javax.enterprise.event.Observes;
 
 /**
  * The Interface AuditRecordRepositoryCleanupImpl.

@@ -6,7 +6,8 @@ import org.jboss.as.clustering.singleton.SingletonService;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.server.CurrentServiceContainer;
 import org.jboss.dmr.ModelNode;
-import org.jboss.msc.service.*;
+import org.jboss.msc.service.ServiceName;
+import org.jboss.msc.service.ServiceController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
