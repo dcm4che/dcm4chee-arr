@@ -32,9 +32,9 @@
 
 package org.dcm4chee.arr.cdi.cleanup;
 
-import java.util.List;
-
 import org.dcm4chee.arr.entities.AuditRecord;
+
+import java.util.List;
 
 /**
  * The Interface AuditRecordRepositoryExport.

@@ -45,20 +45,6 @@
       <artifactId>querydsl-jpa</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.jboss.msc</groupId>
-        <artifactId>jboss-msc</artifactId>
-        <version>1.1.5.Final-redhat-1</version>
-    </dependency>
-    <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-clustering-singleton</artifactId>
-        <version>7.5.0.Final-redhat-21</version>
-    </dependency>
-    <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
     </dependency>
@@ -167,6 +153,24 @@
       <groupId>org.dcm4che.dcm4chee-storage</groupId>
       <artifactId>dcm4chee-storage-service</artifactId>
     </dependency>
+    <!-- JBoss EAP 6.4.4.GA dependencies -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.msc</groupId>
+      <artifactId>jboss-msc</artifactId>
+      <version>1.1.5.Final-redhat-1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-clustering-singleton</artifactId>
+      <version>7.5.0.Final-redhat-21</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <profiles>
     <profile>
@@ -185,7 +189,7 @@
             <configuration>
               <archive>
                 <manifestEntries>
-                  <Dependencies>javax.enterprise.api, org.hornetq, org.jboss.msc, org.jboss.as.server, org.jboss.as.clustering.api, org.jboss.as.clustering.singleton, org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api, org.dcm4che.conf.core, org.dcm4che.conf.core-api, org.dcm4che.conf.dicom</Dependencies>
+                  <Dependencies>javax.enterprise.api, org.jboss.msc, org.jboss.as.server, org.jboss.as.clustering.api, org.jboss.as.clustering.singleton, org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api, org.dcm4che.conf.core, org.dcm4che.conf.core-api, org.dcm4che.conf.dicom</Dependencies>
                 </manifestEntries>
               </archive>
             </configuration>
@@ -220,7 +224,7 @@
             <configuration>
               <archive>
                 <manifestEntries>
-                  <Dependencies>javax.enterprise.api, org.hornetq, org.jboss.msc, org.jboss.as.server, org.jboss.as.clustering.api, org.jboss.as.clustering.singleton, org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api, org.dcm4che.conf.core, org.dcm4che.conf.core-api, org.dcm4che.conf.dicom</Dependencies>
+                  <Dependencies>javax.enterprise.api, org.jboss.msc, org.jboss.as.server, org.jboss.as.clustering.api, org.jboss.as.clustering.singleton, org.dcm4che.net,org.dcm4che.net-audit, org.dcm4che.conf.api, org.dcm4che.conf.core, org.dcm4che.conf.core-api, org.dcm4che.conf.dicom</Dependencies>
                 </manifestEntries>
               </archive>
             </configuration>
