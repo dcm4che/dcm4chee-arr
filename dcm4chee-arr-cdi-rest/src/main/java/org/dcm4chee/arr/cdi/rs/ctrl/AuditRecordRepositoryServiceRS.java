@@ -38,21 +38,15 @@
 
 package org.dcm4chee.arr.cdi.rs.ctrl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
+import org.dcm4chee.arr.cdi.AuditRecordRepositoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dcm4chee.arr.cdi.AuditRecordRepositoryService;
-import org.dcm4chee.arr.cdi.cleanup.AuditRecordRepositoryExport;
-import org.dcm4chee.arr.cdi.cleanup.ejb.AuditRecordDeleteBean;
-import org.dcm4chee.arr.entities.AuditRecord;
 
 /**
  * The Class AuditRecordRepositoryServiceRS.
@@ -63,13 +57,7 @@ import org.dcm4chee.arr.entities.AuditRecord;
 public class AuditRecordRepositoryServiceRS {
 
     @Inject
-    private AuditRecordRepositoryExport exportService;
-
-    @Inject
     private AuditRecordRepositoryService service;
-
-    @Inject
-    private AuditRecordDeleteBean removeTool;
 
     private static final Logger log = LoggerFactory.getLogger(AuditRecordRepositoryServiceRS.class);
 
@@ -156,30 +144,6 @@ public class AuditRecordRepositoryServiceRS {
         {
         	return info+"problem occurred while reloading configuration<br>Reload failed";
         }
-    }
-
-    @GET
-    @Path("export")
-    public String export() throws Exception {
-        String exportInfo = "";
-        exportInfo+="Exporting Records <br><br>";
-        List<AuditRecord> records = null;
-        try{
-            records = removeTool.getRecordsDueToDelete();
-            exportService.exportNow(records);
-        }
-        catch(Exception e) {
-            return "Failed to export records <br>"+ printRecordsPKs(records) + " exception "+e.getMessage();
-        }
-        return exportInfo + printRecordsPKs(records) + " successfull";
-    }
-
-    private String printRecordsPKs(List<AuditRecord> records) {
-        String str = "";
-        for(AuditRecord rec : records) {
-            str += rec.getPk() + " <br>";
-        }
-        return str;
     }
 
 }
