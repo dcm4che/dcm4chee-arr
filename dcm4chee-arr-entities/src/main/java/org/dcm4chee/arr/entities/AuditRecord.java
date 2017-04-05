@@ -39,9 +39,10 @@
 package org.dcm4chee.arr.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -61,10 +62,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.hibernate.annotations.Index;
 
 /**
  * The Class AuditRecord.
@@ -125,10 +125,10 @@ public class AuditRecord implements Serializable {
     private int sourceType;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord",targetEntity = ActiveParticipant.class)
-    private Collection<ActiveParticipant> activeParticipants;
+    private Set<ActiveParticipant> activeParticipants;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord")
-    private Collection<ParticipantObject> participantObjects;
+    private Set<ParticipantObject> participantObjects;
 
     @Column(name = "audit_format")
     private AuditFormat auditFormat = AuditFormat.UNKNOWN;
@@ -280,7 +280,7 @@ public class AuditRecord implements Serializable {
      * @param c
      *            the new active participants
      */
-    public void setActiveParticipants(Collection<ActiveParticipant> c) {
+    public void setActiveParticipants(Set<ActiveParticipant> c) {
         this.activeParticipants = c;
     }
 
@@ -292,7 +292,7 @@ public class AuditRecord implements Serializable {
      */
     public void addActiveParticipant(ActiveParticipant ap) {
         if (activeParticipants == null) {
-            activeParticipants = new ArrayList<ActiveParticipant>(3);
+            activeParticipants = new LinkedHashSet<ActiveParticipant>(3);
         }
         activeParticipants.add(ap);
         ap.setAuditRecord(this);
@@ -314,7 +314,7 @@ public class AuditRecord implements Serializable {
      * @param c
      *            the new participant objects
      */
-    public void setParticipantObjects(Collection<ParticipantObject> c) {
+    public void setParticipantObjects(Set<ParticipantObject> c) {
         this.participantObjects = c;
     }
 
@@ -326,7 +326,7 @@ public class AuditRecord implements Serializable {
      */
     public void addParticipantObject(ParticipantObject po) {
         if (participantObjects == null) {
-            participantObjects = new ArrayList<ParticipantObject>(3);
+            participantObjects = new LinkedHashSet<ParticipantObject>(3);
         }
         participantObjects.add(po);
         po.setAuditRecord(this);

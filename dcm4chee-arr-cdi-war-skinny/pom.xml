@@ -92,7 +92,11 @@
       <artifactId>dcm4chee-storage-service</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+    <dependency>
+    	<groupId>org.dcm4che.dcm4chee-arr</groupId>
+    	<artifactId>dcm4chee-arr-cdi-query</artifactId>
+    	<version>${project.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

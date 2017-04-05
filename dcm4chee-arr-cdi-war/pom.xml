@@ -47,14 +47,19 @@
       <version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.dcm4che.dcm4chee-arr</groupId>
-      <artifactId>dcm4chee-arr-cdi-rest</artifactId>
-      <version>${project.parent.version}</version>
+    	<groupId>org.dcm4che.dcm4chee-arr</groupId>
+    	<artifactId>dcm4chee-arr-cdi-query</artifactId>
+    	<version>${project.parent.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.dcm4che.dcm4chee-arr</groupId>
-      <artifactId>dcm4chee-arr-cdi-cleanup</artifactId>
-      <version>${project.parent.version}</version>
+    	<groupId>org.dcm4che.dcm4chee-arr</groupId>
+    	<artifactId>dcm4chee-arr-cdi-rest</artifactId>
+    	<version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.dcm4che.dcm4chee-arr</groupId>
+    	<artifactId>dcm4chee-arr-cdi-cleanup</artifactId>
+    	<version>${project.parent.version}</version>
     </dependency>
   </dependencies>
   <build>
