@@ -40,6 +40,7 @@ package org.dcm4chee.arr.cdi.query.simple;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -79,6 +80,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 	private static final Logger LOG = LoggerFactory.getLogger(SimpleAuditRecordQueryRS.class);
 	
 	@GET
+	@Transactional
 	@Path("/AuditMessage")
     public Response search(
     		@Context HttpServletRequest request,

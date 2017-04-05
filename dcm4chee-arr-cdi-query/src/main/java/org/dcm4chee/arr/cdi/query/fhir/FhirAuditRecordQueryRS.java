@@ -40,6 +40,7 @@ package org.dcm4chee.arr.cdi.query.fhir;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -80,6 +81,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 	private static final Logger LOG = LoggerFactory.getLogger(FhirAuditRecordQueryRS.class);
 
 	@GET
+	@Transactional
 	@Path("/AuditEvent")
     public Response search(
     		@Context HttpServletRequest request,
