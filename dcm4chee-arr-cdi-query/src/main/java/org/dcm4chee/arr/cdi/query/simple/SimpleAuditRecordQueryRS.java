@@ -44,7 +44,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -57,9 +56,9 @@ import org.dcm4chee.arr.cdi.query.AbstractAuditRecordQueryRS;
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorator;
 import org.dcm4chee.arr.cdi.query.fhir.FhirConversionUtils;
 import org.dcm4chee.arr.cdi.query.fhir.FhirConversionUtils.FhirConversionException;
+import org.dcm4chee.arr.cdi.query.fhir.FhirQueryUtils;
 import org.dcm4chee.arr.cdi.query.simple.SimpleQueryUtils.ClassifiedString;
 import org.dcm4chee.arr.cdi.query.simple.SimpleQueryUtils.SearchParamParseException;
-import org.dcm4chee.arr.cdi.query.fhir.FhirQueryUtils;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.jboss.resteasy.spi.NotAcceptableException;
 import org.slf4j.Logger;
@@ -148,45 +147,44 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 		}
 		catch ( NotAcceptableException acceptE )
 		{
-			LOG.warn( "Not acceptable content type: " + acceptE.getMessage() );
+			LOG.info( "Not acceptable content type: " + acceptE.getMessage() );
 			LOG.debug(null, acceptE );
 			
 			// => returns HTTP 406 - Not Acceptable
-			throw new WebApplicationException( acceptE, Response.notAcceptable(
+			return Response.notAcceptable(
 					Variant.mediaTypes(
 						MediaType.APPLICATION_JSON_TYPE,
 						MediaType.APPLICATION_XML_TYPE,
 						MediaType.valueOf( Constants.CT_FHIR_JSON ),
-						MediaType.valueOf( Constants.CT_FHIR_JSON_NEW ),
-						MediaType.valueOf( Constants.CT_FHIR_XML ),
-						MediaType.valueOf( Constants.CT_FHIR_XML_NEW )
+						MediaType.valueOf( Constants.CT_FHIR_XML )
 						).build())
-					.build() );
+					.build();
 		}
 		catch ( SearchParamParseException parseE )
 		{
-			LOG.warn( "Bad request: " + parseE.getMessage() ); //$NON-NLS-1$
+			LOG.info( "Bad request: " + parseE.getMessage() ); //$NON-NLS-1$
 			LOG.debug( null, parseE );
 			
 			// => returns HTTP 400 - Bad Request
-			throw new WebApplicationException( parseE, 
-					Response.status(Status.BAD_REQUEST)
-						.entity( parseE.getMessage() )
-						.build() );
+			return Response.status(Status.BAD_REQUEST)
+					.entity(parseE.getMessage())
+					.build();
 		}
 		catch( FhirConversionException conversionE )
 		{
 			LOG.error( null, conversionE );
 			
 			// => returns HTTP 500 - Internal Server Error
-			throw new WebApplicationException( conversionE, Status.INTERNAL_SERVER_ERROR );
+			return Response.status( Status.INTERNAL_SERVER_ERROR )
+					.entity(conversionE.getMessage())
+					.build();
 		}
 		catch( Exception e )
 		{
 			LOG.error( null, e );
 			
 			// => returns HTTP 500 - Internal Server Error
-			throw new WebApplicationException( e, Status.INTERNAL_SERVER_ERROR );
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 		finally
 		{
