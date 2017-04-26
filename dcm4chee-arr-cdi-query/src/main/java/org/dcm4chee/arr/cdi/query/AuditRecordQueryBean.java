@@ -65,8 +65,8 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	JPAQuery query = new JPAQuery(em)
     			.distinct()
       			.from( qAuditRecord )
-    			.leftJoin( qAuditRecord.eventID, qEventId )  			
-    			.leftJoin( qAuditRecord.eventType, qEventType )
+    			.leftJoin( qAuditRecord.eventID, qEventId ).fetch()  			
+    			.leftJoin( qAuditRecord.eventType, qEventType ).fetch()
     			.leftJoin( qAuditRecord.activeParticipants, QActiveParticipant.activeParticipant ).fetch()
     			.leftJoin( qAuditRecord.participantObjects, QParticipantObject.participantObject ).fetch();
     	
