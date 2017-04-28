@@ -308,7 +308,7 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			{
 				for (int i=1; i<values.size(); i++ )
 				{
-					e.or( toExpression( path, values.get(i) ) );
+					e = e.or( toExpression( path, values.get(i) ) );
 				}
 			}
 			return e;
