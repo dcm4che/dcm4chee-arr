@@ -64,7 +64,39 @@ public interface IAuditRecordQueryBean
     public static QCode qEventId = new QCode("eid");
     public static QCode qEventType = new QCode("etype");
 
-	List<AuditRecord> find( IAuditRecordQueryDecorator decorator ) throws Exception;
+	AuditRecordQueryResult find( IAuditRecordQueryDecorator decorator ) throws Exception;
+	
+	public static class AuditRecordQueryResult
+	{
+		private final List<AuditRecord> records;
+		private final long matchingRecordsTotal;
+		private final long matchingRecordsLimit;
+		
+		public AuditRecordQueryResult( 
+				long matchingRecordsTotal, 
+				long matchingRecordsLimit, 
+				List<AuditRecord> records )
+		{
+			this.records = records;
+			this.matchingRecordsLimit = matchingRecordsLimit;
+			this.matchingRecordsTotal = matchingRecordsTotal;
+		}
+		
+		public List<AuditRecord> getRecords()
+		{
+			return records;
+		}
+		
+		public long getMatchingRecordsLimit()
+		{
+			return matchingRecordsLimit;
+		}
+		
+		public long getMatchingRecordsTotal()
+		{
+			return matchingRecordsTotal;
+		}
+	}
 	
     public static interface IAuditRecordQueryDecorator
     {
@@ -79,7 +111,6 @@ public interface IAuditRecordQueryBean
     	OrderSpecifier<?> getOrderSpecifier();
     	
     	Integer getLimit();
-    	
     }
 
     

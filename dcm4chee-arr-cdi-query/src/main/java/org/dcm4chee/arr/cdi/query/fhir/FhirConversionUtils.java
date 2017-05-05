@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.AuditRecordQueryResult;
 import org.dcm4chee.arr.entities.ActiveParticipant;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.arr.entities.Code;
@@ -80,7 +81,7 @@ import ca.uhn.fhir.model.primitive.InstantDt;
 public class FhirConversionUtils 
 {
 
-	public static Bundle toBundle( BundleTypeEnum type, List<AuditRecord> records,
+	public static Bundle toBundle( BundleTypeEnum type, AuditRecordQueryResult result,
 			String contextURL, final boolean lenient )
 		throws FhirConversionException
 	{
@@ -90,10 +91,11 @@ public class FhirConversionUtils
 		// set number of search results
 		if ( type == BundleTypeEnum.SEARCH_RESULTS )
 		{
-			bundle.setTotal( records.size() );
+			bundle.setTotal( (int) result.getMatchingRecordsTotal() );
 		}
 		
 		// convert audit record and add to bundle
+		List<AuditRecord> records = result.getRecords();
 		if ( records != null )
 		{
 			for( AuditRecord record : records )

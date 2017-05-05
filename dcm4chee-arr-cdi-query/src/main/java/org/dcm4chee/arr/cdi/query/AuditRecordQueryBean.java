@@ -42,7 +42,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.arr.entities.QActiveParticipant;
 import org.dcm4chee.arr.entities.QParticipantObject;
 
@@ -60,7 +59,7 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     private EntityManager em;
 
     @Override
-    public List<AuditRecord> find( IAuditRecordQueryDecorator decorator ) throws Exception
+    public AuditRecordQueryResult find( IAuditRecordQueryDecorator decorator ) throws Exception
     {
     	JPAQuery query = new JPAQuery(em)
     			.distinct()
@@ -84,14 +83,17 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     		query.orderBy( orderSpec );
     	}
     	
+    	long total = query.count();
+    	
     	// max results
     	Integer limit = decorator.getLimit();
     	if ( limit != null )
     	{
     		query.limit( limit );
     	}
-    	
-    	return query.list( qAuditRecord );
+
+    	return new AuditRecordQueryResult( total, limit!=null ? limit : -1, 
+    			query.list( qAuditRecord ) );
     }
     
 }

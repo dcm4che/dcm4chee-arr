@@ -56,10 +56,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Variant;
 
 import org.dcm4chee.arr.cdi.query.AbstractAuditRecordQueryRS;
+import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.AuditRecordQueryResult;
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorator;
 import org.dcm4chee.arr.cdi.query.fhir.FhirConversionUtils.FhirConversionException;
 import org.dcm4chee.arr.cdi.query.fhir.FhirQueryParam.FhirQueryParamParseException;
-import org.dcm4chee.arr.entities.AuditRecord;
 import org.jboss.resteasy.spi.NotAcceptableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +100,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 					uriInfo.getQueryParameters(), maxResults );
 			
 			// actually do the query
-			List<AuditRecord> result = doQuery( queryDecorator );
+			AuditRecordQueryResult result = doQuery( queryDecorator );
 			
 			// convert into FHIR bundle
 			Bundle bundle = FhirConversionUtils.toBundle( 
