@@ -41,8 +41,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.AbstractAuditRecordQueryDecorator;
-import org.dcm4chee.arr.cdi.query.QueryUtils.DateRange;
 import org.dcm4chee.arr.cdi.query.simple.SimpleQueryUtils.ClassifiedString;
+import org.dcm4chee.arr.cdi.query.utils.QueryUtils.DateRange;
 import org.dcm4chee.arr.entities.QCode;
 
 import com.mysema.query.jpa.JPASubQuery;
@@ -251,8 +251,7 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		if ( patientId != null )
 		{
 			poPredicates = addIgnoreNull( poPredicates,
-				po.objectID.containsIgnoreCase( patientId ).andAnyOf(
-					po.objectIDType.value.eq("1"),
+				po.objectID.containsIgnoreCase( patientId ).and(
 					po.objectRole.eq(1)
 				)
 			);

@@ -41,8 +41,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.AbstractAuditRecordQueryDecorator;
-import org.dcm4chee.arr.cdi.query.QueryUtils;
-import org.dcm4chee.arr.cdi.query.QueryUtils.TemporalPrecision;
+import org.dcm4chee.arr.cdi.query.utils.QueryUtils;
+import org.dcm4chee.arr.cdi.query.utils.QueryUtils.TemporalPrecision;
 import org.dcm4chee.arr.entities.QCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

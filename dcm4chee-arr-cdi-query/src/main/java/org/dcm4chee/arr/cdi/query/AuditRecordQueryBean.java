@@ -37,14 +37,17 @@
  * ***** END LICENSE BLOCK ***** */
 package org.dcm4chee.arr.cdi.query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.arr.entities.QActiveParticipant;
 import org.dcm4chee.arr.entities.QParticipantObject;
 
+import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
@@ -59,7 +62,23 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     private EntityManager em;
 
     @Override
-    public AuditRecordQueryResult find( IAuditRecordQueryDecorator decorator ) throws Exception
+	public SearchResults<byte[]> findRaw( IAuditRecordQueryDecorator decorator ) throws Exception
+	{    	
+    	SearchResults<AuditRecord> results = findRecords( decorator );
+    	
+    	List<AuditRecord> records = results.getResults();
+    	List<byte[]> data = new ArrayList<>(records.size());
+    	for ( AuditRecord record : records )
+    	{
+    		data.add( record.getXmldata() );
+    	}
+    	
+    	return new SearchResults<>( data, 
+    			results.getLimit(), results.getOffset(), results.getTotal() );
+	}
+    
+    @Override
+    public SearchResults<AuditRecord> findRecords( IAuditRecordQueryDecorator decorator ) throws Exception
     {
     	JPAQuery query = new JPAQuery(em)
     			.distinct()
@@ -69,6 +88,14 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     			.leftJoin( qAuditRecord.activeParticipants, QActiveParticipant.activeParticipant ).fetch()
     			.leftJoin( qAuditRecord.participantObjects, QParticipantObject.participantObject ).fetch();
     	
+    	decorateQuery( query, decorator );
+    	
+    	return query.listResults( qAuditRecord );
+    }
+    
+    
+    private static void decorateQuery( JPAQuery query, IAuditRecordQueryDecorator decorator )
+    {
     	// restrictions
     	List<Predicate> predicates = decorator.getPredicates();
     	if ( predicates != null && !predicates.isEmpty() )
@@ -82,18 +109,13 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	{
     		query.orderBy( orderSpec );
     	}
-    	
-    	long total = query.count();
-    	
+
     	// max results
     	Integer limit = decorator.getLimit();
     	if ( limit != null )
     	{
     		query.limit( limit );
     	}
-
-    	return new AuditRecordQueryResult( total, limit!=null ? limit : -1, 
-    			query.list( qAuditRecord ) );
     }
     
 }

@@ -50,9 +50,11 @@ import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceUsed;
 import org.dcm4chee.arr.cdi.Impl.RemoteSource;
 import org.dcm4chee.arr.cdi.Impl.UsedEvent;
 import org.dcm4chee.arr.cdi.conf.ArrDevice;
-import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.AuditRecordQueryResult;
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorator;
+import org.dcm4chee.arr.entities.AuditRecord;
 import org.jboss.resteasy.spi.NotAcceptableException;
+
+import com.mysema.query.SearchResults;
 
 import ca.uhn.fhir.rest.server.Constants;
 
@@ -72,9 +74,14 @@ public class AbstractAuditRecordQueryRS
 	@AuditRecordRepositoryServiceUsed
 	private Event<UsedEvent> auditRecordRepositoryServiceUsedEvent;
 
-	protected AuditRecordQueryResult doQuery( IAuditRecordQueryDecorator decorator ) throws Exception
+	protected SearchResults<AuditRecord> doRecordQuery( IAuditRecordQueryDecorator decorator ) throws Exception
 	{
-		return queryBean.find( decorator );
+		return queryBean.findRecords( decorator );
+	}
+	
+	protected SearchResults<byte[]> doRawQuery( IAuditRecordQueryDecorator decorator ) throws Exception
+	{
+		return queryBean.findRaw( decorator );
 	}
 	
 	protected void fireAuditRecordRepositoryUsedEvent( HttpServletRequest request )

@@ -50,6 +50,7 @@ import org.dcm4chee.arr.entities.QParticipantObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mysema.query.SearchResults;
 import com.mysema.query.types.OrderSpecifier;
 import com.mysema.query.types.Predicate;
 
@@ -64,39 +65,11 @@ public interface IAuditRecordQueryBean
     public static QCode qEventId = new QCode("eid");
     public static QCode qEventType = new QCode("etype");
 
-	AuditRecordQueryResult find( IAuditRecordQueryDecorator decorator ) throws Exception;
+	SearchResults<AuditRecord> findRecords( 
+			IAuditRecordQueryDecorator decorator ) throws Exception;
 	
-	public static class AuditRecordQueryResult
-	{
-		private final List<AuditRecord> records;
-		private final long matchingRecordsTotal;
-		private final long matchingRecordsLimit;
-		
-		public AuditRecordQueryResult( 
-				long matchingRecordsTotal, 
-				long matchingRecordsLimit, 
-				List<AuditRecord> records )
-		{
-			this.records = records;
-			this.matchingRecordsLimit = matchingRecordsLimit;
-			this.matchingRecordsTotal = matchingRecordsTotal;
-		}
-		
-		public List<AuditRecord> getRecords()
-		{
-			return records;
-		}
-		
-		public long getMatchingRecordsLimit()
-		{
-			return matchingRecordsLimit;
-		}
-		
-		public long getMatchingRecordsTotal()
-		{
-			return matchingRecordsTotal;
-		}
-	}
+	SearchResults<byte[]> findRaw(
+			IAuditRecordQueryDecorator decorator ) throws Exception;
 	
     public static interface IAuditRecordQueryDecorator
     {

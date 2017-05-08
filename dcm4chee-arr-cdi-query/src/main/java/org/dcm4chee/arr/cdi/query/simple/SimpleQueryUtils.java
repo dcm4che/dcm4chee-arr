@@ -45,9 +45,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.dcm4chee.arr.cdi.query.QueryUtils;
-import org.dcm4chee.arr.cdi.query.QueryUtils.DateRange;
-import org.dcm4chee.arr.cdi.query.QueryUtils.TemporalPrecision;
+import org.dcm4chee.arr.cdi.query.utils.QueryUtils;
+import org.dcm4chee.arr.cdi.query.utils.QueryUtils.DateRange;
+import org.dcm4chee.arr.cdi.query.utils.QueryUtils.TemporalPrecision;
 
 /**
  * 

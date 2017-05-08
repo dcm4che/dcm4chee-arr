@@ -36,7 +36,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-package org.dcm4chee.arr.cdi.query;
+package org.dcm4chee.arr.cdi.query.utils;
 
 import java.util.Calendar;
 import java.util.Date;
