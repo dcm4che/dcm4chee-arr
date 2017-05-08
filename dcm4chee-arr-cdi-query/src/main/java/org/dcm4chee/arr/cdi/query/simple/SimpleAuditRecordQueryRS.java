@@ -284,9 +284,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 		StringBuilder docBuilder = new StringBuilder();
 		
 	    docBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-	    docBuilder.append("<AuditMessages count=\"");
-	    docBuilder.append(dataList.size());
-	    docBuilder.append("\">");
+	    docBuilder.append("<AuditMessages>");
 
 	    for( byte[] data : dataList )
 	    {
