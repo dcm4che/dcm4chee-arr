@@ -43,7 +43,11 @@ import java.util.stream.Collectors;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Variant;
 
 import org.dcm4che3.net.Device;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceUsed;
@@ -51,11 +55,20 @@ import org.dcm4chee.arr.cdi.Impl.RemoteSource;
 import org.dcm4chee.arr.cdi.Impl.UsedEvent;
 import org.dcm4chee.arr.cdi.conf.ArrDevice;
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorator;
+import org.dcm4chee.arr.cdi.query.fhir.FhirConversionUtils.FhirConversionException;
+import org.dcm4chee.arr.cdi.query.fhir.FhirQueryParam.FhirQueryParamParseException;
+import org.dcm4chee.arr.cdi.query.fhir.FhirQueryUtils;
+import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PageableException;
+import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PrematureCacheRemovalException;
+import org.dcm4chee.arr.cdi.query.simple.SimpleQueryUtils.SearchParamParseException;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.jboss.resteasy.spi.NotAcceptableException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mysema.query.SearchResults;
 
+import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.rest.server.Constants;
 
 /**
@@ -63,6 +76,7 @@ import ca.uhn.fhir.rest.server.Constants;
  */
 public class AbstractAuditRecordQueryRS
 {	
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractAuditRecordQueryRS.class);
 
 	@Inject @ArrDevice
 	private Device device;
@@ -167,4 +181,77 @@ public class AbstractAuditRecordQueryRS
 		return url.substring(0, url.length() - uri.length() + ctx.length());
 	}
 	
+	protected static Response toResponse( Bundle bundle, MediaType type )
+	{
+		// depending on the requested type/format
+		// => encode to appropriate response
+		if( isJsonType( type ) )
+		{
+			//... either JSON
+			return Response
+					.ok( FhirQueryUtils.encodeToJson( bundle ), type )
+					.cacheControl( CacheControl.valueOf("no-cache") ) //$NON-NLS-1$
+					.build();
+		}
+		else
+		{
+			//... or XML
+			return Response
+					.ok( FhirQueryUtils.encodeToXML( bundle ), type )
+					.cacheControl( CacheControl.valueOf("no-cache") ) //$NON-NLS-1$
+					.build();
+		}
+	}
+	
+	protected static Response toErrorResponse( Exception e )
+	{
+		if ( e instanceof NotAcceptableException )
+		{
+			LOG.warn( "Bad request: Request was made with an unsupported accept/format type " + e.getMessage() );
+			LOG.trace(null, e );
+
+			return Response.notAcceptable(
+					Variant.mediaTypes(
+						MediaType.APPLICATION_JSON_TYPE,
+						MediaType.APPLICATION_XML_TYPE,
+						MediaType.valueOf( Constants.CT_FHIR_JSON ),
+						MediaType.valueOf( Constants.CT_FHIR_XML )
+						).build())
+					.build();
+		}
+		else if ( e instanceof PrematureCacheRemovalException )
+		{
+			LOG.warn( e.getMessage() );
+			LOG.trace( null, e );
+			
+			return Response.status(Status.GONE)
+					.entity(e.getMessage())
+					.build();
+		}
+		else if ( e instanceof PageableException ||
+				e instanceof FhirQueryParamParseException ||
+				e instanceof SearchParamParseException )
+		{
+			LOG.warn( e.getMessage() );
+			LOG.trace( null, e );
+			
+			return Response.status(Status.BAD_REQUEST)
+					.entity(e.getMessage())
+					.build();
+		}
+		else if ( e instanceof FhirConversionException )
+		{
+			LOG.error( null, e );
+
+			return Response.status( Status.INTERNAL_SERVER_ERROR )
+					.entity(e.getMessage())
+					.build();		
+		}
+		else
+		{
+			LOG.error( null, e );
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 }

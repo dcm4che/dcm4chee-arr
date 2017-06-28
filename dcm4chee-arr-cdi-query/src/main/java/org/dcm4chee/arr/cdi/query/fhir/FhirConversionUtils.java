@@ -81,7 +81,7 @@ import ca.uhn.fhir.model.primitive.InstantDt;
  */
 public class FhirConversionUtils 
 {
-
+	
 	public static Bundle toBundle( BundleTypeEnum type, 
 			SearchResults<AuditRecord> results,
 			String contextURL, final boolean lenient )
@@ -89,13 +89,13 @@ public class FhirConversionUtils
 	{
 		Bundle bundle = new Bundle();
 		bundle.setType( type );
-		
+
 		// set number of search results
 		if ( type == BundleTypeEnum.SEARCH_RESULTS )
 		{
 			bundle.setTotal( (int) results.getTotal() );
 		}
-		
+
 		// convert audit record and add to bundle
 		List<AuditRecord> records = results.getResults();
 		if ( records != null )
@@ -108,7 +108,7 @@ public class FhirConversionUtils
 	
 		return bundle;
 	}
-	
+
 	private static Entry toBundleEntry( AuditRecord record, String contextURL, boolean lenient )
 		throws FhirConversionException
 	{

@@ -37,32 +37,34 @@
  * ***** END LICENSE BLOCK ***** */
 package org.dcm4chee.arr.cdi.query.fhir;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.Variant;
 
 import org.dcm4chee.arr.cdi.query.AbstractAuditRecordQueryRS;
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorator;
-import org.dcm4chee.arr.cdi.query.fhir.FhirConversionUtils.FhirConversionException;
+import org.dcm4chee.arr.cdi.query.fhir.FhirBundleLinksDecorator.LinkParam;
 import org.dcm4chee.arr.cdi.query.fhir.FhirQueryParam.FhirQueryParamParseException;
+import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PageableException;
+import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PrematureCacheRemovalException;
+import org.dcm4chee.arr.cdi.query.paging.PageableResults;
+import org.dcm4chee.arr.cdi.query.paging.PageableUtils;
 import org.dcm4chee.arr.entities.AuditRecord;
-import org.jboss.resteasy.spi.NotAcceptableException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.mysema.query.SearchResults;
 
@@ -80,17 +82,84 @@ import ca.uhn.fhir.rest.server.Constants;
 	Constants.CT_FHIR_JSON, Constants.CT_FHIR_XML })
 public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 {	
-	private static final Logger LOG = LoggerFactory.getLogger(FhirAuditRecordQueryRS.class);
-
+	private static final String RESOURCE_PATH = "AuditEvent"; //$NON-NLS-1$
+	
 	@GET
 	@Transactional
-	@Path("/AuditEvent")
+	@Path( RESOURCE_PATH + "/{search-id}")
+    public Response search(
+    		@Context HttpServletRequest request,
+			@Context HttpHeaders headers,
+			@PathParam( "search-id" ) String searchId,
+			@QueryParam( "page" ) Integer pageNumber,
+			@QueryParam( "_format" ) List<String> formats )
+    {
+		try
+		{
+			// negotiate content type
+			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), formats );
+			
+			// get cached search result
+			HttpSession session = request.getSession();
+			PageableResults<AuditRecord> searchResults = PageableUtils.getResults(
+					session, searchId, AuditRecord.class );
+			
+			// cached results are present
+			if ( searchResults != null )
+			{
+				// get results for requested page
+				SearchResults<AuditRecord> pageResults = searchResults.getPage(pageNumber);
+				
+				// convert into FHIR bundle
+				String contextURL = getContextURL( request );
+				Bundle bundle = FhirConversionUtils.toBundle( 
+						BundleTypeEnum.SEARCH_RESULTS, pageResults, 
+						contextURL,
+						true );
+				
+				// add paging links to bundle
+				String resourceURL = UriBuilder.fromUri( contextURL ).path( RESOURCE_PATH ).build().toString();
+				FhirBundleLinksDecorator.create( resourceURL, searchResults, 
+						new LinkParam("_format", formats) )
+					.addPagingLinksIfNeeded(bundle, pageNumber);
+				
+				// encode to appropriate response
+				return toResponse( bundle, type );
+			}
+			
+			// not cached results for that search-id
+			else
+			{
+				// the results of the search with search-id were cached but
+				// have been removed meanwhile from the cache again
+				if ( PageableUtils.wereResultsCachedOnce(session, searchId) )
+				{
+					throw new PrematureCacheRemovalException( String.format(
+							"Unable to calculate paged subset: Results have already been removed from the cache for that search-id (%s)", searchId) );
+				}
+				else
+				{
+					throw new PageableException( String.format(
+						"Unable to calculate paged subset: No cached search found for that search-id (%s)", searchId ) ); //$NON-NLS-1$
+				}
+			}
+		}
+		catch( Exception e )
+		{
+			return toErrorResponse( e );
+		}
+    }
+	
+	@GET
+	@Transactional
+	@Path( RESOURCE_PATH )
     public Response search(
     		@Context HttpServletRequest request,
 			@Context HttpHeaders headers,
 			@Context UriInfo uriInfo,
 			@QueryParam( "_format" ) List<String> formats,
-			@QueryParam( "_count" ) Integer maxResults )
+			@QueryParam( "_count" ) Integer count,
+			@QueryParam( "_limit" ) Integer limit )
     {
 		try
 		{
@@ -99,85 +168,68 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 
 			// convert search params into search restrictions
 			IAuditRecordQueryDecorator queryDecorator = createFhirQueryDecorator( 
-					uriInfo.getQueryParameters(), maxResults );
+					uriInfo.getQueryParameters(), limit );
 			
 			// actually do the query
 			SearchResults<AuditRecord> results = doRecordQuery( queryDecorator );
 			
 			// convert into FHIR bundle
-			Bundle bundle = FhirConversionUtils.toBundle( 
-					BundleTypeEnum.SEARCH_RESULTS, results, 
-					getContextURL( request ),
-					true );
+			HttpSession session = request.getSession();
+			String contextURL = getContextURL( request );
+			Bundle bundle = null;
 			
-			// depending on the requested type/format
-			// => encode to appropriate response
-			if( isJsonType( type ) )
+			// if a 'page-size' was requested and a session is present
+			if ( count != null && count > 0 && session != null )
 			{
-				//... either JSON
-				return Response
-						.ok( FhirQueryUtils.encodeToJson( bundle ), type )
-						.cacheControl( CacheControl.valueOf("no-cache") ) //$NON-NLS-1$
-						.build();
+				// create pageable result
+				PageableResults<AuditRecord> pageableResults = PageableResults.create(
+						results, AuditRecord.class, count);
+
+				// put/cache results
+				PageableUtils.putResults( session, pageableResults );
+				
+				// create bundle with results from first page
+				bundle = FhirConversionUtils.toBundle( 
+						BundleTypeEnum.SEARCH_RESULTS, pageableResults.getPage(1), 
+						contextURL, true );
+
+				// add paging links to bundle
+				String resourceURL = UriBuilder.fromUri( contextURL ).path( RESOURCE_PATH ).build().toString();
+				FhirBundleLinksDecorator.create( resourceURL, pageableResults, 
+						new LinkParam("_format", formats) )
+					.addPagingLinksIfNeeded(bundle, 1);
+			}
+			else if ( count != null && count == 0 )
+			{
+				// create bundle without entries
+				bundle = FhirConversionUtils.toBundle( 
+						BundleTypeEnum.SEARCH_RESULTS, new SearchResults<>( Collections.emptyList(), 
+								results.getLimit(), results.getOffset(), results.getTotal() ), 
+						contextURL,
+						true );
 			}
 			else
 			{
-				//... or XML
-				return Response
-						.ok( FhirQueryUtils.encodeToXML( bundle ), type )
-						.cacheControl( CacheControl.valueOf("no-cache") ) //$NON-NLS-1$
-						.build();
+				// create bundle with all results
+				bundle = FhirConversionUtils.toBundle( 
+						BundleTypeEnum.SEARCH_RESULTS, results, 
+						contextURL,
+						true );
 			}
-		}
-		catch ( NotAcceptableException acceptE )
-		{
-			LOG.warn( "Not acceptable content type: " + acceptE.getMessage() );
-			LOG.debug(null, acceptE );
-			
-			LOG.info( "Not acceptable content type: " + acceptE.getMessage() );
-			LOG.debug(null, acceptE );
-			
-			// => returns HTTP 406 - Not Acceptable
-			return Response.notAcceptable(
-					Variant.mediaTypes(
-						MediaType.APPLICATION_JSON_TYPE,
-						MediaType.APPLICATION_XML_TYPE,
-						MediaType.valueOf( Constants.CT_FHIR_JSON ),
-						MediaType.valueOf( Constants.CT_FHIR_XML )
-						).build())
-					.build();
-		}
-		catch ( FhirQueryParamParseException parseE )
-		{
-			LOG.info( "Bad request: " + parseE.getMessage() ); //$NON-NLS-1$
-			LOG.debug( null, parseE );
-			
-			// => returns HTTP 400 - Bad Request
-			return Response.status(Status.BAD_REQUEST)
-					.entity(parseE.getMessage())
-					.build();
-		}
-		catch( FhirConversionException conversionE )
-		{
-			LOG.error( null, conversionE );
-			
-			// => returns HTTP 500 - Internal Server Error
-			return Response.status( Status.INTERNAL_SERVER_ERROR )
-					.entity(conversionE.getMessage())
-					.build();		
+
+			// encode to appropriate response
+			return toResponse( bundle, type );
 		}
 		catch( Exception e )
 		{
-			LOG.error( null, e );
-			
-			// => returns HTTP 500 - Internal Server Error
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			return toErrorResponse( e );
 		}
 		finally
 		{
 			fireAuditRecordRepositoryUsedEvent( request );
 		}
-    }
+    }	
+	
     
 	private static IAuditRecordQueryDecorator createFhirQueryDecorator( 
 			MultivaluedMap<String,String> params, Integer maxResults ) 
