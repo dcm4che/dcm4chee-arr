@@ -179,7 +179,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			Bundle bundle = null;
 			
 			// if a 'page-size' was requested and a session is present
-			if ( count != null && count > 0 && session != null )
+			if ( count != null && count > 0 && results.getTotal()>0 && session != null )
 			{
 				// create pageable result
 				PageableResults<AuditRecord> pageableResults = PageableResults.create(

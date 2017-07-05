@@ -273,8 +273,8 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			String contextURL = getContextURL( request );
 			Bundle bundle = null;
 			
-			// if a 'page-size' was requested and a session is present
-			if ( count != null && count > 0 && session != null )
+			// if a 'page-size' was requested and the result contains at least one entry and a session is present
+			if ( count != null && count > 0 && results.getTotal()>0 && session != null )
 			{
 				// create pageable result
 				PageableResults<AuditRecord> pageableResults = PageableResults.create(
