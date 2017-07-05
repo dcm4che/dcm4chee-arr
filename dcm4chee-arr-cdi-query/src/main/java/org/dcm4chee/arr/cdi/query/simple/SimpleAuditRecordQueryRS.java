@@ -41,6 +41,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
@@ -62,10 +63,11 @@ import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorat
 import org.dcm4chee.arr.cdi.query.fhir.FhirBundleLinksDecorator;
 import org.dcm4chee.arr.cdi.query.fhir.FhirBundleLinksDecorator.LinkParam;
 import org.dcm4chee.arr.cdi.query.fhir.FhirConversionUtils;
-import org.dcm4chee.arr.cdi.query.paging.PageableResults;
-import org.dcm4chee.arr.cdi.query.paging.PageableUtils;
+import org.dcm4chee.arr.cdi.query.paging.IPageableResultsStore;
 import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PageableException;
 import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PrematureCacheRemovalException;
+import org.dcm4chee.arr.cdi.query.paging.PageableResults;
+import org.dcm4chee.arr.cdi.query.paging.PreferredStore;
 import org.dcm4chee.arr.cdi.query.simple.SimpleQueryUtils.ClassifiedString;
 import org.dcm4chee.arr.cdi.query.utils.XSLTUtils;
 import org.dcm4chee.arr.entities.AuditRecord;
@@ -84,6 +86,10 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 	
 	private static final String RESOURCE_PATH = "AuditMessage"; //$NON-NLS-1$
 	private static final String RAW_RESOURCE_PATH = "raw/AuditMessage"; //$NON-NLS-1$
+	
+	@Inject
+	@PreferredStore
+	private IPageableResultsStore resultsStore;
 	
 	@GET
 	@Transactional
@@ -169,9 +175,8 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), formats );
 			
 			// get cached search result
-			HttpSession session = request.getSession();
-			PageableResults<AuditRecord> searchResults = PageableUtils.getResults(
-					session, searchId, AuditRecord.class );
+			PageableResults<AuditRecord> searchResults = resultsStore.getResults(
+					searchId, AuditRecord.class );
 			
 			// cached results are present
 			if ( searchResults != null )
@@ -203,7 +208,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			{
 				// the results of the search with search-id were cached but
 				// have been removed meanwhile from the cache again
-				if ( PageableUtils.wereResultsCachedOnce(session, searchId) )
+				if ( resultsStore.wasCachedOnce( searchId ) )
 				{
 					throw new PrematureCacheRemovalException( String.format(
 							"Unable to calculate paged subset: Results have already been removed from the cache for that search-id (%s)", searchId) );
@@ -281,8 +286,8 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 						results, AuditRecord.class, count);
 
 				// put/cache results
-				PageableUtils.putResults( session, pageableResults );
-				
+				resultsStore.putResults( pageableResults );
+
 				// create bundle with results from first page
 				bundle = FhirConversionUtils.toBundle( 
 						BundleTypeEnum.SEARCH_RESULTS, pageableResults.getPage(1), 
