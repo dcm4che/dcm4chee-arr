@@ -10,13 +10,14 @@ import javax.ws.rs.core.Context;
 @ApplicationScoped
 public class PageableResultsStoreProducer
 {
-	private static final boolean USE_SESSION_STORE = false;
-
 	private static final String RESULTS_SESSION_KEY = "PAGEABLE_RESULTS_CACHE"; //$NON-NLS-1$
+
+	private static final String USE_SESSION_STORE_VM_ARG = "dcm4chee.arr.query.paging.useSessionStore"; //$NON-NLS-1$
+	
+	private static final boolean USE_SESSION_STORE = useSessionStore();
 
 	private PageableResultsStore defaultStore;
 	
-	@SuppressWarnings("unused")
 	@Produces
 	@PreferredStore
 	@SessionScoped
@@ -52,5 +53,10 @@ public class PageableResultsStoreProducer
 			defaultStore = new PageableResultsStore( 10 );
 		}
 		return defaultStore;
+	}
+	
+	private static boolean useSessionStore()
+	{
+		return Boolean.getBoolean(USE_SESSION_STORE_VM_ARG);
 	}
 }
