@@ -83,7 +83,7 @@ public interface IAuditRecordQueryBean
 
     	OrderSpecifier<?> getOrderSpecifier();
     	
-    	Integer getLimit();
+    	Long getLimit();
     }
 
     
@@ -92,21 +92,21 @@ public interface IAuditRecordQueryBean
     {
     	private static final Logger LOG = LoggerFactory.getLogger(SimpleQueryDecorator.class);
     	
-    	private static final String ARR_QUERY_MAX_RESULTS_PROPERTY = "dcm4chee.arr.query.maxResults"; //$NON-NLS-1$
+    	private static final String ARR_QUERY_MAX_RESULTS_PROPERTY = "arr.query.maxResults"; //$NON-NLS-1$
 
     	/**
     	 * The maximum number of search results.
     	 */
-    	private Integer maxResults;
+    	private Long maxResults;
     	
-    	protected AbstractAuditRecordQueryDecorator setMaxResults( Integer maxResults )
+    	protected AbstractAuditRecordQueryDecorator setMaxResults( Long maxResults )
     	{
     		this.maxResults = maxResults;
     		return this;
     	}
     	
     	@Override
-    	public Integer getLimit()
+    	public Long getLimit()
     	{
     		return maxResults != null ? maxResults : getMaxResultsFromSystemProperty();
     	}
@@ -116,7 +116,7 @@ public interface IAuditRecordQueryBean
     	{
     		return ar.eventDateTime.desc();
     	}
-    	
+
     	private static Integer getMaxResultsFromSystemProperty()
     	{
     		try

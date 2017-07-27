@@ -181,21 +181,23 @@ public class AbstractAuditRecordQueryRS
 		return url.substring(0, url.length() - uri.length() + ctx.length());
 	}
 	
-	protected static Response toResponse( Bundle bundle, MediaType type )
+	protected static Response toResponse( Bundle bundle, MediaType type, long total, Long limit )
 	{
 		// depending on the requested type/format
 		// => encode to appropriate response
-		if( isJsonType( type ) )
+		String content = isJsonType(type ) ? 
+				FhirQueryUtils.encodeToJson( bundle ) : FhirQueryUtils.encodeToXML( bundle );
+
+		if( limit != null && total > limit )
 		{
-			//... either JSON
 			return Response
-					.ok( FhirQueryUtils.encodeToJson( bundle ), type )
+					.status( 206 ) // Partial Content
+					.entity( content )
 					.cacheControl( CacheControl.valueOf("no-cache") ) //$NON-NLS-1$
 					.build();
 		}
 		else
 		{
-			//... or XML
 			return Response
 					.ok( FhirQueryUtils.encodeToXML( bundle ), type )
 					.cacheControl( CacheControl.valueOf("no-cache") ) //$NON-NLS-1$

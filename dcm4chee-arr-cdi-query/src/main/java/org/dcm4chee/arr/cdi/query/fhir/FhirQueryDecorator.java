@@ -226,7 +226,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 		return this;
 	}	
 	
-	public FhirQueryDecorator setMaxResults( Integer maxResults )
+	public FhirQueryDecorator setMaxResults( Long maxResults )
 	{
 		super.setMaxResults( maxResults );
 		return this;

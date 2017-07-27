@@ -40,9 +40,9 @@ package org.dcm4chee.arr.cdi.query.fhir;
 import java.util.Collections;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -82,6 +82,7 @@ import ca.uhn.fhir.rest.server.Constants;
 @Produces({ 
 	MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML,
 	Constants.CT_FHIR_JSON, Constants.CT_FHIR_XML })
+@RequestScoped
 public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 {	
 	private static final String RESOURCE_PATH = "AuditEvent"; //$NON-NLS-1$
@@ -129,7 +130,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 					.addPagingLinksIfNeeded(bundle, pageNumber);
 				
 				// encode to appropriate response
-				return toResponse( bundle, type );
+				return toResponse( bundle, type, searchResults.getTotal(), searchResults.getLimit() );
 			}
 			
 			// not cached results for that search-id
@@ -164,7 +165,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			@Context UriInfo uriInfo,
 			@QueryParam( "_format" ) List<String> formats,
 			@QueryParam( "_count" ) Integer count,
-			@QueryParam( "_limit" ) Integer limit )
+			@QueryParam( "_limit" ) Long limit )
     {
 		try
 		{
@@ -179,12 +180,11 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			SearchResults<AuditRecord> results = doRecordQuery( queryDecorator );
 			
 			// convert into FHIR bundle
-			HttpSession session = request.getSession();
 			String contextURL = getContextURL( request );
 			Bundle bundle = null;
 			
 			// if a 'page-size' was requested and a session is present
-			if ( count != null && count > 0 && results.getTotal()>0 && session != null )
+			if ( count != null && count > 0 && results.getResults().size()>0 )
 			{
 				// create pageable result
 				PageableResults<AuditRecord> pageableResults = PageableResults.create(
@@ -223,7 +223,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			}
 
 			// encode to appropriate response
-			return toResponse( bundle, type );
+			return toResponse( bundle, type, results.getTotal(), results.getLimit() );
 		}
 		catch( Exception e )
 		{
@@ -237,7 +237,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 	
     
 	private static IAuditRecordQueryDecorator createFhirQueryDecorator( 
-			MultivaluedMap<String,String> params, Integer maxResults ) 
+			MultivaluedMap<String,String> params, Long maxResults ) 
 			throws FhirQueryParamParseException
 	{
 		return new FhirQueryDecorator()

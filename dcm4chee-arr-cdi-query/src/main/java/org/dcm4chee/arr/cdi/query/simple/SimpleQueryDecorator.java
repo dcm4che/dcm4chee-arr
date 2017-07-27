@@ -149,7 +149,7 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		return this;
 	}
 
-	public SimpleQueryDecorator setMaxResults( Integer maxResults )
+	public SimpleQueryDecorator setMaxResults( Long maxResults )
 	{
 		super.setMaxResults( maxResults );
 		return this;

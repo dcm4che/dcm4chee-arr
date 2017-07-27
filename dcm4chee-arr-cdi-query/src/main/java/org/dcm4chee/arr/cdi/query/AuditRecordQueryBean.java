@@ -38,6 +38,7 @@
 package org.dcm4chee.arr.cdi.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -58,6 +59,7 @@ import com.mysema.query.types.Predicate;
  */
 public class AuditRecordQueryBean implements IAuditRecordQueryBean
 {
+
     @PersistenceContext(unitName="dcm4chee-arr")
     private EntityManager em;
 
@@ -80,17 +82,36 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     @Override
     public SearchResults<AuditRecord> findRecords( IAuditRecordQueryDecorator decorator ) throws Exception
     {
-    	JPAQuery query = new JPAQuery(em)
+    	JPAQuery countQuery = new JPAQuery(em)
     			.distinct()
       			.from( qAuditRecord )
-    			.leftJoin( qAuditRecord.eventID, qEventId ).fetch()  			
-    			.leftJoin( qAuditRecord.eventType, qEventType ).fetch()
-    			.leftJoin( qAuditRecord.activeParticipants, QActiveParticipant.activeParticipant ).fetch()
-    			.leftJoin( qAuditRecord.participantObjects, QParticipantObject.participantObject ).fetch();
+    			.leftJoin( qAuditRecord.eventID, qEventId )  			
+    			.leftJoin( qAuditRecord.eventType, qEventType );
     	
-    	decorateQuery( query, decorator );
+    	decorateQuery( countQuery, decorator );
     	
-    	return query.listResults( qAuditRecord );
+    	Long limit = decorator.getLimit();
+    	
+    	long total = countQuery.count();
+    	
+    	if ( limit != null && total > limit )
+    	{
+    		return new SearchResults<>( Collections.emptyList(), limit, null, total );
+    	}
+    	else
+    	{
+	    	JPAQuery query = new JPAQuery(em)
+	    			.distinct()
+	      			.from( qAuditRecord )
+	    			.leftJoin( qAuditRecord.eventID, qEventId ).fetch()  			
+	    			.leftJoin( qAuditRecord.eventType, qEventType ).fetch()
+	    			.leftJoin( qAuditRecord.activeParticipants, QActiveParticipant.activeParticipant ).fetch()
+	    			.leftJoin( qAuditRecord.participantObjects, QParticipantObject.participantObject ).fetch();
+	    	
+	    	decorateQuery( query, decorator );
+	    	
+	    	return new SearchResults<>( query.list( qAuditRecord ), limit, null, total );
+    	}
     }
     
     
@@ -111,7 +132,7 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	}
 
     	// max results
-    	Integer limit = decorator.getLimit();
+    	Long limit = decorator.getLimit();
     	if ( limit != null )
     	{
     		query.limit( limit );

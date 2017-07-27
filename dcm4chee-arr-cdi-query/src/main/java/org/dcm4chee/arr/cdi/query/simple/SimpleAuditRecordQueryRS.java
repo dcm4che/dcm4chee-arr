@@ -41,9 +41,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -81,6 +81,7 @@ import ca.uhn.fhir.rest.server.Constants;
 /**
  */
 @Path("/")
+@RequestScoped
 public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 {	
 	
@@ -98,7 +99,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
     public Response searchRaw(
     		@Context HttpServletRequest request,
     		@Context HttpHeaders headers,
-			@QueryParam( "_limit" ) Integer limit,
+			@QueryParam( "_limit" ) Long limit,
 			@QueryParam( "date") List<String> dates,
 			@QueryParam( "type" ) List<String> types,
 			@QueryParam( "subtype" ) List<String> subtypes,
@@ -131,7 +132,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			
 			// actually do the query
 			SearchResults<byte[]> results = doRawQuery( queryDecorator );
-						
+			
 			// build the xml document
 		    String doc = toXMLDocument( results );
 		    
@@ -143,9 +144,21 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 		    }
 		    
 		    // return HTTP response
-		    return Response.ok( doc, MediaType.APPLICATION_XML )
-		    		.cacheControl( CacheControl.valueOf( "no-cache" ) )
-		    		.build();	
+			Long limitApplied = results.getLimit();
+			if ( limitApplied != null && limitApplied < results.getTotal() )
+			{
+				return Response.status(206) // partial content
+						.entity(doc)
+						.type( MediaType.APPLICATION_XML )
+			    		.cacheControl( CacheControl.valueOf( "no-cache" ) )
+			    		.build();	
+			}
+			else
+			{
+				return Response.ok( doc, MediaType.APPLICATION_XML )
+			    		.cacheControl( CacheControl.valueOf( "no-cache" ) )
+			    		.build();	
+			}
 		}
 		catch( Exception e )
 		{
@@ -200,7 +213,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 					.addPagingLinksIfNeeded(bundle, pageNumber);
 				
 				// encode to appropriate response
-				return toResponse( bundle, type );
+				return toResponse( bundle, type, searchResults.getTotal(), searchResults.getLimit() );
 			}
 			
 			// not cached results for that search-id
@@ -237,7 +250,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
     		@Context HttpHeaders headers,
 			@QueryParam( "_format" ) List<String> formats,
 			@QueryParam( "_count" ) Integer count,
-			@QueryParam( "_limit" ) Integer limit,
+			@QueryParam( "_limit" ) Long limit,
 			@QueryParam( "date") List<String> dates,
 			@QueryParam( "type" ) List<String> types,
 			@QueryParam( "subtype" ) List<String> subtypes,
@@ -248,7 +261,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			@QueryParam( "studyUid" ) String studyUid,
 			@QueryParam( "accNr" ) String accNr,
 			@QueryParam( "user" ) String user,
-			@QueryParam( "host" ) String host )
+			@QueryParam( "host" ) String host)
     {
 		try
 		{
@@ -274,12 +287,11 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			SearchResults<AuditRecord> results = doRecordQuery( queryDecorator );
 			
 			// convert into FHIR bundle
-			HttpSession session = request.getSession();
 			String contextURL = getContextURL( request );
 			Bundle bundle = null;
 			
-			// if a 'page-size' was requested and the result contains at least one entry and a session is present
-			if ( count != null && count > 0 && results.getTotal()>0 && session != null )
+			// if a 'page-size' was requested and the result contains at least one entry
+			if ( count != null && count > 0 && results.getResults().size()>0 )
 			{
 				// create pageable result
 				PageableResults<AuditRecord> pageableResults = PageableResults.create(
@@ -319,7 +331,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			}
 
 			// encode to appropriate response
-			return toResponse( bundle, type );
+			return toResponse( bundle, type, results.getTotal(), results.getLimit() );
 		}
 		catch( Exception e )
 		{
