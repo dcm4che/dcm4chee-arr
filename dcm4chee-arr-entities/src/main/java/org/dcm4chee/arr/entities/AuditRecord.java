@@ -91,6 +91,7 @@ public class AuditRecord implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "event_id_fk")
+    @Index(name="ar_eventid_fk")
     private Code eventID;
     
     @Column(name = "event_action")
@@ -113,6 +114,7 @@ public class AuditRecord implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "event_type_fk")
+    @Index(name="ar_eventtype_fk")
     private Code eventType;
     
     @Column(name = "site_id")

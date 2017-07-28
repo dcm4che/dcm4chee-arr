@@ -52,6 +52,7 @@ import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,11 +77,11 @@ public class ParticipantObject implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "audit_record_fk")
+    @Index(name = "po_ar_fk")
     private AuditRecord auditRecord;
     
     @Column(name = "obj_id")
     private String objectID;
-
     
     @Column(name = "obj_type")
     private int objectType;
@@ -99,6 +100,7 @@ public class ParticipantObject implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "obj_id_type_fk")
+    @Index(name = "po_type_fk")
     private Code objectIDType;
 
     @Column(name = "name")

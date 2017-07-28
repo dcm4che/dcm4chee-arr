@@ -52,6 +52,7 @@ import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +78,7 @@ public class ActiveParticipant implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "audit_record_fk")
+    @Index(name = "ap_ar_fk")
     private AuditRecord auditRecord;
     
     @Column(name = "user_id")
@@ -99,6 +101,7 @@ public class ActiveParticipant implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "role_id_fk")
+    @Index(name = "ap_role_fk")
     private Code roleID;
 
  
