@@ -90,13 +90,14 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	
     	decorateQuery( countQuery, decorator );
     	
-    	Long limit = decorator.getLimit();
+    	Long maxLimit = decorator.getMaxLimit();
     	
     	long total = countQuery.count();
     	
-    	if ( limit != null && total > limit )
+    	if ( maxLimit != null && total > maxLimit )
     	{
-    		return new SearchResults<>( Collections.emptyList(), limit, null, total );
+    		return new SearchResults<>( Collections.emptyList(),
+    				maxLimit, null, total );
     	}
     	else
     	{
@@ -110,7 +111,8 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
 	    	
 	    	decorateQuery( query, decorator );
 	    	
-	    	return new SearchResults<>( query.list( qAuditRecord ), limit, null, total );
+	    	return new SearchResults<>( query.list( qAuditRecord ), 
+	    			decorator.getLimit(), null, total );
     	}
     }
     

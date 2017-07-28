@@ -67,13 +67,13 @@ public abstract class FhirQueryParam<T>
 			new FhirQueryParamOr<>( StringOrListParam.class, "address" );
 	
 	public static FhirQueryParamOr<TokenParam, TokenOrListParam> PatientIdentifier = 
-			new FhirQueryParamOr<>( TokenOrListParam.class, "identifier" );
+			new FhirQueryParamOr<>( TokenOrListParam.class, "patient.identifier" );
 	
 	public static FhirQueryParamOr<TokenParam, TokenOrListParam> ObjectIdentity = 
-			new FhirQueryParamOr<>( TokenOrListParam.class, "identity" );
+			new FhirQueryParamOr<>( TokenOrListParam.class, "entity-id" );
 	
 	public static FhirQueryParamOr<TokenParam, TokenOrListParam> ObjectType = 
-			new FhirQueryParamOr<>( TokenOrListParam.class, "object-type" );
+			new FhirQueryParamOr<>( TokenOrListParam.class, "entity-type" );
 	
 	public static FhirQueryParamOr<TokenParam, TokenOrListParam> Source = 
 			new FhirQueryParamOr<>( TokenOrListParam.class, "source" );
@@ -88,7 +88,7 @@ public abstract class FhirQueryParam<T>
 			new FhirQueryParamOr<>( TokenOrListParam.class, "subtype" );
 	
 	public static FhirQueryParamOr<TokenParam, TokenOrListParam> Role = 
-			new FhirQueryParamOr<>( TokenOrListParam.class, "role" );
+			new FhirQueryParamOr<>( TokenOrListParam.class, "entity-role" );
 	
 	public static FhirQueryParamOr<TokenParam, TokenOrListParam> Outcome = 
 			new FhirQueryParamOr<>( TokenOrListParam.class, "outcome" );

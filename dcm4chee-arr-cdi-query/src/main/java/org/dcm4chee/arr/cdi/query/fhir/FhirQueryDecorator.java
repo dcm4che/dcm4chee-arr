@@ -99,7 +99,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	 * The parameter value should be identified in accordance to the object type.
 	 * 
 	 */
-	private TokenOrListParam objectIdentities;
+	private TokenOrListParam entityIdentities;
 	
 	/**
 	 * This parameter specifies the type of the object (e.g., Person, System Object, etc.)
@@ -108,7 +108,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	 * coded value. See http://hl7.org/fhir/DSTU2/valueset-object-type.html
 	 * for available codes. 
 	 */
-	private TokenOrListParam objectTypes;
+	private TokenOrListParam entityTypes;
 	
 	/**
 	 * This parameter specifies the role played by the object (e.g., Report, 
@@ -116,7 +116,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	 * URI http://hl7.org/fhir/DSTU2/object-role defined by FHIR and a coded value.
 	 * See http://hl7.org/fhir/DSTU2/object-role for available codes. 
 	 */
-	private TokenOrListParam roles;
+	private TokenOrListParam entityRoles;
 
 	/**
 	 * This parameter identifies the source of the audit event (DICOM AuditSourceID).
@@ -174,13 +174,13 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	
 	public FhirQueryDecorator setObjectIdentities( TokenOrListParam objectIdentities )
 	{
-		this.objectIdentities = objectIdentities;
+		this.entityIdentities = objectIdentities;
 		return this;
 	}
 	
 	public FhirQueryDecorator setObjectTypes( TokenOrListParam objectTypes )
 	{
-		this.objectTypes = objectTypes;
+		this.entityTypes = objectTypes;
 		return this;
 	}
 	
@@ -198,7 +198,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	
 	public FhirQueryDecorator setRoles( TokenOrListParam roles )
 	{
-		this.roles = roles;
+		this.entityRoles = roles;
 		return this;
 	}
 	
@@ -257,7 +257,10 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 		// addresses
 		apPredicates = addIgnoreNull( apPredicates, toExpression( ap.networkAccessPointID, addresses ) );
 		
-		// patient identifiers
+		// patient identifiers (as specified in IHE ITI Add Restful Query to ATNA, Rev. 2.2 Trial Implementation, line 592)
+		//apPredicates = addIgnoreNull( apPredicates, toExpression( ap.userID, patientIdentifiers ) );
+		
+		
 		BooleanExpression patE = toExpression( po.objectID, patientIdentifiers );
 		if ( patE != null )
 		{
@@ -269,17 +272,18 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 				);
 		}
 		
+		
 		// users
 		apPredicates = addIgnoreNull( apPredicates, toExpression( ap.userID, users ) );
 		
-		// object identities
-		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectID, objectIdentities ) );
+		// entity id
+		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectID, entityIdentities ) );
 		
-		// object types
-		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectIDType, objectTypes ) );
+		// entity types
+		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectIDType, entityTypes ) );
 		
-		// object roles
-		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectRole, roles ) );
+		// entity roles
+		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectRole, entityRoles ) );
 		
 		// subquery for matching active participants
 		if ( !emptyOrNull( apPredicates ) )

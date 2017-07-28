@@ -71,11 +71,11 @@ import org.dcm4chee.arr.cdi.query.paging.PreferredStore;
 import org.dcm4chee.arr.cdi.query.simple.SimpleQueryUtils.ClassifiedString;
 import org.dcm4chee.arr.cdi.query.utils.XSLTUtils;
 import org.dcm4chee.arr.entities.AuditRecord;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 
 import com.mysema.query.SearchResults;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
 import ca.uhn.fhir.rest.server.Constants;
 
 /**
@@ -202,7 +202,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 				// convert into FHIR bundle
 				String contextURL = getContextURL( request );
 				Bundle bundle = FhirConversionUtils.toBundle( 
-						BundleTypeEnum.SEARCH_RESULTS, pageResults, 
+						BundleType.SEARCHSET, pageResults, 
 						contextURL, true );
 				
 				// add paging links to bundle
@@ -302,7 +302,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 
 				// create bundle with results from first page
 				bundle = FhirConversionUtils.toBundle( 
-						BundleTypeEnum.SEARCH_RESULTS, pageableResults.getPage(1), 
+						BundleType.SEARCHSET, pageableResults.getPage(1), 
 						contextURL, true );
 
 				// add paging links to bundle
@@ -316,7 +316,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			{
 				// create bundle without entries
 				bundle = FhirConversionUtils.toBundle( 
-						BundleTypeEnum.SEARCH_RESULTS, new SearchResults<>( Collections.emptyList(), 
+						BundleType.SEARCHSET, new SearchResults<>( Collections.emptyList(), 
 								results.getLimit(), results.getOffset(), results.getTotal() ), 
 						contextURL,
 						true );
@@ -325,7 +325,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			{
 				// create bundle with all results
 				bundle = FhirConversionUtils.toBundle( 
-						BundleTypeEnum.SEARCH_RESULTS, results, 
+						BundleType.SEARCHSET, results, 
 						contextURL,
 						true );
 			}

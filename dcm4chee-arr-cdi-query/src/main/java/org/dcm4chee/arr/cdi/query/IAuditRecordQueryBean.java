@@ -84,6 +84,9 @@ public interface IAuditRecordQueryBean
     	OrderSpecifier<?> getOrderSpecifier();
     	
     	Long getLimit();
+    	
+    	Long getMaxLimit();
+    	
     }
 
     
@@ -92,23 +95,36 @@ public interface IAuditRecordQueryBean
     {
     	private static final Logger LOG = LoggerFactory.getLogger(SimpleQueryDecorator.class);
     	
-    	private static final String ARR_QUERY_MAX_RESULTS_PROPERTY = "arr.query.maxResults"; //$NON-NLS-1$
+    	private static final String ARR_QUERY_MAX_LIMIT_PROPERTY = "arr.query.maxLimit"; //$NON-NLS-1$
 
+    	private static final Long DEFAULT_MAX_LIMIT = getMaxLimitFromSystemProperty();
+    	
     	/**
-    	 * The maximum number of search results.
+    	 * The maximum number of returned search results
     	 */
-    	private Long maxResults;
+    	private Long limit;
     	
     	protected AbstractAuditRecordQueryDecorator setMaxResults( Long maxResults )
     	{
-    		this.maxResults = maxResults;
+    		this.limit = maxResults;
     		return this;
     	}
     	
     	@Override
     	public Long getLimit()
     	{
-    		return maxResults != null ? maxResults : getMaxResultsFromSystemProperty();
+    		Long maxLimit = getMaxLimit();
+    		if ( limit != null )
+    		{
+    			return maxLimit != null ? Math.min(limit, maxLimit) : limit;
+    		}
+    		return maxLimit;
+    	}
+    	
+    	@Override
+    	public Long getMaxLimit()
+    	{
+    		return DEFAULT_MAX_LIMIT;
     	}
     	
     	@Override
@@ -117,19 +133,19 @@ public interface IAuditRecordQueryBean
     		return ar.eventDateTime.desc();
     	}
 
-    	private static Integer getMaxResultsFromSystemProperty()
+    	private static Long getMaxLimitFromSystemProperty()
     	{
     		try
     		{
-    			String s = System.getProperty(ARR_QUERY_MAX_RESULTS_PROPERTY);
+    			String s = System.getProperty(ARR_QUERY_MAX_LIMIT_PROPERTY);
     			if ( s != null )
     			{
-    				return Integer.valueOf(s);
+    				return Long.valueOf(s);
     			}
     		}
     		catch ( Exception e )
     		{
-    			LOG.error( "Failed to parse system property " + ARR_QUERY_MAX_RESULTS_PROPERTY, e);
+    			LOG.error( "Failed to parse system property " + ARR_QUERY_MAX_LIMIT_PROPERTY, e);
     		}
     		return null;
     	}

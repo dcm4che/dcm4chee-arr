@@ -42,7 +42,7 @@
   	</dependency>
   	<dependency>
   		<groupId>ca.uhn.hapi.fhir</groupId>
-  		<artifactId>hapi-fhir-structures-dstu2</artifactId>
+  		<artifactId>hapi-fhir-structures-dstu3</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.hibernate</groupId>
@@ -85,7 +85,7 @@
   	</dependency>
   </dependencies>
   <properties>
-  	<hapi.version>2.2</hapi.version>
+  	<hapi.version>2.5</hapi.version>
   </properties>
   <dependencyManagement>
   	<dependencies>
@@ -96,7 +96,7 @@
   		</dependency>
   		<dependency>
   			<groupId>ca.uhn.hapi.fhir</groupId>
-  			<artifactId>hapi-fhir-structures-dstu2</artifactId>
+  			<artifactId>hapi-fhir-structures-dstu3</artifactId>
   			<version>${hapi.version}</version>
   		</dependency>
   		<dependency>

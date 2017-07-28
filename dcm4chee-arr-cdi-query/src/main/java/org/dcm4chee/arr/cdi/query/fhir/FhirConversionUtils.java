@@ -40,7 +40,6 @@ package org.dcm4chee.arr.cdi.query.fhir;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,32 +47,28 @@ import org.dcm4chee.arr.entities.ActiveParticipant;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.dcm4chee.arr.entities.Code;
 import org.dcm4chee.arr.entities.ParticipantObject;
+import org.hl7.fhir.dstu3.model.AuditEvent;
+import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAction;
+import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentComponent;
+import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentNetworkComponent;
+import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventAgentNetworkType;
+import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventEntityComponent;
+import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventOutcome;
+import org.hl7.fhir.dstu3.model.AuditEvent.AuditEventSourceComponent;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleEntrySearchComponent;
+import org.hl7.fhir.dstu3.model.Bundle.BundleType;
+import org.hl7.fhir.dstu3.model.Bundle.SearchEntryMode;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
+import org.hl7.fhir.dstu3.model.Coding;
+import org.hl7.fhir.dstu3.model.Identifier;
+import org.hl7.fhir.dstu3.model.codesystems.AuditEntityType;
+import org.hl7.fhir.dstu3.model.codesystems.AuditSourceType;
+import org.hl7.fhir.dstu3.model.codesystems.DicomAuditLifecycle;
+import org.hl7.fhir.dstu3.model.codesystems.ObjectRole;
 
 import com.mysema.query.SearchResults;
-
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.CodingDt;
-import ca.uhn.fhir.model.dstu2.composite.IdentifierDt;
-import ca.uhn.fhir.model.dstu2.resource.AuditEvent;
-import ca.uhn.fhir.model.dstu2.resource.AuditEvent.Event;
-import ca.uhn.fhir.model.dstu2.resource.AuditEvent.ObjectElement;
-import ca.uhn.fhir.model.dstu2.resource.AuditEvent.Participant;
-import ca.uhn.fhir.model.dstu2.resource.AuditEvent.ParticipantNetwork;
-import ca.uhn.fhir.model.dstu2.resource.AuditEvent.Source;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.Entry;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.EntrySearch;
-import ca.uhn.fhir.model.dstu2.valueset.AuditEventActionEnum;
-import ca.uhn.fhir.model.dstu2.valueset.AuditEventObjectLifecycleEnum;
-import ca.uhn.fhir.model.dstu2.valueset.AuditEventObjectRoleEnum;
-import ca.uhn.fhir.model.dstu2.valueset.AuditEventObjectTypeEnum;
-import ca.uhn.fhir.model.dstu2.valueset.AuditEventOutcomeEnum;
-import ca.uhn.fhir.model.dstu2.valueset.AuditEventParticipantNetworkTypeEnum;
-import ca.uhn.fhir.model.dstu2.valueset.AuditEventSourceTypeEnum;
-import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
-import ca.uhn.fhir.model.dstu2.valueset.IdentifierTypeCodesEnum;
-import ca.uhn.fhir.model.dstu2.valueset.SearchEntryModeEnum;
-import ca.uhn.fhir.model.primitive.InstantDt;
 
 /**
  * 
@@ -82,16 +77,16 @@ import ca.uhn.fhir.model.primitive.InstantDt;
 public class FhirConversionUtils 
 {
 	
-	public static Bundle toBundle( BundleTypeEnum type, 
+	public static Bundle toBundle( BundleType type, 
 			SearchResults<AuditRecord> results,
 			String contextURL, final boolean lenient )
 		throws FhirConversionException
 	{
 		Bundle bundle = new Bundle();
-		bundle.setType( type );
+		bundle.setType(type);
 
 		// set number of search results
-		if ( type == BundleTypeEnum.SEARCH_RESULTS )
+		if ( type == BundleType.SEARCHSET )
 		{
 			bundle.setTotal( (int) results.getTotal() );
 		}
@@ -109,13 +104,13 @@ public class FhirConversionUtils
 		return bundle;
 	}
 
-	private static Entry toBundleEntry( AuditRecord record, String contextURL, boolean lenient )
+	private static BundleEntryComponent toBundleEntry( AuditRecord record, String contextURL, boolean lenient )
 		throws FhirConversionException
 	{
-		Entry entry = new Entry();
+		BundleEntryComponent entry = new BundleEntryComponent();
 
-		EntrySearch search = new EntrySearch();
-		search.setMode( SearchEntryModeEnum.MATCH );
+		BundleEntrySearchComponent search = new BundleEntrySearchComponent();
+		search.setMode( SearchEntryMode.MATCH );
 		
 		entry.setSearch( search );
 		entry.setResource( toAuditEvent( record, lenient ) );
@@ -138,28 +133,26 @@ public class FhirConversionUtils
 	public static AuditEvent toAuditEvent( AuditRecord record, boolean lenient )
 		throws FhirConversionException
 	{
-		AuditEvent auditEvent = new AuditEvent();
+		AuditEvent event = new AuditEvent();
 		
-		AuditEventOutcomeEnum outcome = toEnum( record.getEventOutcome(), AuditEventOutcomeEnum.class, lenient );
+		AuditEventOutcome outcome = toEnum( record.getEventOutcome(), AuditEventOutcome.class, lenient );
 		
 		// event
-		Event event = new Event();
 		event.setType( toCoding( record.getEventID() ) );
 		event.setSubtype( toNullableList( toCoding( record.getEventType() ) ) );
-		event.setAction( toEnum( record.getEventAction(), AuditEventActionEnum.class, lenient ) );
-		event.setDateTime( toInstant( record.getEventDateTime() ) );
+		event.setAction( toEnum( record.getEventAction(), AuditEventAction.class, lenient ) );
+		event.setRecorded( record.getEventDateTime() );
 		event.setOutcome( outcome );
 		event.setOutcomeDesc( toAuditEventOutcomeDescription( outcome ) );
-		auditEvent.setEvent( event );
-		
+
 		// source
-		Source source = new Source();
+		AuditEventSourceComponent source = new AuditEventSourceComponent();
 		source.setSite( record.getEnterpriseSiteID() );
 		source.setIdentifier( toIdentifier( record.getSourceID(), lenient ) );
 		source.setType( toNullableList( 
 				toEnumCoding( record.getSourceType(), 
-						AuditEventSourceTypeEnum.class, lenient ) ) );
-		auditEvent.setSource( source );
+						AuditSourceType.class, lenient ) ) );
+		event.setSource( source );
 		
 		// participants
 		Collection<ActiveParticipant> activeParticipants = record.getActiveParticipants();
@@ -167,7 +160,7 @@ public class FhirConversionUtils
 		{
 			for( ActiveParticipant ap : activeParticipants )
 			{
-				auditEvent.addParticipant( toParticipant( ap, lenient ) );
+				event.addAgent( toAgent( ap, lenient ) );
 			}
 		}
 		
@@ -177,78 +170,74 @@ public class FhirConversionUtils
 		{
 			for( ParticipantObject o : objects )
 			{
-				auditEvent.addObject( toObject( o, lenient ) );
+				event.addEntity( toObject( o, lenient ) );
 			}
 		}
 		
-		return auditEvent;
+		return event;
 	}
 	
-	private static Participant toParticipant( ActiveParticipant ap, boolean lenient )
+	private static AuditEventAgentComponent toAgent( ActiveParticipant ap, boolean lenient )
 		throws FhirConversionException
 	{
-		Participant p = new Participant();
-		p.setRole( toNullableList( toCodeableConcept( ap.getRoleID() ) ) );
-		p.setUserId( toIdentifier( ap.getUserID(), lenient ) );
-		p.setAltId( ap.getAlternativeUserID() );
-		p.setName( ap.getUserName() );
-		p.setRequestor( ap.getUserIsRequestor() );
+		AuditEventAgentComponent agent = new AuditEventAgentComponent();
+		agent.setRole( toNullableList( toCodeableConcept( ap.getRoleID() ) ) );
+		agent.setUserId( toIdentifier( ap.getUserID(), lenient ) );
+		agent.setAltId( ap.getAlternativeUserID() );
+		agent.setName( ap.getUserName() );
+		agent.setRequestor( ap.getUserIsRequestor() );
 		
-		ParticipantNetwork network = new ParticipantNetwork();
+		AuditEventAgentNetworkComponent network = new AuditEventAgentNetworkComponent();
 		network.setAddress( ap.getNetworkAccessPointID() );
-		network.setType( toEnum( ap.getNetworkAccessPointType(), AuditEventParticipantNetworkTypeEnum.class, lenient ) );
-		p.setNetwork( network );
+		network.setType( toEnum( ap.getNetworkAccessPointType(), AuditEventAgentNetworkType.class, lenient ) );
+		agent.setNetwork( network );
 		
-		return p;
+		return agent;
 	}
 	
-	private static ObjectElement toObject( ParticipantObject po, boolean lenient )
+	private static AuditEventEntityComponent toObject( ParticipantObject po, boolean lenient )
 		throws FhirConversionException
 	{
 		Code idType = po.getObjectIDType();
 		
-		ObjectElement o = new ObjectElement();
-		o.setIdentifier( idType != null ?
+		AuditEventEntityComponent entity = new AuditEventEntityComponent();
+		entity.setIdentifier( idType != null ?
 				toIdentifier( po.getObjectID(), idType.getValue(), idType.getDesignator(), lenient ) :
 					toIdentifier( po.getObjectID(), lenient ) );
-		o.setType( toEnumCoding( po.getObjectType(), AuditEventObjectTypeEnum.class, lenient ) );
-		o.setRole( toEnumCoding( po.getObjectRole(), AuditEventObjectRoleEnum.class, lenient ) );
-		o.setLifecycle( toEnumCoding( po.getDataLifeCycle(), AuditEventObjectLifecycleEnum.class, lenient ) );
-		o.setSecurityLabel( toNullableList( toCoding( null, po.getObjectSensitivity(), null ) ) );
-		o.setName( po.getObjectName() );
+		entity.setType( toEnumCoding( po.getObjectType(), AuditEntityType.class, lenient ) );
+		entity.setRole( toEnumCoding( po.getObjectRole(), ObjectRole.class, lenient ) );
+		entity.setLifecycle( toEnumCoding( po.getDataLifeCycle(), DicomAuditLifecycle.class, lenient ) );
+		entity.setSecurityLabel( toNullableList( toCoding( null, po.getObjectSensitivity(), null ) ) );
+		entity.setName( po.getObjectName() );
 		
-		return o;
+		return entity;
 	}
 	
-	private static InstantDt toInstant( Date date )
-	{
-		return new InstantDt( date );
-	}
-	
-	private static IdentifierDt toIdentifier( String id, boolean lenient )
+	private static Identifier toIdentifier( String id, boolean lenient )
 			throws FhirConversionException
 	{
 		return toIdentifier( id, null, null, lenient );
 	}
 	
-	private static IdentifierDt toIdentifier( String id, String typeId, String typeSystem, boolean lenient )
+	private static Identifier toIdentifier( String id, String typeId, String typeSystem, boolean lenient )
 		throws FhirConversionException
 	{
 		if ( id != null )
 		{
 			// TODO: parse system here???
-			IdentifierDt identifier = new IdentifierDt( null, id );
+			Identifier identifier = new Identifier();
+			identifier.setValue( id );
 			
 			if ( typeId != null )
 			{
-				identifier.setType( toEnum( typeId, typeSystem, IdentifierTypeCodesEnum.class, lenient ) );
+				identifier.setType( toCodeableConcept( typeSystem, typeId, null) );
 			}
 			return identifier;
 		}
 		return null;
 	}
 	
-	private static CodingDt toCoding( Code code )
+	private static Coding toCoding( Code code )
 	{
 		if ( code != null )
 		{
@@ -257,41 +246,41 @@ public class FhirConversionUtils
 		return null;
 	}
 	
-	private static CodingDt toCoding( String system, String value, String display )
+	private static Coding toCoding( String system, String value, String display )
 	{
 		if ( value != null )
 		{
-			CodingDt coding = new CodingDt( system, value );
-			if ( display != null )
-			{
-				coding.setDisplay( display );
-			}
-			return coding;
+			return new Coding( system, value, display );
 		}
 		return null;
 	}
 	
-	private static CodeableConceptDt toCodeableConcept( Code code )
+	private static CodeableConcept toCodeableConcept( Code code )
 	{
 		if ( code != null )
 		{
-			CodeableConceptDt c = new CodeableConceptDt( code.getDesignator(), code.getValue() );
-			c.setText( code.getMeaning() );
-			return c;
+			return toCodeableConcept( 
+					code.getDesignator(), code.getValue(), code.getMeaning() );
 		}
 		return null;
 	}
 	
-	private static String toAuditEventOutcomeDescription( AuditEventOutcomeEnum outcome )
+	private static CodeableConcept toCodeableConcept( String system, String value, String meaning )
+	{
+		return new CodeableConcept().addCoding( 
+					new Coding( system, value, meaning ) );
+	}
+	
+	private static String toAuditEventOutcomeDescription( AuditEventOutcome outcome )
 	{
 		if ( outcome != null )
 		{
 			switch( outcome )
 			{
-			case SUCCESS: return "Success"; //$NON-NLS-1$
-			case MINOR_FAILURE: return "Minor failure"; //$NON-NLS-1$
-			case SERIOUS_FAILURE: return "Serious failure"; //$NON-NLS-1$
-			case MAJOR_FAILURE: return "Major failure"; //$NON-NLS-1$
+			case _0: return "Success"; //$NON-NLS-1$
+			case _4: return "Minor failure"; //$NON-NLS-1$
+			case _8: return "Serious failure"; //$NON-NLS-1$
+			case _12: return "Major failure"; //$NON-NLS-1$
 			}
 		}
 		return null;
@@ -337,13 +326,13 @@ public class FhirConversionUtils
 		return null;
 	}
 	
-	private static <E extends Enum<?>> CodingDt toEnumCoding( int value, Class<E> clazz, boolean lenient )
+	private static <E extends Enum<?>> Coding toEnumCoding( int value, Class<E> clazz, boolean lenient )
 		throws FhirConversionException
 	{
 		return toEnumCoding( value, null, clazz, lenient );
 	}
 	
-	private static <E extends Enum<?>> CodingDt toEnumCoding( int value, String system, Class<E> clazz, boolean lenient )
+	private static <E extends Enum<?>> Coding toEnumCoding( int value, String system, Class<E> clazz, boolean lenient )
 		throws FhirConversionException
 	{
 		E instance = toEnum( value, system, clazz, lenient );
@@ -351,9 +340,10 @@ public class FhirConversionUtils
 		{
 			try
 			{
-				return new CodingDt(
+				return new Coding(
 					(String) invokeMethod( clazz, "getSystem", instance ),
-					(String) invokeMethod( clazz, "getCode", instance )
+					(String) invokeMethod( clazz, "toCode", instance ),
+					null
 				);
 			}
 			catch ( Exception e )

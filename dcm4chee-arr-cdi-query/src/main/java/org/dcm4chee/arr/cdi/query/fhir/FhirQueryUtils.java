@@ -57,7 +57,7 @@ import ca.uhn.fhir.rest.method.QualifiedParamList;
 public class FhirQueryUtils 
 {
 	// the used fhir context
-	private static final FhirContext FHIR_CONTEXT = FhirContext.forDstu2();
+	private static final FhirContext FHIR_CONTEXT = FhirContext.forDstu3();
 	
 	private static final String SEARCH_MODIFIER_DELIMITER = ":"; //$NON-NLS-1$
 		

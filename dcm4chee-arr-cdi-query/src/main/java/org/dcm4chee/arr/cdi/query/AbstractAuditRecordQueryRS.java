@@ -62,13 +62,13 @@ import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PageableException;
 import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PrematureCacheRemovalException;
 import org.dcm4chee.arr.cdi.query.simple.SimpleQueryUtils.SearchParamParseException;
 import org.dcm4chee.arr.entities.AuditRecord;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.jboss.resteasy.spi.NotAcceptableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mysema.query.SearchResults;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.rest.server.Constants;
 
 /**
@@ -181,25 +181,26 @@ public class AbstractAuditRecordQueryRS
 		return url.substring(0, url.length() - uri.length() + ctx.length());
 	}
 	
-	protected static Response toResponse( Bundle bundle, MediaType type, long total, Long limit )
+	protected static Response toResponse( Bundle bundle, MediaType type, long total, Long maxLimit )
 	{
 		// depending on the requested type/format
 		// => encode to appropriate response
 		String content = isJsonType(type ) ? 
 				FhirQueryUtils.encodeToJson( bundle ) : FhirQueryUtils.encodeToXML( bundle );
 
-		if( limit != null && total > limit )
+		if( maxLimit!=null && maxLimit < total )
 		{
 			return Response
 					.status( 206 ) // Partial Content
 					.entity( content )
+					.type(type)
 					.cacheControl( CacheControl.valueOf("no-cache") ) //$NON-NLS-1$
 					.build();
 		}
 		else
 		{
 			return Response
-					.ok( FhirQueryUtils.encodeToXML( bundle ), type )
+					.ok( content, type )
 					.cacheControl( CacheControl.valueOf("no-cache") ) //$NON-NLS-1$
 					.build();
 		}

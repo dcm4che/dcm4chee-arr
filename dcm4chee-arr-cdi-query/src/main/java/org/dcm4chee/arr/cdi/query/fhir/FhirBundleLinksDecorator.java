@@ -5,9 +5,9 @@ import java.util.List;
 import javax.ws.rs.core.UriBuilder;
 
 import org.dcm4chee.arr.cdi.query.paging.PageableResults;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleLinkComponent;
 
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
-import ca.uhn.fhir.model.dstu2.resource.Bundle.Link;
 
 /**
  * 
@@ -83,9 +83,9 @@ public class FhirBundleLinksDecorator
 		return this;
 	}
 		
-	private Link createPagingLink( String relation, int pageNumber )
+	private BundleLinkComponent createPagingLink( String relation, int pageNumber )
 	{
-		Link link = new Link();
+		BundleLinkComponent link = new BundleLinkComponent();
 		
 		UriBuilder builder = UriBuilder.fromUri( basePagingUrl )
 				.queryParam( "page", pageNumber );
@@ -96,9 +96,9 @@ public class FhirBundleLinksDecorator
 		return link;
 	}
 	
-	private Link createLink( String relation, String url )
+	private BundleLinkComponent createLink( String relation, String url )
 	{
-		Link link = new Link();
+		BundleLinkComponent link = new BundleLinkComponent();
 				
 		link.setRelation( relation );
 		link.setUrl( url );
