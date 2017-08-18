@@ -383,7 +383,7 @@ public class FhirConversionUtils
 		{
 			if ( value != null )
 			{
-				E instance = (E) invokeMethod( clazz, "forCode", null, value );
+				E instance = (E) invokeMethod( clazz, "fromCode", null, value );
 				if ( instance == null )
 				{
 					instance = (E) Enum.valueOf(clazz, value );
