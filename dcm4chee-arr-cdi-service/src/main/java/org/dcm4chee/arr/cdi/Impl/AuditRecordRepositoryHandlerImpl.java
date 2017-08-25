@@ -96,7 +96,6 @@ public class AuditRecordRepositoryHandlerImpl implements AuditRecordHandler {
     public void onMessage(byte[] data, int xmlOffset, int xmlLength,
 	    Connection conn, InetAddress from) {
 
-	from.getHostName();
 	if (log.isDebugEnabled()) {
 	    log.debug("Received message from " + from + " - " + prompt(data));
 	}
@@ -135,7 +134,7 @@ public class AuditRecordRepositoryHandlerImpl implements AuditRecordHandler {
 		msg.setStringProperty("sourceHostAddress",
 			from.getHostAddress());
 
-		msg.setStringProperty("sourceHostName", from.getHostName());
+		msg.setStringProperty("sourceHostName", "unknown");
 		msg.writeBytes(data, off, length);
 		sender.send(msg);
 		return;

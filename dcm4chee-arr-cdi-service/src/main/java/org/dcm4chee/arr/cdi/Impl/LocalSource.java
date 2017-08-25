@@ -62,7 +62,7 @@ public class LocalSource implements Participant {
     public String getHost() {
         try {
             return unknownIfNull(java.net.InetAddress
-                    .getLocalHost().getHostName());
+                    .getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
            return Participant.UNKNOWN;
         }
