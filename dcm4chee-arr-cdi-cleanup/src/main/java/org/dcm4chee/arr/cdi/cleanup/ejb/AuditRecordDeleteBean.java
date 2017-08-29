@@ -42,6 +42,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -98,28 +99,32 @@ public List<Long> getPKsByRetention(int retention, String unit, int deletePerTra
             "SELECT r.pk FROM org.dcm4chee.arr.entities.AuditRecord r " +
                     "where r.eventDateTime < :retentionUnitsAgo and r.isDueDelete = false";
     Date now = new Date();
+    Calendar cal = Calendar.getInstance();
     Timestamp retentionUnitsAgo;
     switch (TimeUnit.valueOf(unit)) {
-        case DAYS:
-            retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
-            break;
         case HOURS:
-            retentionUnitsAgo = new Timestamp(now.getTime() - 3600000 * retention);
+            cal.add(Calendar.HOUR, -retention);
             break;
         case MINUTES:
-            retentionUnitsAgo = new Timestamp(now.getTime() - 60000 * retention);
+            cal.add(Calendar.MINUTE, -retention);
             break;
         case SECONDS:
-            retentionUnitsAgo = new Timestamp(now.getTime() - 1000 * retention);
+            cal.add(Calendar.SECOND, -retention);
             break;
+        case DAYS:
         default:
-            retentionUnitsAgo = new Timestamp(now.getTime() - 86400000 * retention);
+            cal.add(Calendar.DATE, -retention);
             break;
     }
+
     List<Long> l =
-            em.createQuery(queryStr).setParameter("retentionUnitsAgo", retentionUnitsAgo)
-                    .setMaxResults(deletePerTransaction).getResultList();
+            em.createQuery(queryStr)
+            	.setParameter("retentionUnitsAgo", new Timestamp( cal.getTimeInMillis() ) )
+                .setMaxResults(deletePerTransaction)
+                .getResultList();
+    
     log.debug("Executed the following JPQL statement: \n" + queryStr);
+    
     return l;
 }
 
