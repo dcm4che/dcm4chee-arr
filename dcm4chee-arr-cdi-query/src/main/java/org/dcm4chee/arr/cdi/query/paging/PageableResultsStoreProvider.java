@@ -1,21 +1,18 @@
 package org.dcm4chee.arr.cdi.query.paging;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.Context;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-public class PageableResultsStoreProducer
+public class PageableResultsStoreProvider
 {
-	private static final Logger LOG = LoggerFactory.getLogger( PageableResultsStoreProducer.class );
+	private static final Logger LOG = LoggerFactory.getLogger( PageableResultsStoreProvider.class );
 	
 	private static final String RESULTS_SESSION_KEY = "PAGEABLE_RESULTS_CACHE"; //$NON-NLS-1$
 
@@ -29,10 +26,7 @@ public class PageableResultsStoreProducer
 	
 	private PageableResultsStore defaultStore;
 	
-	@Produces
-	@PreferredStore
-	@RequestScoped
-	public IPageableResultsStore get( @Context HttpServletRequest request )
+	public IPageableResultsStore getStore( HttpServletRequest request )
 	{
 		if ( USE_SESSION_STORE && request != null && getCookie( request, 
 				request.getServletContext().getSessionCookieConfig().getName() ) != null )
