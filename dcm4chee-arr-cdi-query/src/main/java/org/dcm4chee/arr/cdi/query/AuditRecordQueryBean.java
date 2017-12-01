@@ -45,8 +45,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.dcm4chee.arr.entities.AuditRecord;
-import org.dcm4chee.arr.entities.QActiveParticipant;
-import org.dcm4chee.arr.entities.QParticipantObject;
 
 import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.impl.JPAQuery;
@@ -83,12 +81,11 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     public SearchResults<AuditRecord> findRecords( IAuditRecordQueryDecorator decorator ) throws Exception
     {
     	JPAQuery countQuery = new JPAQuery(em)
-    			.distinct()
       			.from( qAuditRecord )
-    			.leftJoin( qAuditRecord.eventID, qEventId )  			
-    			.leftJoin( qAuditRecord.eventType, qEventType );
+    			.join( qAuditRecord.eventID, qEventId )  			
+    			.join( qAuditRecord.eventType, qEventType );
     	
-    	decorateQuery( countQuery, decorator );
+    	decorateQuery( countQuery, decorator, true );
     	
     	Long maxLimit = decorator.getMaxLimit();
     	
@@ -102,14 +99,11 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	else
     	{
 	    	JPAQuery query = new JPAQuery(em)
-	    			.distinct()
 	      			.from( qAuditRecord )
-	    			.leftJoin( qAuditRecord.eventID, qEventId ).fetch()  			
-	    			.leftJoin( qAuditRecord.eventType, qEventType ).fetch()
-	    			.leftJoin( qAuditRecord.activeParticipants, QActiveParticipant.activeParticipant ).fetch()
-	    			.leftJoin( qAuditRecord.participantObjects, QParticipantObject.participantObject ).fetch();
-	    	
-	    	decorateQuery( query, decorator );
+	    			.join( qAuditRecord.eventID, qEventId )		
+	    			.join( qAuditRecord.eventType, qEventType );
+
+	    	decorateQuery( query, decorator, false );
 	    	
 	    	return new SearchResults<>( query.list( qAuditRecord ), 
 	    			decorator.getLimit(), null, total );
@@ -117,7 +111,7 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     }
     
     
-    private static void decorateQuery( JPAQuery query, IAuditRecordQueryDecorator decorator )
+    private static void decorateQuery( JPAQuery query, IAuditRecordQueryDecorator decorator, boolean forCountQuery )
     {
     	// restrictions
     	List<Predicate> predicates = decorator.getPredicates();
@@ -126,18 +120,21 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     		query.where( predicates.toArray( new Predicate[predicates.size()] ) );
     	}
     	
-    	// ordering
-    	OrderSpecifier<?> orderSpec = decorator.getOrderSpecifier();
-    	if ( orderSpec != null )
+    	if ( !forCountQuery )
     	{
-    		query.orderBy( orderSpec );
-    	}
-
-    	// max results
-    	Long limit = decorator.getLimit();
-    	if ( limit != null )
-    	{
-    		query.limit( limit );
+	    	// ordering
+	    	OrderSpecifier<?> orderSpec = decorator.getOrderSpecifier();
+	    	if ( orderSpec != null )
+	    	{
+	    		query.orderBy( orderSpec );
+	    	}
+	
+	    	// max results
+	    	Long limit = decorator.getLimit();
+	    	if ( limit != null )
+	    	{
+	    		query.limit( limit );
+	    	}
     	}
     }
     

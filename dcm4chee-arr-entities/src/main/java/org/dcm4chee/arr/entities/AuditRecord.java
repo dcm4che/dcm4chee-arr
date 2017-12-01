@@ -50,6 +50,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -62,6 +63,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +93,8 @@ public class AuditRecord implements Serializable {
     @Column(name = "pk")
     private long pk;
     
-    @ManyToOne
+    @ManyToOne( fetch=FetchType.LAZY )
+    @BatchSize( size=200 )
     @JoinColumn(name = "event_id_fk")
     @Index(name="ar_eventid_fk")
     private Code eventID;
@@ -112,7 +117,8 @@ public class AuditRecord implements Serializable {
     @Index(name = "ar_receive_date_ti")
     private Date receiveDateTime;
     
-    @ManyToOne
+    @ManyToOne( fetch=FetchType.LAZY )
+    @BatchSize( size=200 )
     @JoinColumn(name = "event_type_fk")
     @Index(name="ar_eventtype_fk")
     private Code eventType;
@@ -127,9 +133,13 @@ public class AuditRecord implements Serializable {
     private int sourceType;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord",targetEntity = ActiveParticipant.class)
+    @Fetch( FetchMode.SELECT )
+    @BatchSize( size=200 )
     private Set<ActiveParticipant> activeParticipants;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord")
+    @Fetch( FetchMode.SELECT )
+    @BatchSize( size=200 )
     private Set<ParticipantObject> participantObjects;
 
     @Column(name = "audit_format")
