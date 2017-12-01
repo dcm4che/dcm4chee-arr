@@ -65,7 +65,7 @@ import org.dcm4chee.arr.cdi.query.paging.IPageableResultsStore;
 import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PageableException;
 import org.dcm4chee.arr.cdi.query.paging.PageableExceptions.PrematureCacheRemovalException;
 import org.dcm4chee.arr.cdi.query.paging.PageableResults;
-import org.dcm4chee.arr.cdi.query.paging.PreferredStore;
+import org.dcm4chee.arr.cdi.query.paging.PageableResultsStoreProvider;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
@@ -88,8 +88,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 	private static final String RESOURCE_PATH = "AuditEvent"; //$NON-NLS-1$
 	
 	@Inject
-	@PreferredStore
-	private IPageableResultsStore resultsStore;
+	private PageableResultsStoreProvider resultsStoreProvider;
 	
 	@GET
 	@Transactional
@@ -107,6 +106,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), formats );
 			
 			// get cached search result
+			IPageableResultsStore resultsStore = resultsStoreProvider.getStore(request);
 			PageableResults<AuditRecord> searchResults = resultsStore.getResults(
 					searchId, AuditRecord.class );
 			
@@ -191,6 +191,7 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 						results, AuditRecord.class, count);
 
 				// put/cache results
+				IPageableResultsStore resultsStore = resultsStoreProvider.getStore(request);
 				resultsStore.putResults( pageableResults );
 				
 				// create bundle with results from first page
