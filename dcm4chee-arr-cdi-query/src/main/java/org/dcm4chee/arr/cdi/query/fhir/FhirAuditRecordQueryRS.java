@@ -58,6 +58,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.dcm4chee.arr.cdi.query.AbstractAuditRecordQueryRS;
+import org.dcm4chee.arr.cdi.query.MediaTypeUtils;
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorator;
 import org.dcm4chee.arr.cdi.query.fhir.FhirBundleLinksDecorator.LinkParam;
 import org.dcm4chee.arr.cdi.query.fhir.FhirQueryParam.FhirQueryParamParseException;
@@ -103,7 +104,8 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 		try
 		{
 			// negotiate content type
-			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), formats );
+			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), 
+					MediaTypeUtils.toTypeList( formats ) );	
 			
 			// get cached search result
 			IPageableResultsStore resultsStore = resultsStoreProvider.getStore(request);
@@ -170,13 +172,14 @@ public class FhirAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 		try
 		{
 			// negotiate content type
-			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), formats );	
+			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), 
+					MediaTypeUtils.toTypeList( formats ) );		
 
 			// convert search params into search restrictions
 			IAuditRecordQueryDecorator queryDecorator = createFhirQueryDecorator( 
 					uriInfo.getQueryParameters(), limit );
 			
-			// actually do the query
+			// do the actual query
 			SearchResults<AuditRecord> results = doRecordQuery( queryDecorator );
 			
 			// convert into FHIR bundle

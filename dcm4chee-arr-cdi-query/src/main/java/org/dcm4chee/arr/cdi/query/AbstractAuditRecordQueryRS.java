@@ -38,7 +38,6 @@
 package org.dcm4chee.arr.cdi.query;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -49,6 +48,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Variant;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dcm4che3.net.Device;
 import org.dcm4chee.arr.cdi.AuditRecordRepositoryServiceUsed;
 import org.dcm4chee.arr.cdi.Impl.RemoteSource;
@@ -78,6 +78,11 @@ public class AbstractAuditRecordQueryRS
 {	
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractAuditRecordQueryRS.class);
 
+	public static final MediaType FHIR_JSON_TYPE = MediaType.valueOf( Constants.CT_FHIR_JSON );
+	public static final MediaType FHIR_JSON_TYPE_NEW = MediaType.valueOf( Constants.CT_FHIR_JSON_NEW );
+	public static final MediaType FHIR_XML_TYPE = MediaType.valueOf( Constants.CT_FHIR_XML );
+	public static final MediaType FHIR_XML_TYPE_NEW = MediaType.valueOf( Constants.CT_FHIR_XML_NEW );
+	
 	@Inject @ArrDevice
 	private Device device;
 	
@@ -108,71 +113,24 @@ public class AbstractAuditRecordQueryRS
 								request.getRequestURI())));
 	}
 	
-	protected static MediaType negotiateType( List<MediaType> acceptedTypes, List<String> acceptedFormats ) throws NotAcceptableException
+	protected static MediaType negotiateType( List<MediaType> acceptedTypes, List<MediaType> acceptedFormats ) throws NotAcceptableException
 	{
 		// give '_format' parameter precedence over 'accept' header param
-		MediaType type = negotiateTypeAsString( acceptedFormats );
+		MediaType type = MediaTypeUtils.negotiateType( acceptedFormats );
 		if ( type == null )
 		{
-			type = negotiateTypeAsString( acceptedTypes == null ? null : acceptedTypes.stream()
-				.map( t -> t.toString() )
-				.collect(Collectors.toList()));
+			type = MediaTypeUtils.negotiateType( acceptedTypes );
 		}
 		
 		if ( type == null )
 		{
-			String types = new StringBuilder()
-					.append( MediaType.APPLICATION_JSON )
-					.append( ", " ).append( MediaType.APPLICATION_XML )
-					.append( ", " ).append( Constants.CT_FHIR_JSON )
-					.append( ", " ).append( Constants.CT_FHIR_JSON_NEW )
-					.append( ", " ).append( Constants.CT_FHIR_XML )
-					.append( ", " ).append( Constants.CT_FHIR_XML_NEW )
-					.toString();
-			throw new NotAcceptableException( "Unable to fulfill request: Accepted types are " + types ); //$NON-NLS-1$
+			throw new NotAcceptableException( String.format( "Unable to fulfill request: Accepted types are %s",
+						StringUtils.join( MediaTypeUtils.getSupportedTypes().toArray( new MediaType[0] ), ", ") ) ); 
 		}
 		
 		return type;
 	}
-	
-	protected static MediaType negotiateTypeAsString( List<String> types )
-	{
-		if ( types != null && !types.isEmpty() )
-		{
-			for ( String type : types )
-			{
-				if ( type != null )
-				{
-					switch( type )
-					{
-					case Constants.CT_FHIR_JSON:
-						return MediaType.valueOf( Constants.CT_FHIR_JSON );
-					case Constants.CT_FHIR_JSON_NEW:
-						return MediaType.valueOf( Constants.CT_FHIR_JSON_NEW );
-					case MediaType.APPLICATION_JSON:
-						return MediaType.APPLICATION_JSON_TYPE;
-					case Constants.CT_FHIR_XML:
-						return MediaType.valueOf( Constants.CT_FHIR_XML );
-					case Constants.CT_FHIR_XML_NEW:
-						return MediaType.valueOf( Constants.CT_FHIR_XML_NEW );
-					case MediaType.APPLICATION_XML:
-						return MediaType.APPLICATION_XML_TYPE;
-					}
-				}
-			};
-		}
-
-		return null;
-	}
-	
-	protected static boolean isJsonType( MediaType type )
-	{
-		return type != null && (
-				type.equals( MediaType.valueOf( Constants.CT_FHIR_JSON ) ) ||
-				type.equals( MediaType.valueOf( Constants.CT_FHIR_JSON_NEW ) ) ||
-				type.equals( MediaType.APPLICATION_JSON_TYPE ) );
-	}
-
+		
 	protected static String getContextURL( HttpServletRequest request )
 	{
 		StringBuffer url = request.getRequestURL();
@@ -185,7 +143,7 @@ public class AbstractAuditRecordQueryRS
 	{
 		// depending on the requested type/format
 		// => encode to appropriate response
-		String content = isJsonType(type ) ? 
+		String content = MediaTypeUtils.isJsonType(type ) ? 
 				FhirQueryUtils.encodeToJson( bundle ) : FhirQueryUtils.encodeToXML( bundle );
 
 		if( maxLimit!=null && maxLimit < total )

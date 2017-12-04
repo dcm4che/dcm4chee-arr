@@ -59,6 +59,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dcm4chee.arr.cdi.query.AbstractAuditRecordQueryRS;
+import org.dcm4chee.arr.cdi.query.MediaTypeUtils;
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorator;
 import org.dcm4chee.arr.cdi.query.fhir.FhirBundleLinksDecorator;
 import org.dcm4chee.arr.cdi.query.fhir.FhirBundleLinksDecorator.LinkParam;
@@ -129,7 +130,7 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 					.setHost( SimpleQueryUtils.parseParam("host", host, String.class ) )
 					.setMaxResults(limit);
 			
-			// actually do the query
+			// do the actual query
 			SearchResults<byte[]> results = doRawQuery( queryDecorator );
 			
 			// build the xml document
@@ -184,7 +185,8 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 		try
 		{
 			// negotiate content type
-			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), formats );
+			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), 
+					MediaTypeUtils.toTypeList( formats ) );	
 			
 			// get cached search result
 			IPageableResultsStore resultsStore = resultsStoreProvider.getStore(request);
@@ -244,7 +246,8 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 	@Path( RESOURCE_PATH )
 	@Produces({ 
 		MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML,
-		Constants.CT_FHIR_JSON, Constants.CT_FHIR_XML })
+		Constants.CT_FHIR_JSON, Constants.CT_FHIR_XML,
+		Constants.CT_FHIR_JSON_NEW, Constants.CT_FHIR_XML_NEW})
     public Response search(
     		@Context HttpServletRequest request,
     		@Context HttpHeaders headers,
@@ -266,7 +269,8 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 		try
 		{
 			// negotiate content type
-			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), formats );	
+			MediaType type = negotiateType( headers.getAcceptableMediaTypes(), 
+					MediaTypeUtils.toTypeList( formats ) );	
 			
 			// convert search params into search restrictions
 			IAuditRecordQueryDecorator queryDecorator = new SimpleQueryDecorator()
