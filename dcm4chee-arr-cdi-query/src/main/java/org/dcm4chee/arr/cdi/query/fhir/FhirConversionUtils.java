@@ -41,6 +41,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dcm4chee.arr.entities.ActiveParticipant;
@@ -188,7 +189,7 @@ public class FhirConversionUtils
 		agent.setRequestor( ap.getUserIsRequestor() );
 		
 		AuditEventAgentNetworkComponent network = new AuditEventAgentNetworkComponent();
-		network.setAddress( ap.getNetworkAccessPointID() );
+		network.setAddress( StringUtils.lowerCase( ap.getNetworkAccessPointID(), Locale.getDefault() ) );
 		network.setType( toEnum( ap.getNetworkAccessPointType(), AuditEventAgentNetworkType.class, lenient ) );
 		agent.setNetwork( network );
 		
@@ -202,7 +203,7 @@ public class FhirConversionUtils
 		
 		AuditEventEntityComponent entity = new AuditEventEntityComponent();
 		entity.setIdentifier( idType != null ?
-				toIdentifier( po.getObjectID(), idType.getValue(), idType.getDesignator(), lenient ) :
+				toIdentifier( po.getObjectID(), idType.getValue(), idType.getDesignator(), idType.getMeaning(), lenient ) :
 					toIdentifier( po.getObjectID(), lenient ) );
 		entity.setType( toEnumCoding( po.getObjectType(), AuditEntityType.class, lenient ) );
 		entity.setRole( toEnumCoding( po.getObjectRole(), ObjectRole.class, lenient ) );
@@ -220,6 +221,12 @@ public class FhirConversionUtils
 	}
 	
 	private static Identifier toIdentifier( String id, String typeId, String typeSystem, boolean lenient )
+			throws FhirConversionException
+	{
+		return toIdentifier( id, typeId, typeSystem, null, lenient );
+	}
+	
+	private static Identifier toIdentifier( String id, String typeId, String typeSystem, String typeMeaning, boolean lenient )
 		throws FhirConversionException
 	{
 		if ( id != null )
@@ -230,7 +237,7 @@ public class FhirConversionUtils
 			
 			if ( typeId != null )
 			{
-				identifier.setType( toCodeableConcept( typeSystem, typeId, null) );
+				identifier.setType( toCodeableConcept( typeSystem, typeId, typeMeaning) );
 			}
 			return identifier;
 		}
