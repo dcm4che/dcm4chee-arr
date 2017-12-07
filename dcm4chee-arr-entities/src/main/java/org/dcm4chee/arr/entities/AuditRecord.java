@@ -93,7 +93,7 @@ public class AuditRecord implements Serializable {
     @Column(name = "pk")
     private long pk;
     
-    @ManyToOne( fetch=FetchType.LAZY )
+    @ManyToOne()
     @BatchSize( size=200 )
     @JoinColumn(name = "event_id_fk")
     @Index(name="ar_eventid_fk")
@@ -117,7 +117,7 @@ public class AuditRecord implements Serializable {
     @Index(name = "ar_receive_date_ti")
     private Date receiveDateTime;
     
-    @ManyToOne( fetch=FetchType.LAZY )
+    @ManyToOne()
     @BatchSize( size=200 )
     @JoinColumn(name = "event_type_fk")
     @Index(name="ar_eventtype_fk")
@@ -132,12 +132,12 @@ public class AuditRecord implements Serializable {
     @Column(name = "source_type")
     private int sourceType;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord",targetEntity = ActiveParticipant.class)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord",targetEntity = ActiveParticipant.class, fetch=FetchType.EAGER)
     @Fetch( FetchMode.SELECT )
     @BatchSize( size=200 )
     private Set<ActiveParticipant> activeParticipants;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "auditRecord", fetch=FetchType.EAGER)
     @Fetch( FetchMode.SELECT )
     @BatchSize( size=200 )
     private Set<ParticipantObject> participantObjects;

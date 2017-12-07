@@ -45,7 +45,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.dcm4chee.arr.entities.AuditRecord;
-import org.hibernate.Hibernate;
 
 import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.impl.JPAQuery;
@@ -78,6 +77,7 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     			results.getLimit(), results.getOffset(), results.getTotal() );
 	}
     
+
     @Override
     public SearchResults<AuditRecord> findRecords( IAuditRecordQueryDecorator decorator ) throws Exception
     {
@@ -105,19 +105,11 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
 	    			.join( qAuditRecord.eventType, qEventType );
 
 	    	decorateQuery( query, decorator, false );
-	    	
-	    	List<AuditRecord> result = query.list( qAuditRecord );
-	    	
-	    	for ( AuditRecord r : result )
-	    	{
-	    		Hibernate.initialize( r );
-	    	}
-	    	
-	    	return new SearchResults<>( result, 
+
+	    	return new SearchResults<>( query.list( qAuditRecord ), 
 	    			decorator.getLimit(), null, total );
     	}
-    }
-    
+    }   
     
     private static void decorateQuery( JPAQuery query, IAuditRecordQueryDecorator decorator, boolean forCountQuery )
     {
