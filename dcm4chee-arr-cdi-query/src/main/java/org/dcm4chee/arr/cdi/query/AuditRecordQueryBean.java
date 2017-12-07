@@ -45,6 +45,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.dcm4chee.arr.entities.AuditRecord;
+import org.hibernate.Hibernate;
 
 import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.impl.JPAQuery;
@@ -105,7 +106,14 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
 
 	    	decorateQuery( query, decorator, false );
 	    	
-	    	return new SearchResults<>( query.list( qAuditRecord ), 
+	    	List<AuditRecord> result = query.list( qAuditRecord );
+	    	
+	    	for ( AuditRecord r : result )
+	    	{
+	    		Hibernate.initialize( r );
+	    	}
+	    	
+	    	return new SearchResults<>( result, 
 	    			decorator.getLimit(), null, total );
     	}
     }
