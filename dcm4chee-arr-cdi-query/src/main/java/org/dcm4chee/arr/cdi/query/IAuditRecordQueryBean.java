@@ -64,6 +64,8 @@ public interface IAuditRecordQueryBean
     public static QAuditRecord qAuditRecord = new QAuditRecord("ar");
     public static QCode qEventId = new QCode("eid");
     public static QCode qEventType = new QCode("etype");
+    public static QActiveParticipant qActiveParticipant = new QActiveParticipant("ap");
+    public static QParticipantObject qParticipantObject = new QParticipantObject("po");
 
 	SearchResults<AuditRecord> findRecords( 
 			IAuditRecordQueryDecorator decorator ) throws Exception;
@@ -76,10 +78,16 @@ public interface IAuditRecordQueryBean
         public static QAuditRecord ar = qAuditRecord;
         public static QCode eventId = qEventId;
         public static QCode eventType = qEventType;
-        public static QActiveParticipant ap = new QActiveParticipant("ap");
-        public static QParticipantObject po = new QParticipantObject("po");
+        public static QActiveParticipant ap = qActiveParticipant;
+        public static QParticipantObject po = qParticipantObject;
         
-    	List<Predicate> getPredicates();
+    	List<Predicate> getAllPredicates();
+    	
+    	List<Predicate> getAuditRecordPredicates();
+    	
+    	List<Predicate> getActiveParticipantPredicates();
+    	
+    	List<Predicate> getParticipantObjectPredicates();
 
     	OrderSpecifier<?> getOrderSpecifier();
     	

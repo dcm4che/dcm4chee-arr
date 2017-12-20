@@ -37,6 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.dcm4chee.arr.cdi.query.simple;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -154,13 +155,11 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		super.setMaxResults( maxResults );
 		return this;
 	}
-		
+	
 	@Override
-	public List<Predicate> getPredicates()
+	public List<Predicate> getAuditRecordPredicates()
 	{
-		List<Predicate> predicates = null;
-		List<Predicate> poPredicates = null;
-		List<Predicate> apPredicates = null;
+		List<Predicate> predicates = new ArrayList<>(8);
 
 		// date range
 		if ( dateRange != null )
@@ -200,10 +199,56 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			predicates = addIgnoreNull( predicates, ar.eventAction.in( this.actions ) );
 		}
 
+		return predicates;
+	}
+	
+	@Override
+	public List<Predicate> getActiveParticipantPredicates()
+	{
+		List<Predicate> predicates = null;
+				
+		// user id
+		if ( userId != null )
+		{
+			predicates = addIgnoreNull( predicates,
+					ap.userID.containsIgnoreCase( userId ).or(
+					ap.alternativeUserID.containsIgnoreCase( userId ) ).or( 
+					ap.userName.containsIgnoreCase( userId ) )
+			);
+		}
+
+		// host
+		if ( host != null )
+		{
+			predicates = addIgnoreNull( predicates,
+				ap.networkAccessPointID.containsIgnoreCase( host ).and(
+						ap.networkAccessPointType.notIn( 3, 4, 5 )
+				)
+			);
+		}
+		
+		// aet
+		if ( aet != null )
+		{
+			predicates = addIgnoreNull( predicates, 
+				ap.auditRecord.sourceID.containsIgnoreCase( aet ).or(
+					ap.userID.containsIgnoreCase( aet ) ).or(
+						ap.alternativeUserID.containsIgnoreCase( aet ) )
+			);
+		}
+
+		return predicates;
+	}
+	
+	@Override
+	public List<Predicate> getParticipantObjectPredicates()
+	{
+		List<Predicate> predicates = null;
+
 		// study UID
 		if ( studyUid != null )
 		{
-			poPredicates = addIgnoreNull( poPredicates, 
+			predicates = addIgnoreNull( predicates, 
 				po.objectIDType.value.eq("2").and(
 					po.objectID.eq( studyUid ) 
 				)
@@ -213,7 +258,7 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		// accNr
 		if ( accNr != null )
 		{
-			poPredicates = addIgnoreNull( poPredicates,
+			predicates = addIgnoreNull( predicates,
 				po.objectIDType.value.eq("2") // system object and
 				.and(
 					po.objectRole.isNull().or( // empty or report or resource
@@ -226,61 +271,34 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 				) 
 			);
 		}
-				
-		// user id
-		if ( userId != null )
-		{
-			apPredicates = addIgnoreNull( apPredicates,
-					ap.userID.containsIgnoreCase( userId ).or(
-					ap.alternativeUserID.containsIgnoreCase( userId ) ).or( 
-					ap.userName.containsIgnoreCase( userId ) )
-			);
-		}
-
-		// host
-		if ( host != null )
-		{
-			apPredicates = addIgnoreNull( apPredicates,
-				ap.networkAccessPointID.containsIgnoreCase( host ).and(
-						ap.networkAccessPointType.notIn( 3, 4, 5 )
-				)
-			);
-		}
 
 		// patient id
 		if ( patientId != null )
 		{
-			poPredicates = addIgnoreNull( poPredicates,
+			predicates = addIgnoreNull( predicates,
 				po.objectID.containsIgnoreCase( patientId ).and(
 					po.objectRole.eq(1)
 				)
 			);
 		}
+
+		return predicates;
+	}
 		
-		// aet
-		if ( aet != null )
+	@Override
+	public List<Predicate> getAllPredicates()
+	{
+		List<Predicate> predicates = new ArrayList<>();
+		
+		// add audit-record predicates if present
+		List<Predicate> arPredicates = getAuditRecordPredicates();
+		if ( arPredicates != null )
 		{
-			apPredicates = addIgnoreNull( apPredicates, 
-				ap.auditRecord.sourceID.containsIgnoreCase( aet ).or(
-					ap.userID.containsIgnoreCase( aet ) ).or(
-						ap.alternativeUserID.containsIgnoreCase( aet ) )
-			);
+			predicates.addAll( arPredicates );
 		}
-		
-		// subquery for matching active participants
-		if ( !emptyOrNull( apPredicates ) )
-		{
-			apPredicates.add(0, ap.auditRecord.pk.eq(ar.pk) );
-			predicates = addIgnoreNull( predicates, new JPASubQuery()
-				.from( ap )
-				.join( ap.roleID )
-				.join( ap.auditRecord )
-				.where( apPredicates.toArray(new Predicate[apPredicates.size()] ) )
-				.exists()
-			);
-		}
-		
+
 		// subquery for matching participant objects
+		List<Predicate> poPredicates = getParticipantObjectPredicates();
 		if ( !emptyOrNull( poPredicates ) )
 		{
 			poPredicates.add(0, po.auditRecord.pk.eq(ar.pk) );
@@ -289,6 +307,20 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 				.join( po.objectIDType )
 				.join( po.auditRecord )
 				.where( poPredicates.toArray(new Predicate[poPredicates.size()] ) )
+				.exists()
+			);
+		}
+		
+		// subquery for matching active participants
+		List<Predicate> apPredicates = getActiveParticipantPredicates();
+		if ( !emptyOrNull( apPredicates ) )
+		{
+			apPredicates.add(0, ap.auditRecord.pk.eq(ar.pk) );
+			predicates = addIgnoreNull( predicates, new JPASubQuery()
+				.from( ap )
+				.join( ap.roleID )
+				.join( ap.auditRecord )
+				.where( apPredicates.toArray(new Predicate[apPredicates.size()] ) )
 				.exists()
 			);
 		}

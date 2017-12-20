@@ -37,6 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 package org.dcm4chee.arr.cdi.query.fhir;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -233,11 +234,9 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	}
 	
 	@Override
-	public List<Predicate> getPredicates()
+	public List<Predicate> getAuditRecordPredicates()
 	{
-		List<Predicate> predicates = null;
-		List<Predicate> poPredicates = null;
-		List<Predicate> apPredicates = null;
+		List<Predicate> predicates = new ArrayList<>(8);
 				
 		// date range
 		predicates = addIgnoreNull( predicates, toExpression( ar.eventDateTime, dateRange ) );
@@ -253,39 +252,69 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 				
 		// sources
 		predicates = addIgnoreNull( predicates, toExpression( ar.sourceID, sources ) );
+						
+		return predicates;
+	}
+	
+	@Override
+	public List<Predicate> getActiveParticipantPredicates()
+	{
+		List<Predicate> predicates = null;
 				
 		// addresses
-		apPredicates = addIgnoreNull( apPredicates, toExpression( ap.networkAccessPointID, addresses ) );
+		predicates = addIgnoreNull( predicates, toExpression( ap.networkAccessPointID, addresses ) );
 		
 		// patient identifiers (as specified in IHE ITI Add Restful Query to ATNA, Rev. 2.2 Trial Implementation, line 592)
-		//apPredicates = addIgnoreNull( apPredicates, toExpression( ap.userID, patientIdentifiers ) );
-		
-		
+		//predicates = addIgnoreNull( predicates, toExpression( ap.userID, patientIdentifiers ) );
+
+		// users
+		predicates = addIgnoreNull( predicates, toExpression( ap.userID, users ) );
+				
+		return predicates;
+	}
+	
+	@Override
+	public List<Predicate> getParticipantObjectPredicates()
+	{
+		List<Predicate> predicates = null;
+					
 		BooleanExpression patE = toExpression( po.objectID, patientIdentifiers );
 		if ( patE != null )
 		{
-			poPredicates = addIgnoreNull( poPredicates,
+			predicates = addIgnoreNull( predicates,
 					patE.andAnyOf(
 						po.objectIDType.value.eq("1"),
 						po.objectRole.eq(1)
 					)
 				);
 		}
-		
-		
-		// users
-		apPredicates = addIgnoreNull( apPredicates, toExpression( ap.userID, users ) );
-		
+
 		// entity id
-		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectID, entityIdentities ) );
+		predicates = addIgnoreNull( predicates, toExpression( po.objectID, entityIdentities ) );
 		
 		// entity types
-		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectIDType, entityTypes ) );
+		predicates = addIgnoreNull( predicates, toExpression( po.objectIDType, entityTypes ) );
 		
 		// entity roles
-		poPredicates = addIgnoreNull( poPredicates, toExpression( po.objectRole, entityRoles ) );
+		predicates = addIgnoreNull( predicates, toExpression( po.objectRole, entityRoles ) );
 		
+		return predicates;
+	}
+	
+	@Override
+	public List<Predicate> getAllPredicates()
+	{
+		List<Predicate> predicates = new ArrayList<>();
+		
+		// add audit-record precidates if present
+		List<Predicate> arPredicates = getAuditRecordPredicates();
+		if ( arPredicates != null )
+		{
+			predicates.addAll( arPredicates );
+		}
+
 		// subquery for matching active participants
+		List<Predicate> apPredicates = getActiveParticipantPredicates();
 		if ( !emptyOrNull( apPredicates ) )
 		{
 			apPredicates.add(0, ap.auditRecord.pk.eq(ar.pk) );
@@ -298,6 +327,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 		}
 		
 		// subquery for matching participant objects
+		List<Predicate> poPredicates = getParticipantObjectPredicates();
 		if ( !emptyOrNull( poPredicates ) )
 		{
 			poPredicates.add(0, po.auditRecord.pk.eq(ar.pk) );

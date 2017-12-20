@@ -113,11 +113,37 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     
     private static void decorateQuery( JPAQuery query, IAuditRecordQueryDecorator decorator, boolean forCountQuery )
     {
-    	// restrictions
-    	List<Predicate> predicates = decorator.getPredicates();
-    	if ( predicates != null && !predicates.isEmpty() )
+    	// predicates
+    	if ( forCountQuery )
     	{
-    		query.where( predicates.toArray( new Predicate[predicates.size()] ) );
+    		//simplified count query without sub-selects but inner joins
+    		List<Predicate> predicates = decorator.getAuditRecordPredicates();
+    		List<Predicate> apPredicates = decorator.getActiveParticipantPredicates();
+    		if ( apPredicates != null && !apPredicates.isEmpty() )
+    		{
+    			query.join( qAuditRecord.activeParticipants, qActiveParticipant );
+    			predicates.addAll( apPredicates );
+    		}
+    		
+    		List<Predicate> poPredicates = decorator.getParticipantObjectPredicates();
+    		if ( poPredicates != null && !poPredicates.isEmpty() )
+    		{
+    			query.join( qAuditRecord.participantObjects, qParticipantObject );
+    			predicates.addAll( poPredicates );
+    		}
+    		
+    		if ( !predicates.isEmpty() )
+    		{
+    			query.where( predicates.toArray( new Predicate[predicates.size()] ) );
+    		}
+    	}
+    	else
+    	{
+	    	List<Predicate> predicates = decorator.getAllPredicates();
+	    	if ( predicates != null && !predicates.isEmpty() )
+	    	{
+	    		query.where( predicates.toArray( new Predicate[predicates.size()] ) );
+	    	}
     	}
     	
     	if ( !forCountQuery )
