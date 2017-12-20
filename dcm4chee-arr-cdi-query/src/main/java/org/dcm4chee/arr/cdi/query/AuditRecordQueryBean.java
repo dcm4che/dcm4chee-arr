@@ -45,6 +45,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.dcm4chee.arr.entities.AuditRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.impl.JPAQuery;
@@ -57,6 +59,7 @@ import com.mysema.query.types.Predicate;
  */
 public class AuditRecordQueryBean implements IAuditRecordQueryBean
 {
+	private static final Logger LOG = LoggerFactory.getLogger(AuditRecordQueryBean.class);
 
     @PersistenceContext(unitName="dcm4chee-arr")
     private EntityManager em;
@@ -81,6 +84,8 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     @Override
     public SearchResults<AuditRecord> findRecords( IAuditRecordQueryDecorator decorator ) throws Exception
     {
+    	long time = System.currentTimeMillis();
+    	
     	JPAQuery countQuery = new JPAQuery(em)
       			.from( qAuditRecord )
     			.join( qAuditRecord.eventID, qEventId )  			
@@ -91,6 +96,8 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	Long maxLimit = decorator.getMaxLimit();
     	
     	long total = countQuery.count();
+    	
+    	LOG.debug( String.format( "ARR query API: count() query took %s ms", System.currentTimeMillis()-time ) );
     	
     	if ( maxLimit != null && total > maxLimit )
     	{
@@ -106,7 +113,13 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
 
 	    	decorateQuery( query, decorator, false );
 
-	    	return new SearchResults<>( query.list( qAuditRecord ), 
+	    	time = System.currentTimeMillis();
+	    	
+	    	List<AuditRecord> records = query.list( qAuditRecord );
+	    	
+	    	LOG.debug( String.format( "ARR query API: record query took %s ms", System.currentTimeMillis()-time ) );
+	    	
+	    	return new SearchResults<>( records, 
 	    			decorator.getLimit(), null, total );
     	}
     }   

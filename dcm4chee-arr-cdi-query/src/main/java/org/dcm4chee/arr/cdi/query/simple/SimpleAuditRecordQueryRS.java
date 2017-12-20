@@ -59,6 +59,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.dcm4chee.arr.cdi.query.AbstractAuditRecordQueryRS;
+import org.dcm4chee.arr.cdi.query.AuditRecordQueryBean;
 import org.dcm4chee.arr.cdi.query.MediaTypeUtils;
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.IAuditRecordQueryDecorator;
 import org.dcm4chee.arr.cdi.query.fhir.FhirBundleLinksDecorator;
@@ -74,6 +75,8 @@ import org.dcm4chee.arr.cdi.query.utils.XSLTUtils;
 import org.dcm4chee.arr.entities.AuditRecord;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mysema.query.SearchResults;
 
@@ -85,7 +88,8 @@ import ca.uhn.fhir.rest.server.Constants;
 @RequestScoped
 public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 {	
-	
+	private static final Logger LOG = LoggerFactory.getLogger(SimpleAuditRecordQueryRS.class);
+
 	private static final String RESOURCE_PATH = "AuditMessage"; //$NON-NLS-1$
 	private static final String RAW_RESOURCE_PATH = "raw/AuditMessage"; //$NON-NLS-1$
 	
@@ -328,11 +332,15 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			}
 			else
 			{
+				long time = System.currentTimeMillis();
+				
 				// create bundle with all results
 				bundle = FhirConversionUtils.toBundle( 
 						BundleType.SEARCHSET, results, 
 						contextURL,
 						true );
+				
+				LOG.debug( String.format( "ARR query API: Format conversion took %s ms", System.currentTimeMillis()-time ) );
 			}
 
 			// encode to appropriate response
