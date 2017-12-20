@@ -61,7 +61,7 @@ public abstract class FhirQueryParam<T>
 {
 	
 	public static FhirQueryParamAnd<DateParam, DateRangeParam> Date =
-			new FhirQueryParamAnd<>( DateRangeParam.class, "date" );
+			new FhirQueryParamAnd<>( DateRangeParam.class, "date", true );
 	
 	public static FhirQueryParamOr<StringParam, StringOrListParam> Address = 
 			new FhirQueryParamOr<>( StringOrListParam.class, "address" );
