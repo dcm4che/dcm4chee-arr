@@ -298,6 +298,8 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			String contextURL = getContextURL( request );
 			Bundle bundle = null;
 			
+			long time = System.currentTimeMillis();
+			
 			// if a 'page-size' was requested and the result contains at least one entry
 			if ( count != null && count > 0 && results.getResults().size()>0 )
 			{
@@ -332,16 +334,15 @@ public class SimpleAuditRecordQueryRS extends AbstractAuditRecordQueryRS
 			}
 			else
 			{
-				long time = System.currentTimeMillis();
-				
 				// create bundle with all results
 				bundle = FhirConversionUtils.toBundle( 
 						BundleType.SEARCHSET, results, 
 						contextURL,
 						true );
-				
-				LOG.debug( String.format( "ARR query API: Format conversion took %s ms", System.currentTimeMillis()-time ) );
 			}
+			
+			
+			LOG.debug( String.format( "ARR query API: JSON format rendering took %s ms", System.currentTimeMillis()-time ) );
 
 			// encode to appropriate response
 			return toResponse( bundle, type, results.getTotal(), results.getLimit() );
