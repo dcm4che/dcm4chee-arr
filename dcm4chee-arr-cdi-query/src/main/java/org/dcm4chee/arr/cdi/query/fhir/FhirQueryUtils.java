@@ -121,7 +121,7 @@ public class FhirQueryUtils
 		if ( param.contains( SEARCH_MODIFIER_DELIMITER ) )
 		{
 			return param.substring( 
-					param.lastIndexOf( SEARCH_MODIFIER_DELIMITER) + 1 );
+					param.lastIndexOf( SEARCH_MODIFIER_DELIMITER) ); // ':' inclusive!
 		}
 		return null;
 	}
