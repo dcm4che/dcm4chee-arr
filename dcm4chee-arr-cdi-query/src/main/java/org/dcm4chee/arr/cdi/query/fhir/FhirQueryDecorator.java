@@ -40,6 +40,7 @@ package org.dcm4chee.arr.cdi.query.fhir;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.AbstractAuditRecordQueryDecorator;
 import org.dcm4chee.arr.cdi.query.utils.QueryUtils;
@@ -403,7 +404,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 				}
 			}
 			
-			if ( start!=null && end!=null )
+			if ( start!=null && end!=null && !Objects.equals( start.getValue(), end.getValue() ) )
 			{
 				return toExpression( path, start ).and( toExpression( path, end ) );
 			}

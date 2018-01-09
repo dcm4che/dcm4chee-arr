@@ -43,15 +43,19 @@ import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.IQueryParameterAnd;
 import ca.uhn.fhir.model.api.IQueryParameterOr;
 import ca.uhn.fhir.model.api.IQueryParameterType;
+import ca.uhn.fhir.rest.method.QualifiedParamList;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.DateRangeParam;
+import ca.uhn.fhir.rest.param.ParamPrefixEnum;
 import ca.uhn.fhir.rest.param.StringOrListParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
+import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 
 /**
  * 
@@ -60,8 +64,8 @@ import ca.uhn.fhir.rest.param.TokenParam;
 public abstract class FhirQueryParam<T>
 {
 	
-	public static FhirQueryParamAnd<DateParam, DateRangeParam> Date =
-			new FhirQueryParamAnd<>( DateRangeParam.class, "date", true );
+	public static FhirQueryParamAnd<DateParam, FixedDateRangeParam> Date =
+			new FhirQueryParamAnd<>( FixedDateRangeParam.class, "date", true );
 	
 	public static FhirQueryParamOr<StringParam, StringOrListParam> Address = 
 			new FhirQueryParamOr<>( StringOrListParam.class, "address" );
@@ -307,6 +311,90 @@ public abstract class FhirQueryParam<T>
 					.append( "Failed to parse FHIR search parameter ")
 					.append( param.getParamName() )
 					.toString();
+		}
+	}
+
+	
+	@SuppressWarnings("serial")
+	public static class FixedDateRangeParam extends DateRangeParam
+	{
+		@Override
+		public void setValuesAsQueryTokens(FhirContext theContext, String theParamName, List<QualifiedParamList> theParameters) throws InvalidRequestException {
+
+			boolean haveHadUnqualifiedParameter = false;
+			for (QualifiedParamList paramList : theParameters) {
+				if (paramList.size() == 0) {
+					continue;
+				}
+				if (paramList.size() > 1) {
+					throw new InvalidRequestException("DateRange parameter does not suppport OR queries");
+				}
+				String param = paramList.get(0);
+				
+				/*
+				 * Since ' ' is escaped as '+' we'll be nice to anyone might have accidentally not
+				 * escaped theirs
+				 */
+				param = param.replace(' ', '+');
+				
+				DateParam parsed = new DateParam();
+				parsed.setValueAsQueryToken(theContext, theParamName, paramList.getQualifier(), param);
+				addParam(parsed);
+
+				if (parsed.getPrefix() == null) {
+					if (haveHadUnqualifiedParameter) {
+						throw new InvalidRequestException("Multiple date parameters with the same name and no qualifier (>, <, etc.) is not supported");
+					}
+					haveHadUnqualifiedParameter = true;
+				}
+
+			}
+		}
+		
+		private void addParam(DateParam theParsed) throws InvalidRequestException {
+			DateParam myLowerBound = getLowerBound();
+			DateParam myUpperBound = getUpperBound();
+			if (theParsed.getPrefix() == null || theParsed.getPrefix() == ParamPrefixEnum.EQUAL || theParsed.getPrefix() == ParamPrefixEnum.NOT_EQUAL ) {
+				if (myLowerBound != null || myUpperBound != null) {
+					throw new InvalidRequestException("Can not have multiple date range parameters for the same param without a qualifier");
+				}
+
+				if (theParsed.getMissing() != null) {
+					setLowerBound( theParsed );
+					setUpperBound( theParsed );
+				}
+				else if ( theParsed.getPrefix() == ParamPrefixEnum.NOT_EQUAL )
+				{
+					setLowerBound( new DateParam(ParamPrefixEnum.NOT_EQUAL, theParsed.getValueAsString()) );
+					setUpperBound( new DateParam(ParamPrefixEnum.NOT_EQUAL, theParsed.getValueAsString()) );
+				}
+				else {
+					setLowerBound( new DateParam(ParamPrefixEnum.EQUAL, theParsed.getValueAsString()) );
+					setUpperBound( new DateParam(ParamPrefixEnum.EQUAL, theParsed.getValueAsString()) );
+				}
+				
+			} else {
+
+				switch (theParsed.getPrefix()) {
+				case GREATERTHAN:
+				case GREATERTHAN_OR_EQUALS:
+					if (myLowerBound != null) {
+						throw new InvalidRequestException("Can not have multiple date range parameters for the same param that specify a lower bound");
+					}
+					myLowerBound = theParsed;
+					break;
+				case LESSTHAN:
+				case LESSTHAN_OR_EQUALS:
+					if (myUpperBound != null) {
+						throw new InvalidRequestException("Can not have multiple date range parameters for the same param that specify an upper bound");
+					}
+					myUpperBound = theParsed;
+					break;
+				default:
+					throw new InvalidRequestException("Unknown comparator: " + theParsed.getPrefix());
+				}
+
+			}
 		}
 	}
 }
