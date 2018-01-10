@@ -321,8 +321,8 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 			apPredicates.add(0, ap.auditRecord.pk.eq(ar.pk) );
 			predicates = addIgnoreNull( predicates, new JPASubQuery()
 				.from( ap )
-				.join( ap.roleID )
 				.join( ap.auditRecord )
+				.leftJoin( ap.roleID )
 				.where( apPredicates.toArray(new Predicate[apPredicates.size()] ) )
 				.exists() );
 		}
@@ -334,8 +334,8 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 			poPredicates.add(0, po.auditRecord.pk.eq(ar.pk) );
 			predicates = addIgnoreNull( predicates, new JPASubQuery()
 				.from( po )
-				.join( po.objectIDType )
 				.join( po.auditRecord )
+				.leftJoin( po.objectIDType )
 				.where( poPredicates.toArray(new Predicate[poPredicates.size()] ) )
 				.exists() );
 		}
@@ -450,8 +450,16 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 				BooleanExpression e = null;
 				for ( TokenParam p : params )
 				{
-					e = ( e == null ) ? e = toExpression( path, p ) :
-						e.or( toExpression( path, p ) );
+					if ( e == null )
+					{
+						 e = toExpression( path, p );
+					}
+					else
+					{
+						e = p.getModifier() == TokenParamModifier.NOT ?
+								e.and( toExpression( path, p ) ) :
+									e.or( toExpression(path, p) );
+					}
 				}
 				return e;
 			}
@@ -463,14 +471,23 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	{
 		if ( param != null )
 		{
+			
 			List<TokenParam> params = param.getValuesAsQueryTokens();
 			if ( params != null )
 			{
 				BooleanExpression e = null;
 				for ( TokenParam p : params )
 				{
-					e = ( e == null ) ? e = toExpression( path, p ) :
-						e.or( toExpression( path, p ) );
+					if ( e == null )
+					{
+						 e = toExpression( path, p );
+					}
+					else
+					{
+						e = p.getModifier() == TokenParamModifier.NOT ?
+								e.and( toExpression( path, p ) ) :
+									e.or( toExpression(path, p) );
+					}
 				}
 				return e;
 			}
@@ -488,8 +505,16 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 				BooleanExpression e = null;
 				for ( TokenParam p : params )
 				{
-					e = ( e == null ) ? e = toExpression( path, p ) :
-						e.or( toExpression( path, p ) );
+					if ( e == null )
+					{
+						 e = toExpression( path, p );
+					}
+					else
+					{
+						e = p.getModifier() == TokenParamModifier.NOT ?
+								e.and( toExpression( path, p ) ) :
+									e.or( toExpression(path, p) );
+					}
 				}
 				return e;
 			}
@@ -543,8 +568,8 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 			{
 				switch( modifier )
 				{
-				case NOT: e = e.not();
-				case TEXT: e = path.equalsIgnoreCase( param.getValue() );
+				case NOT: e = e.not(); break;
+				case TEXT: e = path.equalsIgnoreCase( param.getValue() ); break;
 				// not supported
 				case IN:
 				case NOT_IN:
@@ -584,10 +609,10 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 			{
 				switch( modifier )
 				{
-				case NOT: e = e.not();
-				case TEXT: e = path.value.equalsIgnoreCase( param.getValue() );
-				case IN: e = path.designator.equalsIgnoreCase( param.getValue() );
-				case NOT_IN: e = path.designator.notEqualsIgnoreCase( param.getValue() );
+				case NOT: e = e.not(); break;
+				case TEXT: e = path.value.equalsIgnoreCase( param.getValue() ); break;
+				case IN: e = path.designator.equalsIgnoreCase( param.getValue() ); break;
+				case NOT_IN: e = path.designator.notEqualsIgnoreCase( param.getValue() ); break;
 				case ABOVE: // TODO: where's the difference?
 				case BELOW: 
 					e = path.designator.equalsIgnoreCase( param.getSystem() );
@@ -632,7 +657,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 			{
 				switch( modifier )
 				{
-				case NOT: e = e.not();
+				case NOT: e = e.not(); break;
 				// not supported
 				case TEXT:
 				case IN:

@@ -304,8 +304,8 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			poPredicates.add(0, po.auditRecord.pk.eq(ar.pk) );
 			predicates = addIgnoreNull( predicates, new JPASubQuery()
 				.from( po )
-				.join( po.objectIDType )
 				.join( po.auditRecord )
+				.leftJoin( po.objectIDType )
 				.where( poPredicates.toArray(new Predicate[poPredicates.size()] ) )
 				.exists()
 			);
@@ -318,8 +318,8 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			apPredicates.add(0, ap.auditRecord.pk.eq(ar.pk) );
 			predicates = addIgnoreNull( predicates, new JPASubQuery()
 				.from( ap )
-				.join( ap.roleID )
 				.join( ap.auditRecord )
+				.leftJoin( ap.roleID )
 				.where( apPredicates.toArray(new Predicate[apPredicates.size()] ) )
 				.exists()
 			);
