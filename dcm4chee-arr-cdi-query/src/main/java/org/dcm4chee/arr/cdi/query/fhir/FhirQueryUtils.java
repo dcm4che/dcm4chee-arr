@@ -42,6 +42,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -88,7 +89,16 @@ public class FhirQueryUtils
 	{
 		QualifiedParamList paramList = new QualifiedParamList(); 
 		paramList.setQualifier( paramModifier );
-		paramValues.forEach( value -> paramList.add(value) );
+		paramValues.forEach( value -> {
+			String[] values = StringUtils.split(value, ',');
+			if ( values != null )
+			{
+				for( String v : values )
+				{
+					paramList.add(v);
+				}
+			}
+		} );
 		
 		T params = paramsType.newInstance();
 		params.setValuesAsQueryTokens(FHIR_CONTEXT, paramName, paramList );
