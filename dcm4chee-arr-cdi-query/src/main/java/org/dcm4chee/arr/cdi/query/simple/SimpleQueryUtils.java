@@ -467,7 +467,7 @@ public class SimpleQueryUtils
 	}
 
 	@SuppressWarnings("serial")
-	public static class SearchParamParseException extends Exception
+	public static class SearchParamParseException extends RuntimeException
 	{
 		private final String param;
 		

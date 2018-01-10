@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.dcm4chee.arr.cdi.query.IAuditRecordQueryBean.AbstractAuditRecordQueryDecorator;
+import org.dcm4chee.arr.cdi.query.simple.SimpleQueryUtils.SearchParamParseException;
 import org.dcm4chee.arr.cdi.query.utils.QueryUtils;
 import org.dcm4chee.arr.cdi.query.utils.QueryUtils.TemporalPrecision;
 import org.dcm4chee.arr.entities.QCode;
@@ -649,7 +650,8 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 				catch ( NumberFormatException ex )
 				{
 					LOG.warn( "Unable to process FHIR query parameter: Bad value (integer value expected)");
-					return null;
+					
+					throw new SearchParamParseException( "Unable to process FHIR query parameter: Bad value (integer value expected)" );
 				}
 			}
 			

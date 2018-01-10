@@ -43,6 +43,8 @@ import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.IQueryParameterAnd;
 import ca.uhn.fhir.model.api.IQueryParameterOr;
@@ -209,7 +211,7 @@ public abstract class FhirQueryParam<T>
 						return FhirQueryUtils.parseSearchParamsOR( fhirParamType,
 								name, 
 								FhirQueryUtils.parseSearchParamModifier(param),
-								entry.getValue() );
+								entry.getValue());
 					}
 					catch ( Exception e )
 					{
@@ -339,6 +341,12 @@ public abstract class FhirQueryParam<T>
 				
 				DateParam parsed = new DateParam();
 				parsed.setValueAsQueryToken(theContext, theParamName, paramList.getQualifier(), param);
+				
+				if ( parsed.getValue() == null )
+				{
+					throw new InvalidRequestException( "Date parameter is invalid or empty" );
+				}
+				
 				addParam(parsed);
 
 				if (parsed.getPrefix() == null) {
