@@ -88,8 +88,8 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	
     	JPAQuery countQuery = new JPAQuery(em)
       			.from( qAuditRecord )
-    			.join( qAuditRecord.eventID, qEventId )  			
-    			.join( qAuditRecord.eventType, qEventType );
+    			.leftJoin( qAuditRecord.eventID, qEventId )  			
+    			.leftJoin( qAuditRecord.eventType, qEventType );
     	
     	decorateQuery( countQuery, decorator, true );
     	
@@ -108,8 +108,8 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	{
 	    	JPAQuery query = new JPAQuery(em)
 	      			.from( qAuditRecord )
-	    			.join( qAuditRecord.eventID, qEventId )		
-	    			.join( qAuditRecord.eventType, qEventType );
+	    			.leftJoin( qAuditRecord.eventID, qEventId )		
+	    			.leftJoin( qAuditRecord.eventType, qEventType );
 
 	    	decorateQuery( query, decorator, false );
 
