@@ -236,6 +236,18 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	}
 	
 	@Override
+	public Predicate getEventTypePredicate()
+	{
+		return toExpression( ar.eventType, subtypes );
+	}
+	
+	@Override
+	public Predicate getEventIDPredicate()
+	{
+		return toExpression( ar.eventType, types );
+	}
+	
+	@Override
 	public List<Predicate> getAuditRecordPredicates()
 	{
 		List<Predicate> predicates = new ArrayList<>(8);

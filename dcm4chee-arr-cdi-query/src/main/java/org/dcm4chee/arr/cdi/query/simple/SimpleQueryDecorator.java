@@ -155,6 +155,18 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		super.setMaxResults( maxResults );
 		return this;
 	}
+		
+	@Override
+	public Predicate getEventTypePredicate()
+	{
+		return toExpression( ar.eventType, subtypes );
+	}
+	
+	@Override
+	public Predicate getEventIDPredicate()
+	{
+		return toExpression( ar.eventType, types );
+	}
 	
 	@Override
 	public List<Predicate> getAuditRecordPredicates()

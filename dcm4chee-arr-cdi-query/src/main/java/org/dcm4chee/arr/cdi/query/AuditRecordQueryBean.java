@@ -87,9 +87,8 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	long time = System.currentTimeMillis();
     	
     	JPAQuery countQuery = new JPAQuery(em)
-      			.from( qAuditRecord )
-    			.leftJoin( qAuditRecord.eventID, qEventId )  			
-    			.leftJoin( qAuditRecord.eventType, qEventType );
+    			.distinct()
+      			.from( qAuditRecord );
     	
     	decorateQuery( countQuery, decorator, true );
     	
@@ -107,9 +106,7 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	else
     	{
 	    	JPAQuery query = new JPAQuery(em)
-	      			.from( qAuditRecord )
-	    			.leftJoin( qAuditRecord.eventID, qEventId )		
-	    			.leftJoin( qAuditRecord.eventType, qEventType );
+	      			.from( qAuditRecord );
 
 	    	decorateQuery( query, decorator, false );
 
@@ -126,6 +123,17 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     
     private static void decorateQuery( JPAQuery query, IAuditRecordQueryDecorator decorator, boolean forCountQuery )
     {
+    	// just join if necessary
+    	if ( decorator.getEventIDPredicate() != null )
+    	{
+    		query.join(qAuditRecord.eventID, qEventId);
+    	}
+    	
+    	if ( decorator.getEventTypePredicate() != null )
+    	{
+    		query.join(qAuditRecord.eventType, qEventType);
+    	}
+    	
     	// predicates
     	if ( forCountQuery )
     	{

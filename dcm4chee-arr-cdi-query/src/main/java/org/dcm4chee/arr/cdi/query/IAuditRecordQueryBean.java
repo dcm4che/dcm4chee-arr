@@ -88,6 +88,10 @@ public interface IAuditRecordQueryBean
     	List<Predicate> getActiveParticipantPredicates();
     	
     	List<Predicate> getParticipantObjectPredicates();
+    	
+    	Predicate getEventTypePredicate();
+    	
+    	Predicate getEventIDPredicate();
 
     	OrderSpecifier<?> getOrderSpecifier();
     	
