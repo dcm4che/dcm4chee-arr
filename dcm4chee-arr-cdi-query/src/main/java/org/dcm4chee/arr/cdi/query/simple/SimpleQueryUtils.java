@@ -304,6 +304,12 @@ public class SimpleQueryUtils
 						validateLengthIsAtLeast(value, 17);
 						validateCharAtIndexIs(value, 10, 'T'); // yyyy-mm-ddThh:mm:ss
 						
+						/*
+						 * Since ' ' is escaped as '+' we'll be nice to anyone might have accidentally not
+						 * escaped theirs
+						 */
+						value = value.replace(' ', '+');
+						
 						int offsetIdx = getOffsetIndex(value);
 						if (offsetIdx != -1) 
 						{
