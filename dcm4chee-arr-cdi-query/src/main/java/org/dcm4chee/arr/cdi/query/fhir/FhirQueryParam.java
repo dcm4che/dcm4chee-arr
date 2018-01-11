@@ -43,8 +43,6 @@ import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.StringUtils;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.IQueryParameterAnd;
 import ca.uhn.fhir.model.api.IQueryParameterOr;
@@ -389,14 +387,14 @@ public abstract class FhirQueryParam<T>
 					if (myLowerBound != null) {
 						throw new InvalidRequestException("Can not have multiple date range parameters for the same param that specify a lower bound");
 					}
-					myLowerBound = theParsed;
+					setLowerBound( theParsed );
 					break;
 				case LESSTHAN:
 				case LESSTHAN_OR_EQUALS:
 					if (myUpperBound != null) {
 						throw new InvalidRequestException("Can not have multiple date range parameters for the same param that specify an upper bound");
 					}
-					myUpperBound = theParsed;
+					setUpperBound( theParsed );
 					break;
 				default:
 					throw new InvalidRequestException("Unknown comparator: " + theParsed.getPrefix());
