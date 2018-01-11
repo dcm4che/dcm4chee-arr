@@ -417,7 +417,8 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 				}
 			}
 			
-			if ( start!=null && end!=null && !Objects.equals( start.getValue(), end.getValue() ) )
+			if ( start!=null && end!=null && ( !Objects.equals( start.getValue(), end.getValue() ) || 
+					!Objects.equals(start.getPrefix(), end.getPrefix()) ) )
 			{
 				return toExpression( path, start ).and( toExpression( path, end ) );
 			}
