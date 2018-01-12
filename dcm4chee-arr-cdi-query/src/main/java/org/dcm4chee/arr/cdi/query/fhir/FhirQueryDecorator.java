@@ -377,8 +377,8 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 		switch( prefix )
 		{
 			case APPROXIMATE: /* fall through */
-			case EQUAL: return path.eq( date.getValue() ); 
-			case NOT_EQUAL: return path.ne( date.getValue() );
+			case EQUAL: return path.goe( lowerBound ).and( path.loe( upperBound ) ); 
+			case NOT_EQUAL: return path.lt( lowerBound ).or( path.gt( upperBound ) );
 			
 			case STARTS_AFTER: /* fall through */
 			case GREATERTHAN: return path.gt( upperBound );
@@ -398,24 +398,6 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 		{
 			DateParam start = param.getLowerBound();
 			DateParam end = param.getUpperBound();
-
-			if ( start != null )
-			{
-				ParamPrefixEnum prefix = start.getPrefix();
-				if (prefix == null || ( end != null && prefix == ParamPrefixEnum.EQUAL ) )
-				{
-					start.setPrefix( ParamPrefixEnum.GREATERTHAN_OR_EQUALS );
-				}
-			}
-			
-			if ( end != null )
-			{
-				ParamPrefixEnum prefix = end.getPrefix();
-				if ( prefix == null || ( start != null && prefix == ParamPrefixEnum.EQUAL) )
-				{
-					end.setPrefix( ParamPrefixEnum.LESSTHAN_OR_EQUALS );
-				}
-			}
 			
 			if ( start!=null && end!=null && ( !Objects.equals( start.getValue(), end.getValue() ) || 
 					!Objects.equals(start.getPrefix(), end.getPrefix()) ) )
