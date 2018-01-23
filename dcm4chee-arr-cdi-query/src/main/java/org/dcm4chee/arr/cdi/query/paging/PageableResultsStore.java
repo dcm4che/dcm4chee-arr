@@ -75,7 +75,7 @@ public class PageableResultsStore implements IPageableResultsStore
 	public <T> PageableResults<T> getResults( String id, Class<T> parameterizedType )
 	{
 		PageableResults<?> results = getResults(id);
-		if ( parameterizedType.isAssignableFrom( results.getParameterizedType() ) )
+		if ( results!=null && parameterizedType.isAssignableFrom( results.getParameterizedType() ) )
 		{
 			return (PageableResults<T>) results;
 		}
