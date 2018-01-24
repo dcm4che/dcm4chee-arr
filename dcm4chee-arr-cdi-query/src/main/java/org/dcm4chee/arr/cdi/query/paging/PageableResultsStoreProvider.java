@@ -48,7 +48,7 @@ public class PageableResultsStoreProvider
 			PageableResultsStore store = (PageableResultsStore) session.getAttribute(RESULTS_SESSION_KEY);
 			if ( store == null )
 			{
-				store = new PageableResultsStore( 3 );
+				store = new PageableResultsStore( 1 );
 				session.setAttribute( RESULTS_SESSION_KEY, store );
 			}
 			return store;
