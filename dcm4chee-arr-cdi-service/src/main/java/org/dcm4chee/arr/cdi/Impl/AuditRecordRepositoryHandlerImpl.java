@@ -49,12 +49,12 @@ public class AuditRecordRepositoryHandlerImpl implements AuditRecordHandler {
     private QueueConnection connJMS;
     
     private Queue queue;
-    
-    private QueueSession session;
-    
-    private QueueSender sender;
 
-    /**
+	private ThreadLocal<QueueSession> session = new ThreadLocal();
+
+	private ThreadLocal<QueueSender> sender = new ThreadLocal();
+
+	/**
      * closeJMS
      * Closes jms connection and session.
      */
@@ -78,13 +78,21 @@ public class AuditRecordRepositoryHandlerImpl implements AuditRecordHandler {
      *             the exception
      */
     protected synchronized void initJMS() throws Exception {
-	InitialContext jndiCtx = new InitialContext();
-	connFactory = (QueueConnectionFactory) jndiCtx.lookup(QUEUE_FACTORY);
-	queue = (Queue) jndiCtx.lookup(QUEUE);
-	connJMS = connFactory.createQueueConnection();
-	session = connJMS.createQueueSession(false,
-		QueueSession.AUTO_ACKNOWLEDGE);
-	sender = session.createSender(queue);
+    	if (connJMS == null)
+		{
+			InitialContext jndiCtx = new InitialContext();
+			connFactory = (QueueConnectionFactory)jndiCtx.lookup( QUEUE_FACTORY );
+			queue = (Queue)jndiCtx.lookup( QUEUE );
+			connJMS = connFactory.createQueueConnection();
+			log.info("initialized jms queue");
+		}
+
+		if (session.get() == null)
+		{
+			session.set( connJMS.createQueueSession( false, QueueSession.AUTO_ACKNOWLEDGE ) );
+			sender.set(session.get().createSender(queue));
+			log.info("initialized jms session for thread {}", Thread.currentThread().getId());
+		}
     }
 
     /**
@@ -101,10 +109,7 @@ public class AuditRecordRepositoryHandlerImpl implements AuditRecordHandler {
 	}
 
 	try {
-	    if (connJMS == null) {
 		initJMS();
-		log.info("initialized jms");
-	    }
 	    sendMessage(data, xmlOffset, xmlLength, from);
 	} catch (Exception e) {
 
@@ -130,13 +135,13 @@ public class AuditRecordRepositoryHandlerImpl implements AuditRecordHandler {
 	    InetAddress from) {
 	for (int i = 0; i < JMS_RETRY_COUNT; i++) {
 	    try {
-		BytesMessage msg = session.createBytesMessage();
+		BytesMessage msg = session.get().createBytesMessage();
 		msg.setStringProperty("sourceHostAddress",
 			from.getHostAddress());
 
 		msg.setStringProperty("sourceHostName", "unknown");
 		msg.writeBytes(data, off, length);
-		sender.send(msg);
+		sender.get().send(msg);
 		return;
 	    } catch (javax.jms.IllegalStateException e) {
 		// typically caused by "session.createBytesMessage"
