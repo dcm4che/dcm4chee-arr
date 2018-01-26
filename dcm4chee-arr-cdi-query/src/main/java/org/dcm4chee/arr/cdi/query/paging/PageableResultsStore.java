@@ -57,7 +57,7 @@ public class PageableResultsStore implements IPageableResultsStore
 			@Override
 			protected boolean removeEldestEntry(Map.Entry<String, PageableResults<?>> eldest) 
 			{
-				if ( size() >= PageableResultsStore.this.maxCacheSize )
+				if ( size() > PageableResultsStore.this.maxCacheSize )
 				{
 					willBeRemoved( eldest.getValue() );
 					
