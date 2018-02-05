@@ -28,8 +28,7 @@ public class PageableResultsStoreProvider
 	
 	public IPageableResultsStore getStore( HttpServletRequest request )
 	{
-		if ( USE_SESSION_STORE && request != null && getCookie( request, 
-				request.getServletContext().getSessionCookieConfig().getName() ) != null )
+		if ( USE_SESSION_STORE && request != null && hasCookie( request, "JSESSIONID", "JSESSIONIDSSO" ) )
 		{
 			IPageableResultsStore store = getFromSession( request.getSession(false) );
 			if ( store != null )
@@ -65,23 +64,26 @@ public class PageableResultsStoreProvider
 		return defaultStore;
 	}
 	
-	private static Cookie getCookie( HttpServletRequest request, String cookieName )
+	private static boolean hasCookie( HttpServletRequest request, String...cookieNames )
 	{
-		if ( request != null )
+		if ( request != null && cookieNames != null )
 		{
 			Cookie[] cookies = request.getCookies();
 			if ( cookies != null )
 			{
 				for ( Cookie cookie : cookies )
 				{
-					if ( cookie.getName().equalsIgnoreCase( cookieName ) )
+					for ( String name : cookieNames )
 					{
-						return cookie;
+						if ( cookie.getName().equalsIgnoreCase( name ) )
+						{
+							return true;
+						}
 					}
 				}
 			}
 		}
-		return null;
+		return false;
 	}
 	
 	private static boolean useSessionStore()
