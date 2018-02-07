@@ -28,9 +28,9 @@ public class PageableResultsStoreProvider
 	
 	public IPageableResultsStore getStore( HttpServletRequest request )
 	{
-		if ( USE_SESSION_STORE && request != null && hasCookie( request, "JSESSIONID", "JSESSIONIDSSO" ) )
+		if ( USE_SESSION_STORE && request != null )
 		{
-			IPageableResultsStore store = getFromSession( request.getSession(false) );
+			IPageableResultsStore store = getFromSession( request.getSession(true) );
 			if ( store != null )
 			{
 				return store;
