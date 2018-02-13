@@ -257,17 +257,9 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 	{
 		List<Predicate> predicates = null;
 
-		// study UID
-		if ( studyUid != null )
-		{
-			predicates = addIgnoreNull( predicates, 
-				po.objectIDType.value.eq("110180").and(
-					po.objectID.eq( studyUid ) 
-				)
-			);
-		}
-
 		// accNr
+		/* Not supported yet:
+		 * 
 		if ( accNr != null )
 		{
 			predicates = addIgnoreNull( predicates,
@@ -283,15 +275,28 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 				) 
 			);
 		}
-
-		// patient id
-		if ( patientId != null )
+		 */
+		
+		if ( studyUid != null || patientId != null )
 		{
-			predicates = addIgnoreNull( predicates,
-				po.objectID.containsIgnoreCase( patientId ).and(
-					po.objectRole.eq(1)
-				)
-			);
+			BooleanExpression e = null;
+			
+			// study UID
+			if ( studyUid != null )
+			{
+				e = orIgnoreNull(e, po.objectIDType.value.eq("110180").and(
+						po.objectID.eq( studyUid ) ) );
+			}
+			
+			// patient id
+			if ( patientId != null )
+			{
+				e = orIgnoreNull( e,
+					po.objectID.containsIgnoreCase( patientId ).and(
+						po.objectRole.eq(1) ) );
+			}
+			
+			predicates = addIgnoreNull( predicates, e );
 		}
 
 		return predicates;
@@ -369,6 +374,20 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			return exp;
 		}
 		return null;
+	}
+	
+	private static BooleanExpression orIgnoreNull( BooleanExpression e1, BooleanExpression e2 )
+	{
+		if ( e1 != null && e2 != null )
+		{
+			return BooleanExpression.anyOf(e1, e2);
+		}
+		else if ( e1 != null )
+		{
+			return e1;
+		}
+		
+		return e2;
 	}
 			
 }
