@@ -284,14 +284,14 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			// study UID
 			if ( studyUid != null )
 			{
-				e = orIgnoreNull(e, po.objectIDType.value.eq("110180").and(
+				e = andIgnoreNull(e, po.objectIDType.value.eq("110180").and(
 						po.objectID.eq( studyUid ) ) );
 			}
 			
 			// patient id
 			if ( patientId != null )
 			{
-				e = orIgnoreNull( e,
+				e = andIgnoreNull( e,
 					po.objectID.containsIgnoreCase( patientId ).and(
 						po.objectRole.eq(1) ) );
 			}
@@ -376,11 +376,11 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		return null;
 	}
 	
-	private static BooleanExpression orIgnoreNull( BooleanExpression e1, BooleanExpression e2 )
+	private static BooleanExpression andIgnoreNull( BooleanExpression e1, BooleanExpression e2 )
 	{
 		if ( e1 != null && e2 != null )
 		{
-			return BooleanExpression.anyOf(e1, e2);
+			return BooleanExpression.allOf(e1, e2);
 		}
 		else if ( e1 != null )
 		{
