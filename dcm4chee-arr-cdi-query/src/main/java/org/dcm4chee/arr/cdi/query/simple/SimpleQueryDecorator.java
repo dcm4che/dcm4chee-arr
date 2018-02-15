@@ -38,6 +38,7 @@
 package org.dcm4chee.arr.cdi.query.simple;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +48,7 @@ import org.dcm4chee.arr.cdi.query.utils.QueryUtils.DateRange;
 import org.dcm4chee.arr.entities.QCode;
 
 import com.mysema.query.jpa.JPASubQuery;
+import com.mysema.query.types.ExpressionUtils;
 import com.mysema.query.types.Predicate;
 import com.mysema.query.types.expr.BooleanExpression;
 
@@ -169,6 +171,12 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 	}
 	
 	@Override
+	public boolean isOptimizedCountQueryPossible()
+	{
+		return studyUid == null || patientId == null;
+	}
+	
+	@Override
 	public List<Predicate> getAuditRecordPredicates()
 	{
 		List<Predicate> predicates = new ArrayList<>(8);
@@ -211,7 +219,8 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			predicates = addIgnoreNull( predicates, ar.eventAction.in( this.actions ) );
 		}
 
-		return predicates;
+		return predicates != null ?
+				Collections.singletonList( ExpressionUtils.allOf( predicates ) ) : null;
 	}
 	
 	@Override
@@ -249,7 +258,8 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			);
 		}
 
-		return predicates;
+		return predicates != null ? 
+				Collections.singletonList( ExpressionUtils.allOf(predicates) ) : null;
 	}
 	
 	@Override
@@ -277,26 +287,19 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		}
 		 */
 		
-		if ( studyUid != null || patientId != null )
+		// study UID
+		if ( studyUid != null )
 		{
-			BooleanExpression e = null;
-			
-			// study UID
-			if ( studyUid != null )
-			{
-				e = andIgnoreNull(e, po.objectIDType.value.eq("110180").and(
-						po.objectID.eq( studyUid ) ) );
-			}
-			
-			// patient id
-			if ( patientId != null )
-			{
-				e = andIgnoreNull( e,
+			predicates = addIgnoreNull( predicates, po.objectIDType.value.eq("110180").and(
+					po.objectID.eq( studyUid ) ) );
+		}
+
+		// patient id
+		if ( patientId != null )
+		{
+			predicates = addIgnoreNull( predicates,
 					po.objectID.containsIgnoreCase( patientId ).and(
-						po.objectRole.eq(1) ) );
-			}
-			
-			predicates = addIgnoreNull( predicates, e );
+							po.objectRole.eq(1) ) );
 		}
 
 		return predicates;
@@ -311,35 +314,42 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		List<Predicate> arPredicates = getAuditRecordPredicates();
 		if ( arPredicates != null )
 		{
-			predicates.addAll( arPredicates );
+			for ( Predicate p : arPredicates )
+			{
+				predicates.add( p );
+			}
 		}
 
 		// subquery for matching participant objects
 		List<Predicate> poPredicates = getParticipantObjectPredicates();
 		if ( !emptyOrNull( poPredicates ) )
 		{
-			poPredicates.add(0, po.auditRecord.pk.eq(ar.pk) );
-			predicates = addIgnoreNull( predicates, new JPASubQuery()
-				.from( po )
-				.join( po.auditRecord )
-				.leftJoin( po.objectIDType )
-				.where( poPredicates.toArray(new Predicate[poPredicates.size()] ) )
-				.exists()
-			);
+			for ( Predicate p : poPredicates )
+			{
+				predicates = addIgnoreNull( predicates, new JPASubQuery()
+					.from( po )
+					.join( po.auditRecord )
+					.leftJoin( po.objectIDType )
+					.where( po.auditRecord.pk.eq(ar.pk), p )
+					.exists()
+				);
+			}
 		}
 		
 		// subquery for matching active participants
 		List<Predicate> apPredicates = getActiveParticipantPredicates();
 		if ( !emptyOrNull( apPredicates ) )
 		{
-			apPredicates.add(0, ap.auditRecord.pk.eq(ar.pk) );
-			predicates = addIgnoreNull( predicates, new JPASubQuery()
-				.from( ap )
-				.join( ap.auditRecord )
-				.leftJoin( ap.roleID )
-				.where( apPredicates.toArray(new Predicate[apPredicates.size()] ) )
-				.exists()
-			);
+			for( Predicate p : apPredicates )
+			{				
+				predicates = addIgnoreNull( predicates, new JPASubQuery()
+					.from( ap )
+					.join( ap.auditRecord )
+					.leftJoin( ap.roleID )
+					.where( ap.auditRecord.pk.eq(ar.pk), p )
+					.exists()
+				);
+			}
 		}
 
 		return predicates;
@@ -374,20 +384,6 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 			return exp;
 		}
 		return null;
-	}
-	
-	private static BooleanExpression andIgnoreNull( BooleanExpression e1, BooleanExpression e2 )
-	{
-		if ( e1 != null && e2 != null )
-		{
-			return BooleanExpression.allOf(e1, e2);
-		}
-		else if ( e1 != null )
-		{
-			return e1;
-		}
-		
-		return e2;
 	}
 			
 }

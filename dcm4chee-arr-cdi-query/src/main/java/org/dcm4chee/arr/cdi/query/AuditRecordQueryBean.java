@@ -120,7 +120,7 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
 	    			decorator.getLimit(), null, total );
     	}
     }   
-    
+        
     private static void decorateQuery( JPAQuery query, IAuditRecordQueryDecorator decorator, boolean forCountQuery )
     {
     	// just join if necessary
@@ -135,10 +135,10 @@ public class AuditRecordQueryBean implements IAuditRecordQueryBean
     	}
     	
     	// predicates
-    	if ( forCountQuery )
+    	if ( forCountQuery && decorator.isOptimizedCountQueryPossible() )
     	{
     		//simplified count query without sub-selects but inner joins
-    		List<Predicate> predicates = decorator.getAuditRecordPredicates();
+    		List<Predicate> predicates = new ArrayList<>( decorator.getAuditRecordPredicates() );
     		List<Predicate> apPredicates = decorator.getActiveParticipantPredicates();
     		if ( apPredicates != null && !apPredicates.isEmpty() )
     		{

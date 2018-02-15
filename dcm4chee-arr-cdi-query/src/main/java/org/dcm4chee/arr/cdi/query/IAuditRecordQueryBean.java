@@ -99,6 +99,8 @@ public interface IAuditRecordQueryBean
     	
     	Long getMaxLimit();
     	
+    	boolean isOptimizedCountQueryPossible();
+    	
     }
 
     

@@ -248,6 +248,12 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 	}
 	
 	@Override
+	public boolean isOptimizedCountQueryPossible()
+	{
+		return true;
+	}
+	
+	@Override
 	public List<Predicate> getAuditRecordPredicates()
 	{
 		List<Predicate> predicates = new ArrayList<>(8);
