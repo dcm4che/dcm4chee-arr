@@ -152,6 +152,7 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		return this;
 	}
 
+	@Override
 	public SimpleQueryDecorator setMaxResults( Long maxResults )
 	{
 		super.setMaxResults( maxResults );
@@ -232,9 +233,7 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		if ( userId != null )
 		{
 			predicates = addIgnoreNull( predicates,
-					ap.userID.containsIgnoreCase( userId ).or(
-					ap.alternativeUserID.containsIgnoreCase( userId ) ).or( 
-					ap.userName.containsIgnoreCase( userId ) )
+					ap.userID.containsIgnoreCase( userId )
 			);
 		}
 
@@ -253,8 +252,7 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		{
 			predicates = addIgnoreNull( predicates, 
 				ap.auditRecord.sourceID.containsIgnoreCase( aet ).or(
-					ap.userID.containsIgnoreCase( aet ) ).or(
-						ap.alternativeUserID.containsIgnoreCase( aet ) )
+					ap.alternativeUserID.containsIgnoreCase( aet ) )
 			);
 		}
 

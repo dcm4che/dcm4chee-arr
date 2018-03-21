@@ -229,6 +229,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 		return this;
 	}	
 	
+	@Override
 	public FhirQueryDecorator setMaxResults( Long maxResults )
 	{
 		super.setMaxResults( maxResults );
@@ -539,7 +540,7 @@ public class FhirQueryDecorator extends AbstractAuditRecordQueryDecorator
 		}
 		else if ( param.isExact() )
 		{
-			return path.like( param.getValue() );
+			return path.equalsIgnoreCase( param.getValue() );
 		}
 		else
 		{
