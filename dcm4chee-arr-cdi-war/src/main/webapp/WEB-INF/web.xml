@@ -19,4 +19,12 @@
     <local-home />
     <local>org.dcm4chee.arr.cdi.ejb.AuditRecordQueryLocal</local>
   </ejb-local-ref>
+<!--
+  We need an explicit reference to the cache container so that it starts up when this WAR is deployed, see also:
+       https://issues.jboss.org/browse/WFLY-4613?focusedCommentId=13068459&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13068459
+-->
+  <resource-ref>
+    <res-ref-name>infinispan/container/dcm4chee</res-ref-name>
+    <lookup-name>java:jboss/infinispan/container/dcm4chee</lookup-name>
+  </resource-ref>
 </web-app>
