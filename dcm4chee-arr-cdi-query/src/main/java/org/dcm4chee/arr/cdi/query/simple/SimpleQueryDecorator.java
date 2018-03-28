@@ -289,7 +289,7 @@ public class SimpleQueryDecorator extends AbstractAuditRecordQueryDecorator
 		if ( studyUid != null )
 		{
 			predicates = addIgnoreNull( predicates, po.objectIDType.value.eq("110180").and(
-					po.objectID.eq( studyUid ) ) );
+					po.objectID.equalsIgnoreCase( studyUid ) ) );
 		}
 
 		// patient id
